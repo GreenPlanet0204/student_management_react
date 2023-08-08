@@ -24,32 +24,35 @@ export const Parents = () => {
         </Link>
       </div>
       <div className="card students">
-        <div className="label">
-          <div className="col names">Names</div>
-          <div className="col school">School</div>
-          <div className="action">Actions</div>
-        </div>
-        {parents.map((parent, index) => (
-          <div className="row" key={index}>
-            <div className="col names">
-              <div className="image">
-                <img src={API_URL + parent.image} alt="avatar" />
+        <div className="row">
+          <div className="col">
+            <div className="label">Names</div>
+            {parents.map((parent, index) => (
+              <div className="item names" key={index}>
+                <div className="image">
+                  <img src={API_URL + parent.image} alt="avatar" />
+                </div>
+                <div className="name">{parent.name}</div>
               </div>
-              <div className="name">{parent.name}</div>
-            </div>
-            <div className="col school">
-              <div className="image">
-                <img src={API_URL + parent.school.image} alt="School" />
-              </div>
-              <div className="name">{parent.school.name}</div>
-            </div>
-            <div className="action">
-              <Link to={"/parent/" + parent.id}>
-                <div className="btn">View</div>
-              </Link>
-            </div>
+            ))}
           </div>
-        ))}
+          <div className="col count">
+            <div className="label">Student Count</div>
+            {parents.map((parent, index) => (
+              <div className="item" key={index}>
+                {parent.students?.length}
+              </div>
+            ))}
+          </div>
+          <div className="col action">
+            <div className="label">Action</div>
+            {parents.map((parent, index) => (
+              <Link to={"/parent/" + parent.id} className="item" key={index}>
+                <div className="btn">Edit</div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -18,32 +18,40 @@ export const Teachers = () => {
         </Link>
       </div>
       <div className="card students">
-        <div className="label">
-          <div className="col names">Names</div>
-          <div className="col names">School</div>
-          <div className="action">Actions</div>
-        </div>
-        {teachers.map((teacher, index) => (
-          <div className="row" key={index}>
-            <div className="col names">
-              <div className="image">
-                <img src={API_URL + teacher.image} alt="Teacher" />
+        <div className="row">
+          <div className="col">
+            <div className="label">Names</div>
+            {teachers.map((teacher, index) => (
+              <div className="item names" key={index}>
+                <div className="image">
+                  <img src={API_URL + teacher.image} alt="Teacher" />
+                </div>
+                <div className="name">{teacher.name}</div>
               </div>
-              <div className="name">{teacher.name}</div>
-            </div>
-            <div className="col school">
-              <div className="image">
-                <img src={API_URL + teacher.school.image} alt="School" />
-              </div>
-              <div className="name">{teacher.school.name}</div>
-            </div>
-            <div className="action">
-              <Link to={`/teacher/${teacher.id}`} className="btn">
-                View
-              </Link>
-            </div>
+            ))}
           </div>
-        ))}
+          <div className="col">
+            <div className="label">School</div>
+            {teachers.map((teacher, index) => (
+              <div className="item school" key={index}>
+                <div className="image">
+                  <img src={API_URL + teacher.school.image} alt="School" />
+                </div>
+                <div className="name">{teacher.school.name}</div>
+              </div>
+            ))}
+          </div>
+          <div className="col action">
+            <div className="label">Actions</div>
+            {teachers.map((teacher, index) => (
+              <div className="item" key={index}>
+                <Link to={`/teacher/${teacher.id}`} className="btn">
+                  View
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

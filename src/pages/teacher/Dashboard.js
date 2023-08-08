@@ -7,6 +7,7 @@ export const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [students, setStudents] = useState([]);
+  const [rewards, setRewards] = useState([]);
   const getColor = (point) => {
     if (point === 3) {
       return "#F4B200";
@@ -22,6 +23,13 @@ export const Dashboard = () => {
       .get(API_URL + "/student/?teacher=" + user.id)
       .then((res) => setStudents(res.data));
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(API_URL + "/reward/?school=" + user.school)
+      .then((res) => setRewards(res.data));
+  }, []);
+
   /* eslint-enable */
   return (
     <div className="container">
@@ -60,7 +68,7 @@ export const Dashboard = () => {
             <div className="divider" />
             {students.map((student) => (
               <div className="row" key={student.id}>
-                <Link to={"/students/" + student.id}>
+                <Link to={"/student/" + student.id}>
                   <div className="name">{student.name}</div>
                 </Link>
 
@@ -84,15 +92,15 @@ export const Dashboard = () => {
         </div>
         <div className="card">
           <div className="title">Ready for redemption</div>
-          {students.map((student) => (
-            <div className="row">
+          {rewards.map((reward) => (
+            <div className="row" key={reward.id}>
               <div className="detail">
                 <div className="image">
-                  <img src={API_URL + student.image} alt="goal" />
+                  <img src={API_URL + reward.image} alt="goal" />
                 </div>
-                <div className="name">{student.name}</div>
+                <div className="name">{reward.title}</div>
               </div>
-              <Link to={"/student/" + student.id}>
+              <Link to={"/reward/" + reward.id}>
                 <div className="btn">View</div>
               </Link>
             </div>

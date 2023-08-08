@@ -26,29 +26,45 @@ export const Schools = () => {
         </Link>
       </div>
       <div className="card students">
-        <div className="label">
-          <div className="col names">School Name</div>
-          <div className="col">School Level</div>
-          <div className="col count">Student Count</div>
-          <div className="action">Actions</div>
-        </div>
-        {schools.map((school, index) => (
-          <div className="row" key={index}>
-            <div className="col names">
-              <div className="image">
-                <img src={API_URL + school.image} alt="School" />
+        <div className="row">
+          <div className="col">
+            <div className="label">School Name</div>
+            {schools.map((school, index) => (
+              <div className="item names" key={index}>
+                <div className="image">
+                  <img src={API_URL + school.image} alt="School" />
+                </div>
+                <div className="name">{school.name}</div>
               </div>
-              <div className="name">{school.name}</div>
-            </div>
-            <div className="col">{school.level}</div>
-            <div className="col count">{school.students.length}</div>
-            <div className="action">
-              <Link className="btn" to={"/school/" + school.id}>
-                View
-              </Link>
-            </div>
+            ))}
           </div>
-        ))}
+          <div className="col">
+            <div className="label">School Level</div>
+            {schools.map((school, index) => (
+              <div className="item" key={index}>
+                {school.level}
+              </div>
+            ))}
+          </div>
+          <div className="col count">
+            <div className="label">Student Count</div>
+            {schools.map((school, index) => (
+              <div className="item" key={index}>
+                {school.students.length}
+              </div>
+            ))}
+          </div>
+          <div className="col action">
+            <div className="label">Actions</div>
+            {schools.map((school, index) => (
+              <div className="item" key={index}>
+                <Link className="btn" to={"/school/" + school.id}>
+                  View
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

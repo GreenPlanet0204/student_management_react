@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const Student = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [student, setStudent] = useState({
@@ -94,7 +95,7 @@ export const Student = () => {
     }
   };
   /* eslint-disable */
-  const params = useParams();
+
   useEffect(() => {
     if (params.id) {
       axios.get(API_URL + "/student/?id=" + params.id).then((res) => {

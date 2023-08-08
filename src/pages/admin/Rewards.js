@@ -38,27 +38,44 @@ export const Rewards = () => {
             </div>
           </div>
         </div>
-        <div className="label">
-          <div className="col names">Reward Names</div>
-          <div className="col count">Coins Needed</div>
-          <div className="col count">Used</div>
-          <div className="action">Actions</div>
-        </div>
-        {rewards.map((reward, index) => (
-          <div className="row" key={index}>
-            <div className="col names">
-              <div className="image reward">
-                <img src={API_URL + reward.image} alt="reward" />
+        <div className="row">
+          <div className="col">
+            <div className="label">Reward Names</div>
+            {rewards.map((reward, index) => (
+              <div className="item names" key={index}>
+                <div className="image reward">
+                  <img src={API_URL + reward.image} alt="reward" />
+                </div>
+                <div className="name">{reward.title}</div>
               </div>
-              <div className="name">{reward.title}</div>
-            </div>
-            <div className="col count">{reward.coin}</div>
-            <div className="col count">{reward.students.length}</div>
-            <Link to={"/reward/" + reward.id} className="action">
-              <div className="btn">Edit</div>
-            </Link>
+            ))}
           </div>
-        ))}
+          <div className="col count">
+            <div className="label">Coins Needed</div>
+            {rewards.map((reward, index) => (
+              <div className="item" key={index}>
+                {reward.coin}
+              </div>
+            ))}
+          </div>
+          <div className="col count">
+            <div className="label">Used</div>
+            {rewards.map((reward, index) => (
+              <div className="item" key={index}>
+                {reward.students.length}
+              </div>
+            ))}
+          </div>
+          <div className="col action">
+            {rewards.map((reward, index) => (
+              <div className="item" key={index}>
+                <Link to={"/reward/" + reward.id}>
+                  <div className="btn">Edit</div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

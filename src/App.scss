@@ -648,7 +648,7 @@ input {
   }
 
   .card.students {
-    height: 100%;
+    min-height: calc(100% - 64px);
     padding: 40px 50px 40px 30px;
     display: flex;
     flex-direction: column;
@@ -662,40 +662,37 @@ input {
       flex-direction: row;
       justify-content: space-between;
     }
-    .col {
-      width: 200px;
-    }
-    .col.names {
-      width: 300px;
-    }
-    .col.school {
-      width: 300px;
-    }
-    .col.count {
+    .count {
       text-align: center;
+      align-items: center;
     }
     
     .action {
-      width: 100px;
       display: flex;
-      justify-content: flex-end;
+      align-items: flex-end;
     }
-    .row {
+
+    .col {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      height: 60px;
-      align-items: center;
-      .names {
+      flex-direction: column;
+      gap: 24px;
+      .item {
+        height: 60px;
         display: flex;
-        flex-direction: row;
         align-items: center;
-        gap: 30px;
+      }
+    }
+
+    .row.small {
+      .item {
+        height: 40px!important;
+      }
+      .names {
         .image {
-          width: 60px;
-          min-width: 60px;
-          height: 60px;
-          border-radius: 30px;
+          width: 40px!important;
+          height: 40px!important;
+          border-radius: 20px!important;
+          min-width: 40px!important;
           overflow: hidden;
           border: 1px solid #913A7E;
           display: flex;
@@ -704,99 +701,123 @@ input {
             width: 100%;
           }
         }
-        .image.reward {
-          border-color: transparent;
-        }
-        .name {
-          font-size: 16px;
-          line-height: 25px;
-          font-weight:  500;
-          letter-spacing: 0px;
-          color: #003595;
-          cursor: pointer;
+      }
+      
+      .names, .school {
+        gap: 10px;    
+      }
+    }
+    
+    .names {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 30px;
+      .image {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        overflow: hidden;
+        border: 1px solid #913A7E;
+        display: flex;
+        align-items: center;
+        img {
+          width: 100%;
         }
       }
+      .image.reward {
+        border-color: transparent;
+      }
+      .name {
+        font-size: 16px;
+        line-height: 25px;
+        font-weight:  500;
+        letter-spacing: 0px;
+        color: #003595;
+        cursor: pointer;
+      }
+    }
 
-      .school {
+    .school {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      .image {
+        width: 24px;
+        height: 24px;
+        border: 1px solid #003595;
+        border-radius: 1px;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .name {
+        font-size: 16px;
+        line-height: 25px;
+        font-weight:  500;
+        letter-spacing: 0px;
+        color: #003595;
+      }
+    }
+    
+    .progress {
+      height: 60px;
+      align-self: flex-start;
+      .type {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        font-size: 16px;
+        line-height: 25px;
+        letter-spacing: 0;
+        .bold {
+          text-decoration: underline;
+          font-weight: 700;
+        }
+      }
+      .progress-line {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 10px;
-        .image {
-          width: 24px;
-          height: 24px;
-          border: 1px solid #003595;
-          border-radius: 1px;
-          overflow: hidden;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-        .name {
-          font-size: 16px;
-          line-height: 25px;
-          font-weight:  500;
-          letter-spacing: 0px;
-          color: #003595;
-        }
-      }
-      
-      .progress {
-        height: 60px;
-        align-self: flex-start;
-        .type {
-          display: flex;
-          flex-direction: row;
-          gap: 16px;
-          font-size: 16px;
-          line-height: 25px;
-          letter-spacing: 0;
-          .bold {
-            text-decoration: underline;
-            font-weight: 700;
-          }
-        }
-        .progress-line {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 10px;
-          .line {
+        .line {
+          height: 0px;
+          width: 180px;
+          border-radius: 3px;
+          border-bottom: 3px solid #DDDDDD;
+          .color-line {
             height: 0px;
-            width: 180px;
             border-radius: 3px;
-            border-bottom: 3px solid #DDDDDD;
-            .color-line {
-              height: 0px;
-              border-radius: 3px;
-              border-bottom: 3px solid currentColor;
-            }
+            border-bottom: 3px solid currentColor;
           }
-          .text {
-            font-size: 8px;
-            line-height: 12px;
-            font-weight: 700;
-            line-height: 0;
-          }
+        }
+        .text {
+          font-size: 8px;
+          line-height: 12px;
+          font-weight: 700;
+          line-height: 0;
         }
       }
-      .action {
-        .btn {
-          cursor: pointer;
-          width: 77px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #913A7E;
-          border-radius: 24px;
-          font-size: 13px;
-          line-height: 18px;
-          font-weight: 700;
-          box-shadow: 0px 3px 6px #00000029;
-          color: #FFFFFF;
-        }
+    }
+    .action {
+      .btn {
+        cursor: pointer;
+        width: 77px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #913A7E;
+        border-radius: 24px;
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: 700;
+        box-shadow: 0px 3px 6px #00000029;
+        color: #FFFFFF;
       }
     }
   }
@@ -2965,26 +2986,4 @@ a {
     }
   }
 }
-.row.small {
-  height: 40px!important;
-  .names {
-    .image {
-      width: 40px!important;
-      height: 40px!important;
-      border-radius: 20px!important;
-      min-width: 40px!important;
-      overflow: hidden;
-      border: 1px solid #913A7E;
-      display: flex;
-      align-items: center;
-      img {
-        width: 100%;
-      }
-    }
-  }
-  
-  .names, .school {
-    width: 250px!important;
-    gap: 10px!important;    
-  }
-}
+

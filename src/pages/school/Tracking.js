@@ -69,69 +69,83 @@ export const Tracking = () => {
             </div>
           </div>
         </div>
-        <div className="row small label">
-          <div className="col names">Names</div>
-          {tab !== "reward" && tab !== "school" && (
-            <>
-              <div className="col school">Schools</div>
-              <div className="col">Last Active</div>
-            </>
+        <div className="row small">
+          <div className="col">
+            <div className="label">Names</div>
+            {data.map((item, index) => (
+              <div className="item names" key={index}>
+                <div className="image">
+                  <img src={API_URL + item?.image} alt="Logo" />
+                </div>
+                <div className="name">
+                  {tab !== "reward" ? item?.name : item.title}
+                </div>
+              </div>
+            ))}
+          </div>
+          {tab === "student" && (
+            <div className="col count">
+              <div className="label">Coins Earned</div>
+              {data.map((item, index) => (
+                <div className="item" key={index}>
+                  {item.coin}
+                </div>
+              ))}
+            </div>
           )}
-          {tab === "student" && <div className="col count">Coins Earned</div>}
-          {tab === "school" && <div className="col count">Teacher Count</div>}
-          {(tab === "school" || tab === "teacher") && (
-            <div className="col count">Student Count</div>
+          {(tab === "teacher" || tab === "parent") && (
+            <div className="col count">
+              <div className="label">Student Count</div>
+              {data.map((item, index) => (
+                <div className="item" key={index}>
+                  {item.students?.length}
+                </div>
+              ))}
+            </div>
           )}
           {tab === "reward" && (
             <>
-              <div className="col count">Coins Needed</div>
-              <div className="col count">Used</div>
+              <div className="col count">
+                <div className="label">Coins Needed</div>
+                {data.map((item, index) => (
+                  <div className="item" key={index}>
+                    {item.coin}
+                  </div>
+                ))}
+              </div>
+              <div className="col count">
+                <div className="label">Used</div>
+                {data.map((item, index) => (
+                  <div className="item" key={index}>
+                    {item.students?.length}
+                  </div>
+                ))}
+              </div>
             </>
           )}
 
-          <div className="action">Actions</div>
-        </div>
-        {data.map((item, index) => (
-          <div className="row small" key={index}>
-            <div className={tab !== "school" ? "col names" : "col school"}>
-              <div className="image">
-                <img src={API_URL + item?.image} alt="Logo" />
-              </div>
-              <div className="name">
-                {tab !== "reward" ? item?.name : item.title}
-              </div>
-            </div>
-            {tab !== "reward" && tab !== "school" && (
-              <>
-                <div className="col school">
-                  <div className="image">
-                    <img src={API_URL + item.school?.image} alt="School" />
-                  </div>
-                  <div className="name">{item.school?.name}</div>
-                </div>
-                <div className="col">
+          {tab !== "reward" && (
+            <div className="col">
+              <div className="label">Last Active</div>
+              {data.map((item, index) => (
+                <div className="item" key={index}>
                   {item.last && moment(item.last).format("MM/DD/YYYY")}
                 </div>
-              </>
-            )}
-            {tab === "reward" && (
-              <>
-                <div className="col count">{item.coin}</div>
-                <div className="col count">{item.students?.length}</div>
-              </>
-            )}
-            {tab === "student" && <div className="col count">{item.coin}</div>}
-            {tab === "school" && (
-              <div className="col count">{item.teachers?.length}</div>
-            )}
-            {(tab === "school" || tab === "teacher") && (
-              <div className="col count">{item.students?.length}</div>
-            )}
-            <Link to={`/${tab}/${item.id}`} className="action">
-              <div className="btn">View</div>
-            </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="col action">
+            <div className="label">Actions</div>
+            {data.map((item, index) => (
+              <div className="item" key={index}>
+                <Link to={`/${tab}/${item.id}`}>
+                  <div className="btn">View</div>
+                </Link>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

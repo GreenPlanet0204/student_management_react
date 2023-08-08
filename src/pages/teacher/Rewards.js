@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import { Link } from "react-router-dom";
-import { rewards } from "../../utils";
+import { API_URL } from "../../utils";
+import axios from "axios";
 
 export const Rewards = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [rewards, setRewards] = useState([]);
+
+  /* eslint-disable */
+  useEffect(() => {
+    axios
+      .get(API_URL + "/reward/?school=" + user.school)
+      .then((res) => setRewards(res.data));
+  }, []);
+  /* eslint-enable */
   return (
     <div className="container rewards">
       <div className="header">
@@ -35,11 +46,11 @@ export const Rewards = () => {
             <div className="reward">
               <div className="detail">
                 <div className="image">
-                  <img src={reward.image} alt="reward" />
+                  <img src={API_URL + reward.image} alt="reward" />
                 </div>
-                <div className="name">{reward.name}</div>
+                <div className="name">{reward.title}</div>
               </div>
-              <Link to={"/rewards/" + reward.id}>
+              <Link to={"/reward/" + reward.id}>
                 <div className="btn">Edit</div>
               </Link>
             </div>

@@ -60,18 +60,20 @@ function App() {
   const [show, setShow] = useState(false);
 
   const checkAuth = async () => {
-    const token = localStorage.getItem("token");
-    const res = await axios.get(API_URL + "/auth/", {
-      headers: { Authorization: "Bearer " + token },
-    });
-    console.log("res", res.data);
-    return res.data;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(API_URL + "/auth/", {
+        headers: { Authorization: "Bearer " + token },
+      });
+      if (!res.data) navigate("/login");
+    } catch {
+      navigate("/login");
+    }
   };
 
   /* eslint-disable */
   useEffect(() => {
-    const flag = checkAuth();
-    if (!flag) navigate("/login");
+    checkAuth();
   }, []);
 
   useEffect(() => {
