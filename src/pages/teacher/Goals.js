@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
-import { goals } from "../../utils";
+import { API_URL } from "../../utils";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export const Goals = () => {
-  const [type, setType] = useState("behavior");
+  const teacher = JSON.parse(localStorage.getItem("user"));
+  const [type, setType] = useState("Behavioral");
+  const [goals, setGoals] = useState([]);
+  const [filterGoals, setFilterGoals] = useState([]);
+  /* eslint-disable */
+  useEffect(() => {
+    axios.get(API_URL + "/goal/?user=" + teacher.user).then((res) => {
+      setGoals(res.data);
+      setFilterGoals(res.data.filter((item) => item.type === type));
+    });
+  }, []);
+
+  useEffect(() => {
+    setFilterGoals(goals.filter((item) => item.type === type));
+  }, [type]);
+  /* eslint-enable */
+
+  const search = (e) => {
+    const term = e.target.value;
+    setFilterGoals(
+      goals.filter((item) => item.type === type && item.name.startsWith(term))
+    );
+  };
 
   return (
     <div className="container">
@@ -21,29 +44,35 @@ export const Goals = () => {
         <div className="filter">
           <div className="type">
             <div
-              className={type === "behavior" ? "behavior bold" : "behavior"}
-              onClick={() => setType("behavior")}
+              className={
+                type === "Behavioral" ? "Behavioral bold" : "Behavioral"
+              }
+              onClick={() => setType("Behavioral")}
             >
               Behavioral
             </div>
             <div
-              className={type === "academic" ? "academic bold" : "academic"}
-              onClick={() => setType("academic")}
+              className={type === "Academic" ? "Academic bold" : "Academic"}
+              onClick={() => setType("Academic")}
             >
               Academic
             </div>
           </div>
         </div>
         <div className="search">
-          <input type="search" placeholder="Search for a goal" />
+          <input
+            type="search"
+            placeholder="Search for a goal"
+            onChange={search}
+          />
           <div className="btn">
             <Search />
           </div>
         </div>
-        {goals.map((goal) => (
-          <div className="goal">
+        {filterGoals.map((goal, index) => (
+          <div className="goal" key={index}>
             <div className="detail">
-              <div className="step">Goal {goal.step}</div>
+              <div className="step">Goal {index + 1}</div>
               <div className="name">{goal.name}</div>
             </div>
             <div className="action">

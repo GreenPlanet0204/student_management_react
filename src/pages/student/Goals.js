@@ -1,14 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
-import { goals } from "../../utils";
+import { API_URL } from "../../utils";
+import axios from "axios";
 
 export const Goals = () => {
-  const [type, setType] = useState("behavior");
-  const teachers = [
-    { id: 1, name: "Jhon Simons" },
-    { id: 2, name: "Jeff Durym" },
-  ];
-  const [teacher, setTeacher] = useState(1);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [goals, setGoals] = useState([]);
+  const [filterGoals, setFilterGoals] = useState([]);
+  const [type, setType] = useState("Behavioral");
+  const [teachers, setTeachers] = useState([]);
+  const [teacher, setTeacher] = useState();
+
+  const fetchData = async () => {
+    const res1 = await axios.get(API_URL + "/goal/?student=" + user.id);
+    setGoals(res1.data);
+    const res2 = await axios.get(API_URL + "/teacher/?student=" + user.id);
+    setTeachers(res2.data);
+    if (res2.data && res2.data.length > 0) {
+      setTeacher(res2.data[0].user);
+      if (res1.data && res1.data.length > 0)
+        setFilterGoals(
+          res1.data.filter(
+            (item) => item.reporter === res2.data[0].user && item.type === type
+          )
+        );
+    }
+  };
+
+  /* eslint-disable */
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (type === "Parent") {
+      setFilterGoals(goals?.filter((item) => item.type === type));
+    } else {
+      setFilterGoals(
+        goals?.filter((item) => item.type === type && item.reporter === teacher)
+      );
+    }
+  }, [type, teacher]);
+  /* eslint-enable */
   return (
     <div className="container">
       <div className="header">
@@ -18,20 +51,22 @@ export const Goals = () => {
         <div className="filter">
           <div className="type">
             <div
-              className={type === "behavior" ? "behavior bold" : "behavior"}
-              onClick={() => setType("behavior")}
+              className={
+                type === "Behavioral" ? "Behavioral bold" : "Behavioral"
+              }
+              onClick={() => setType("Behavioral")}
             >
               Behavioral
             </div>
             <div
-              className={type === "academic" ? "academic bold" : "academic"}
-              onClick={() => setType("academic")}
+              className={type === "Academic" ? "Academic bold" : "Academic"}
+              onClick={() => setType("Academic")}
             >
               Academic
             </div>
             <div
-              className={type === "parent" ? "parent bold" : "parent"}
-              onClick={() => setType("parent")}
+              className={type === "Parent" ? "Parent bold" : "Parent"}
+              onClick={() => setType("Parent")}
             >
               Parent
             </div>
@@ -41,12 +76,13 @@ export const Goals = () => {
           <div className="teachers">
             <div className="label">Teacher</div>
             <div className="divider" />
-            {teachers.map((item) => (
+            {teachers?.map((item, index) => (
               <div
                 className={
-                  teacher === item.id ? "teacher underline" : "teacher"
+                  teacher === item.user ? "teacher underline" : "teacher"
                 }
-                onClick={() => setTeacher(item.id)}
+                key={index}
+                onClick={() => setTeacher(item.user)}
               >
                 {item.name}
               </div>
@@ -59,10 +95,10 @@ export const Goals = () => {
             <Search />
           </div>
         </div>
-        {goals.map((goal) => (
-          <div className="goal">
+        {filterGoals?.map((goal, index) => (
+          <div className="goal" key={index}>
             <div className="detail">
-              <div className="step">Goal {goal.step}</div>
+              <div className="step">Goal {index + 1}</div>
               <div className="name">{goal.name}</div>
             </div>
             <div className="action">

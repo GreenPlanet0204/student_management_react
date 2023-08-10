@@ -1,115 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import Avatar from "../../assets/Images/avatar.jpg";
-import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import { ReactComponent as PrintIcon } from "../../assets/Icons/Print - New Gray.svg";
 import { ReactComponent as GoalIcon } from "../../assets/Icons/Goals.svg";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
-import { records } from "../../utils";
+import { API_URL } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Select from "../../components/Select";
 
 export const Progress = () => {
-  const time = new Date();
-  const start = new Date("2023.04.01");
-  const end = new Date("2023.06.30");
+  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const data = [
-    {
-      date: new Date("2023-04-02"),
-      value: 0,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-    {
-      date: new Date("2023-04-08"),
-      value: 47,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-    {
-      date: new Date("2023-05-03"),
-      value: 47,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-    {
-      date: new Date("2023-05-25"),
-      value: 72,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-    {
-      date: new Date("2023-06-08"),
-      value: 78,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-    {
-      date: new Date("2023-06-15"),
-      value: 85,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    },
-  ];
-  const [select, setSelect] = useState({
-    date: data[0].date,
-    value: data[0].value,
-  });
+  const [data, setData] = useState([]);
+  const [select, setSelect] = useState({});
+  const [goals, setGoals] = useState([]);
   const [record, setRecord] = useState();
+  const [index, setIndex] = useState(0);
   const dateFormatter = (date) => {
-    return moment(new Date(date)).format("MMMM");
+    return moment(new Date(date + " 01:00:00")).format("MMM DD");
   };
   const dotClick = (e) => {
     const { payload } = e;
@@ -122,6 +35,171 @@ export const Progress = () => {
   const confirm = () => {
     navigate("/students");
   };
+
+  const fetchTableData = (data) => {
+    const record = [];
+    data.records?.forEach((item) => {
+      record.push({
+        date: item.date,
+        value: item.score,
+        val1: 10,
+        val2: 20,
+        val3: 30,
+        val4: 40,
+        val5: 50,
+        val6: 60,
+        val7: 70,
+        val8: 80,
+        val9: 90,
+        val10: 100,
+      });
+    });
+    const start = record.filter((item) => item.date === data?.start_date);
+    const end = data?.records?.filter((item) => item.date === data?.end_date);
+    if (start.length < 1) {
+      record.push({
+        date: data?.start_date,
+        value: 0,
+        val1: 10,
+        val2: 20,
+        val3: 30,
+        val4: 40,
+        val5: 50,
+        val6: 60,
+        val7: 70,
+        val8: 80,
+        val9: 90,
+        val10: 100,
+      });
+    }
+    if (end?.length < 1) {
+      record.push({
+        date: data?.end_date,
+        val1: 10,
+        val2: 20,
+        val3: 30,
+        val4: 40,
+        val5: 50,
+        val6: 60,
+        val7: 70,
+        val8: 80,
+        val9: 90,
+        val10: 100,
+      });
+    }
+    setData(record);
+  };
+  /* eslint-disable */
+  useEffect(() => {
+    axios.get(API_URL + "/goal/?user=" + user.user).then((res) => {
+      setGoals(res.data);
+      let data = [];
+
+      fetchTableData(res.data[index]);
+      setSelect({
+        date: res.data[index]?.start_date,
+        note: `Administration and or teacher identifies students who need more
+        intervention support than what the School wide Positive Behavior
+        Intervention Support (PBIS) -a framework for supporting
+        students’ behavioral, academic, ocial,emotional, and mental
+        health can offer.`,
+      });
+      console.log(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    let data = [];
+
+    goals[index]?.records.map((item) =>
+      data.push({
+        date: item.date,
+        value: item.score,
+        val1: 10,
+        val2: 20,
+        val3: 30,
+        val4: 40,
+        val5: 50,
+        val6: 60,
+        val7: 70,
+        val8: 80,
+        val9: 90,
+        val10: 100,
+      })
+    );
+    data.push({
+      date: goals[index]?.start_date,
+      value: 0,
+      val1: 10,
+      val2: 20,
+      val3: 30,
+      val4: 40,
+      val5: 50,
+      val6: 60,
+      val7: 70,
+      val8: 80,
+      val9: 90,
+      val10: 100,
+    });
+    data.push({
+      date: goals[index]?.end_date,
+      val1: 10,
+      val2: 20,
+      val3: 30,
+      val4: 40,
+      val5: 50,
+      val6: 60,
+      val7: 70,
+      val8: 80,
+      val9: 90,
+      val10: 100,
+    });
+    setData([data]);
+  }, [index]);
+  /* eslint-enable */
+  const NewRecord = () => {
+    setRecord({
+      score: "",
+      note: "",
+    });
+    setModalOpen(false);
+  };
+
+  const Undo = () => {
+    axios.delete(API_URL + "/record/?id=" + record.id);
+  };
+
+  const getProgress = (start_date, end_date) => {
+    const time = new Date().getTime();
+    const end = new Date(end_date).getTime();
+    const start = new Date(start_date).getTime();
+    if (time < start) return "0%";
+    if (time > end) return "100%";
+    const percent = ((100 * (time - start)) / (end - start)).toFixed(0) + "%";
+    return percent;
+  };
+
+  const addRecord = async () => {
+    const data = {
+      ...record,
+      goal: goals[index].id,
+    };
+    try {
+      await axios.post(API_URL + "/record/", data);
+      setModalOpen(false);
+    } catch {
+      console.error("error");
+    }
+  };
+
+  const handleChangeScore = (val) => {
+    if (val > 100) val = 100;
+    if (val < 0) val = 0;
+    setRecord({
+      ...record,
+      score: val,
+    });
+  };
   return (
     <>
       <div className="container profile">
@@ -130,7 +208,10 @@ export const Progress = () => {
             <div className="title">Progress Monitoring</div>
             <div className="info">
               <div className="image">
-                <img src={Avatar} alt="avatar" />
+                <img
+                  src={API_URL + goals[index]?.student?.image}
+                  alt="avatar"
+                />
               </div>
               <div className="status">
                 <div className="status-info">
@@ -141,36 +222,47 @@ export const Progress = () => {
                   </div>
                 </div>
                 <div className="login-info">
-                  Last login: {moment(time).format("MMM. DD, YYYY hh:mm")}
+                  Last login:{" "}
+                  {goals[index]?.student?.last &&
+                    moment(goals[index]?.student?.last).format(
+                      "MMM. DD, YYYY hh:mm"
+                    )}
                 </div>
               </div>
             </div>
             <div className="user-info">
-              <div className="name">Melony Cartwright</div>
-              <div className="email">Melony.Cartwright@sjc.students.com</div>
+              <div className="name">{goals[index]?.student?.name}</div>
+              <div className="email">{goals[index]?.student?.email}</div>
             </div>
           </div>
           <div className="goal-details">
             <div className="detail">
               <div className="text">Parent</div>
-              <div className="value">Goal 1</div>
-              <div className="icon">
-                <DownArrow />
+              <div className="value">
+                <Select
+                  text="Goal "
+                  value={index + 1}
+                  options={goals?.map((item, index) => index + 1)}
+                  onChange={(val) => setIndex(val - 1)}
+                />
               </div>
             </div>
             <div className="detail col">
               <div className="text">Goal Name</div>
-              <div className="value">Reading Comprehension</div>
+              <div className="value">{goals[index]?.name}</div>
             </div>
             <div className="detail">
               <div className="text">Coin Value</div>
-              <div className="value">2</div>
+              <div className="value">{goals[index]?.student?.coin}</div>
             </div>
           </div>
           <div className="details">
             <div className="description">
               <div className="date">
-                Completion Date: {moment(new Date(end)).format("MM/DD/YYYY")}
+                Completion Date:{" "}
+                {moment(new Date(goals[index]?.end_date + " 01:00:00")).format(
+                  "MM/DD/YYYY"
+                )}
               </div>
               <div className="text">
                 Administration and or teacher identifies students who need more
@@ -183,9 +275,19 @@ export const Progress = () => {
 
             <div className="progress-line">
               <div className="line">
-                <div className="progress" style={{ width: "20%" }} />
+                <div
+                  className="progress"
+                  style={{
+                    width: getProgress(
+                      goals[index]?.start_date,
+                      goals[index]?.end_date
+                    ),
+                  }}
+                />
               </div>
-              <div className="text">20%</div>
+              <div className="text">
+                {getProgress(goals[index]?.start_date, goals[index]?.end_date)}
+              </div>
             </div>
           </div>
           <div className="btn complete" onClick={() => setOpen(true)}>
@@ -218,7 +320,9 @@ export const Progress = () => {
                 <div className="text">Entry Date From</div>
                 <div className="btn">
                   <div className="date">
-                    {moment(new Date(start)).format("MM/DD/YYYY")}
+                    {moment(
+                      new Date(goals[index]?.start_date + " 01:00:00")
+                    ).format("MM/DD/YYYY")}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -229,7 +333,9 @@ export const Progress = () => {
                 <div className="text">Entry Date To</div>
                 <div className="btn">
                   <div className="date">
-                    {moment(new Date(end)).format("MM/DD/YYYY")}
+                    {moment(
+                      new Date(goals[index]?.end_date + " 01:00:00")
+                    ).format("MM/DD/YYYY")}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -298,13 +404,7 @@ export const Progress = () => {
                 </div>
                 <div className="details">
                   <div className="text bold">Notes:</div>
-                  <div className="text">
-                    Administration and or teacher identifies students who need
-                    more intervention support than what the School wide Positive
-                    Behavior Intervention Support (PBIS) -a framework for
-                    supporting students’ behavioral, academic, ocial,emotional,
-                    and mental health can offer.
-                  </div>
+                  <div className="text">{select.note}</div>
                 </div>
               </div>
             </div>
@@ -312,10 +412,14 @@ export const Progress = () => {
           <div className="records">
             <div className="record-header">
               <div className="btn-group">
-                <div className="btn fill">Update</div>
-                <div className="btn">Undo</div>
+                <div className="btn fill" onClick={() => setModalOpen(true)}>
+                  Update
+                </div>
+                <div className="btn" onClick={Undo}>
+                  Undo
+                </div>
               </div>
-              <div className="btn">
+              <div className="btn" onClick={() => setModalOpen(true)}>
                 <div className="text">New Record</div>
                 <div className="icon">+</div>
               </div>
@@ -333,8 +437,8 @@ export const Progress = () => {
                 </div>
               </div>
               <div className="tbody">
-                {records.map((rec, index) => (
-                  <div className="row text-1 medium">
+                {goals[index]?.records.map((rec, index) => (
+                  <div className="row text-1 medium" key={index}>
                     <div className="select">
                       <input
                         type="radio"
@@ -350,9 +454,16 @@ export const Progress = () => {
                       )}
                     </div>
                     <div className="score">{rec.score.toFixed(4)}</div>
-                    <div className="notes">{rec.notes}</div>
+                    <div className="notes">{rec.note}</div>
                   </div>
                 ))}
+                <div className="row text-1 medium">
+                  <div className="select"></div>
+                  <div className="line"></div>
+                  <div className="date"></div>
+                  <div className="score"></div>
+                  <div className="notes"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -391,6 +502,54 @@ export const Progress = () => {
                   Cancel
                 </div>
                 <div className="btn confirm" onClick={() => confirm()}>
+                  Confirm
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {modalOpen && (
+        <>
+          <div className="panel" />
+          <div className="modal">
+            <div className="card">
+              <div className="header">
+                <div className="title">New Record</div>
+                <div className="btn" onClick={NewRecord}>
+                  Close
+                </div>
+              </div>
+              <div className="record">
+                <div className="score">
+                  <div className="text bold">Score</div>
+                  <input
+                    type="number"
+                    className="text"
+                    min={0}
+                    max={100}
+                    value={record?.score}
+                    onChange={(e) => handleChangeScore(e.target.value)}
+                  />
+                </div>
+                <div className="explain">
+                  <div className="text bold">Note</div>
+                  <textarea
+                    value={record?.note}
+                    onChange={(e) =>
+                      setRecord({ ...record, note: e.target.value })
+                    }
+                    placeholder="Explanation for Coins Earned"
+                  />
+                </div>
+              </div>
+
+              <div className="btn-group">
+                <div className="btn deny" onClick={() => setModalOpen(false)}>
+                  Cancel
+                </div>
+                <div className="btn confirm" onClick={() => addRecord()}>
                   Confirm
                 </div>
               </div>

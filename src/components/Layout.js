@@ -205,13 +205,13 @@ const Layout = ({ children, role, show, setShow }) => {
                   <StudentIcon />
                   <div className="text">Schools</div>
                 </Link>
-                <Link
+                {/* <Link
                   to="/messages"
                   className={location.pathname === "/messages" ? "active" : ""}
                 >
                   <MessageIcon />
                   <div className="text">Messages</div>
-                </Link>
+                </Link> */}
                 <Link
                   to="/rewards"
                   className={
@@ -271,13 +271,13 @@ const Layout = ({ children, role, show, setShow }) => {
                   <StudentIcon />
                   <div className="text">Teachers</div>
                 </Link>
-                <Link
+                {/* <Link
                   to="/messages"
                   className={location.pathname === "/messages" ? "active" : ""}
                 >
                   <MessageIcon />
                   <div className="text">Messages</div>
-                </Link>
+                </Link> */}
                 <Link
                   to="/rewards"
                   className={
@@ -315,57 +315,65 @@ const Layout = ({ children, role, show, setShow }) => {
                   <div className="circle second" />
                 </div>
               </div>
-              {location.pathname !== "/messages" && !show && (
-                <div className="messagebar" onClick={() => setShow(true)}>
-                  <div className="text bold">Message</div>
-                  <Link to="/messages">
-                    <div className="btn">
-                      <BiArrow />
-                    </div>
-                  </Link>
-                </div>
-              )}
+              {location.pathname !== "/messages" &&
+                role !== "admin" &&
+                role !== "school" &&
+                !show && (
+                  <div className="messagebar" onClick={() => setShow(true)}>
+                    <div className="text bold">Message</div>
+                    <Link to="/messages">
+                      <div className="btn">
+                        <BiArrow />
+                      </div>
+                    </Link>
+                  </div>
+                )}
             </div>
             {children}
           </div>
-          {location.pathname !== "/messages" && show && (
-            <div className="message-sidebar">
-              <div className="title" onClick={() => setShow(false)}>
-                Messages
-              </div>
+          {location.pathname !== "/messages" &&
+            role !== "admin" &&
+            role !== "school" &&
+            show && (
+              <div className="message-sidebar">
+                <div className="title" onClick={() => setShow(false)}>
+                  Messages
+                </div>
 
-              <div className="chat-container">
-                <div className="users">
-                  <div className="user-group">
-                    <div className="user">
-                      <div className="name small-text medium">Student</div>
-                      <div className="icon">
-                        <DownArrow />
+                <div className="chat-container">
+                  <div className="users">
+                    <div className="user-group">
+                      <div className="user">
+                        <div className="name small-text medium">Student</div>
+                        <div className="icon">
+                          <DownArrow />
+                        </div>
+                      </div>
+                      <div className="user">
+                        <div className="name small-text medium">
+                          Johannes Bro
+                        </div>
+                        <div className="icon">
+                          <DownArrow />
+                        </div>
                       </div>
                     </div>
-                    <div className="user">
-                      <div className="name small-text medium">Johannes Bro</div>
-                      <div className="icon">
-                        <DownArrow />
+                    <Link to="/messages">
+                      <div className="btn">
+                        <BiArrow />
                       </div>
-                    </div>
+                    </Link>
                   </div>
-                  <Link to="/messages">
+                  <div className="messages"></div>
+                  <div className="chat">
+                    <input type="text" placeholder="Type a new message" />
                     <div className="btn">
-                      <BiArrow />
+                      <div className="icon message" />
                     </div>
-                  </Link>
-                </div>
-                <div className="messages"></div>
-                <div className="chat">
-                  <input type="text" placeholder="Type a new message" />
-                  <div className="btn">
-                    <div className="icon message" />
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </>
       ) : (
         <>{children}</>

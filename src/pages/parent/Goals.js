@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
-import { goals } from "../../utils";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "../../utils";
 
 export const Goals = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [goals, setGoals] = useState([]);
+  const [filterGoals, setFilterGoals] = useState([]);
+  /* eslint-disable */
+  useEffect(() => {
+    axios.get(API_URL + "/goal/?user=" + user.user).then((res) => {
+      setGoals(res.data);
+      setFilterGoals(res.data);
+    });
+  }, []);
+  /* eslint-enable */
+
+  const search = (e) => {
+    const term = e.target.value;
+    setFilterGoals(goals.filter((item) => item.name.startsWith(term)));
+  };
   return (
     <div className="container">
       <div className="header">
@@ -29,19 +46,25 @@ export const Goals = () => {
           </div>
         </div>
         <div className="search">
-          <input type="search" placeholder="Search for a goal" />
+          <input
+            type="search"
+            placeholder="Search for a goal"
+            onChange={search}
+          />
           <div className="btn">
             <Search />
           </div>
         </div>
-        {goals.map((goal) => (
-          <div className="goal">
+        {filterGoals.map((goal, index) => (
+          <div className="goal" key={index}>
             <div className="detail">
-              <div className="step">Goal {goal.step}</div>
+              <div className="step">Goal {index + 1}</div>
               <div className="name">{goal.name}</div>
             </div>
             <div className="action">
-              <div className="btn">Edit</div>
+              <Link to={"/goal/" + goal.id} className="btn">
+                Edit
+              </Link>
             </div>
           </div>
         ))}

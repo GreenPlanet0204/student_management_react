@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as Xout } from "../../assets/Icons/Xout - New Gray.svg";
 import { API_URL } from "../../utils";
 import axios from "axios";
 
 export const Reward = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
   const [reward, setReward] = useState({
     title: "",
     url: "",
     coin: "",
     image: null,
+    school: user.school,
     students: [],
   });
   const [students, setStudents] = useState([]);
@@ -50,6 +52,30 @@ export const Reward = () => {
     const filter = students.filter((item) => item.name.includes(term));
     setFilterStudents(filter);
   };
+
+  const Submit = async () => {
+    console.log("reward", reward);
+    try {
+      if (params.id) {
+        await axios.post(API_URL + "/reward/?id=" + params.id, reward, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else {
+        await axios.post(API_URL + "/reward/", reward, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      navigate("/rewards");
+    } catch {
+      console.error("error");
+    }
+  };
+
   return (
     <div className="container">
       <div className="header">
@@ -169,7 +195,9 @@ export const Reward = () => {
             ))}
           </div>
         </div>
-        <div className="submit">Submit</div>
+        <div className="submit" onClick={Submit}>
+          Submit
+        </div>
       </div>
     </div>
   );

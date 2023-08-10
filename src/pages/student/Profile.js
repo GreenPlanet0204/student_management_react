@@ -1,16 +1,24 @@
-import React, { useState } from "react";
-import Avatar from "../../assets/Images/avatar.jpg";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { goals, rewards } from "../../utils";
+import { API_URL, goals, rewards } from "../../utils";
+import axios from "axios";
 
 export const Profile = () => {
-  const time = new Date();
+  const [student, setStudent] = useState();
+  const user = JSON.parse(localStorage.getItem("user"));
   const [modal, setModal] = useState(false);
   const [select, setSelect] = useState("");
   const confirm = () => {
     setModal(false);
   };
+  /* eslint-disable */
+  useEffect(() => {
+    axios
+      .get(API_URL + "/student/?id=" + user.id)
+      .then((res) => setStudent(res.data));
+  }, []);
+  /* eslint-enable */
   return (
     <>
       <div className="container profile">
@@ -19,7 +27,7 @@ export const Profile = () => {
             <div className="title">My Progress</div>
             <div className="info">
               <div className="image">
-                <img src={Avatar} alt="avatar" />
+                <img src={API_URL + student?.image} alt="avatar" />
               </div>
               <div className="status">
                 <div className="status-info">
@@ -30,19 +38,23 @@ export const Profile = () => {
                   </div>
                 </div>
                 <div className="login-info">
-                  Last login: {moment(time).format("MMM. DD, YYYY hh:mm")}
+                  Last login:{" "}
+                  {student?.last &&
+                    moment(student.last).format("MMM. DD, YYYY hh:mm")}
                 </div>
               </div>
             </div>
             <div className="user-info">
-              <div className="name">Melony Cartwright</div>
-              <div className="email">Melony.Cartwright@sjc.students.com</div>
+              <div className="name">{student?.name}</div>
+              <div className="email">{student?.email}</div>
             </div>
           </div>
 
           <div className="coins">
             <div className="text">My Coins</div>
-            <div className={modal ? "circle active" : "circle"}>25</div>
+            <div className={modal ? "circle active" : "circle"}>
+              {student?.coin}
+            </div>
             <div className="redeem" onClick={() => setModal(true)}>
               Redeem
             </div>
@@ -51,30 +63,36 @@ export const Profile = () => {
             <div className="change">Change</div>
             <div className="row">
               <div className="text">Grade</div>
-              <div className="value">8th</div>
+              <div className="value">{student?.grade}</div>
             </div>
             <div className="row">
               <div className="text">Gender</div>
-              <div className="value">Female</div>
+              <div className="value">{student?.gender}</div>
             </div>
             <div className="row">
               <div className="text">Athlete</div>
-              <div className="value">Yes</div>
+              <div className="value">{student?.athlete ? "Yes" : "No"}</div>
             </div>
             <div className="row">
               <div className="text">College Bound</div>
-              <div className="value">Yes</div>
+              <div className="value">
+                {student?.college_bound ? "Yes" : "No"}
+              </div>
             </div>
             <div className="row">
               <div className="text">Workforce Bound</div>
-              <div className="value">No</div>
+              <div className="value">
+                {student?.college_bound ? "Yes" : "No"}
+              </div>
             </div>
             <div className="row interests">
               <div className="text">Interests</div>
               <div className="interests">
-                <div className="interest">Coding</div>
-                <div className="interest">Cooking</div>
-                <div className="interest">Biology</div>
+                {student?.interests.map((item, index) => (
+                  <div className="interest" key={index}>
+                    {item}
+                  </div>
+                ))}
                 <div className="plus">+</div>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export const Dashboard = ({ show }) => {
   const ref = useRef();
@@ -39,17 +40,25 @@ export const Dashboard = ({ show }) => {
         </div>
       </div>
       <div className="details parent" ref={ref}>
-        <div className="card">
-          <div className="btn">Setup Goals</div>
+        <div className="card mini">
+          <Link className="btn" to="/goals">
+            Setup Goals
+          </Link>
         </div>
-        <div className="card">
-          <div className="btn">Track Progress</div>
+        <div className="card mini">
+          <Link to="/tracking" className="btn">
+            Track Progress
+          </Link>
         </div>
-        <div className="card">
-          <div className="btn">My Student</div>
+        <div className="card mini">
+          <Link to="/students" className="btn">
+            My Student
+          </Link>
         </div>
-        <div className="card">
-          <div className="btn">Messages</div>
+        <div className="card mini">
+          <Link to="/messages" className="btn">
+            Messages
+          </Link>
         </div>
       </div>
     </div>

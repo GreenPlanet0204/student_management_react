@@ -5,7 +5,8 @@ import TV from "./assets/Images/TV.jpg";
 import Avatar from "./assets/Images/avatar.jpg";
 import axios from "axios";
 
-export const API_URL = "https://lobster-app-mhbu4.ondigitalocean.app";
+// export const API_URL = "https://lobster-app-mhbu4.ondigitalocean.app";
+export const API_URL = "http://127.0.0.1:8000";
 
 export const http = axios.create({
   baseURL: API_URL,

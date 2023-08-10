@@ -3,27 +3,38 @@ import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import Select from "../../components/Select";
 import { API_URL } from "../../utils";
 import DatePicker from "../../components/DatePicker";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 import GoalSelect from "../../components/GoalSelect";
 
 export const Goal = () => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const types = ["Behavioral", "Academic"];
 
   const [goal, setGoal] = useState({
-    start: "",
-    end: "",
+    start_date: "",
+    end_date: "",
     type: "Behavioral",
     score: "",
-    goal: "",
+    goal: null,
+    reporter: user?.user,
     student: "",
     name: "",
     responses: [],
   });
 
+  const [goals, setGoals] = useState([]);
   const [students, setStudents] = useState([]);
   const [filterStudents, setFilterStudents] = useState([]);
+  const [responses, setResponses] = useState([""]);
+  const init = {
+    start_date: "",
+    end_date: "",
+    student: "",
+  };
+  const [message, setMessage] = useState(init);
 
   const onChangeScore = (e) => {
     let val = e.target.value;
@@ -34,10 +45,7 @@ export const Goal = () => {
   };
 
   const NewResponse = () => {
-    const responses = document.getElementById("responses");
-    let html = responses.innerHTML;
-    html += '<textarea className="response" placeholder="Type Response" />';
-    responses.innerHTML = html;
+    setResponses([...responses, ""]);
   };
 
   const Search = (e) => {
@@ -50,7 +58,7 @@ export const Goal = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(API_URL + "/reward/?id=" + params.id).then((res) => {
+      axios.get(API_URL + "/goal/?id=" + params.id).then((res) => {
         setGoal({ ...res.data });
       });
     }
@@ -58,13 +66,42 @@ export const Goal = () => {
       setStudents(res.data);
       setFilterStudents(res.data);
     });
+    axios
+      .get(API_URL + "/goals/?user=" + user.user)
+      .then((res) => setGoals(res.data));
   }, []);
   /* eslint-enable */
 
-  const onChange = (item, index) => {
-    var responses = goal.responses;
-    responses[index] = item;
-    setGoal({ ...goal, responses: responses });
+  const Submit = async () => {
+    let messages = init;
+    if (goal.start_date) messages["start_date"] = "This field is required!";
+    if (goal.end_date) messages["end_date"] = "This field is required!";
+    if (goal.student) messages["student"] = "This field is required!";
+    setMessage(messages);
+    if (messages !== init) return;
+    try {
+      let data = goal;
+
+      if (goal.goal) {
+        data = { ...goal, responses: [], name: "" };
+      } else {
+        data = { ...goal, responses: responses };
+      }
+      data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
+      data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
+      await axios.post(API_URL + "/goal/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigate("/goals");
+    } catch {}
+  };
+
+  const onChange = (value, index) => {
+    let res = responses;
+    res[index] = value;
+    setResponses(res);
   };
 
   return (
@@ -76,18 +113,23 @@ export const Goal = () => {
         <div className="form-group">
           <div className="form-control">
             <div className="label">Goal Date From</div>
-            <DatePicker
-              value={goal.start}
-              max={goal.end}
-              onChange={(e) => setGoal({ ...goal, start: e.target.value })}
-            />
+            <div>
+              <DatePicker
+                value={goal.start_date}
+                max={goal.end_date}
+                onChange={(e) =>
+                  setGoal({ ...goal, start_date: e.target.value })
+                }
+              />
+              <div className="alert-message">{message.start_date}</div>
+            </div>
           </div>
           <div className="form-control">
             <div className="label">Goal Date To</div>
             <DatePicker
-              value={goal.end}
-              min={goal.start}
-              onChange={(e) => setGoal({ ...goal, start: e.target.value })}
+              value={goal.end_date}
+              min={goal.start_date}
+              onChange={(e) => setGoal({ ...goal, end_date: e.target.value })}
             />
           </div>
         </div>
@@ -125,39 +167,33 @@ export const Goal = () => {
         <div className="form-control">
           <div className="label">Goal Bank</div>
           <GoalSelect
-            value={goal.bank}
+            value={goal.goal}
+            options={goals}
             placeholder="Select Goal"
-            onChange={(val) => setGoal({ ...goal, student: val })}
+            onChange={(val) => setGoal({ ...goal, goal: val })}
           />
         </div>
         <div className="or">Or</div>
         <div className="form-control">
           <div className="label">Goal</div>
-          <textarea className="goal" placeholder="Goal" />
+          <textarea
+            className="goal"
+            placeholder="Goal"
+            value={goal.name}
+            onChange={(e) => setGoal({ ...goal, name: e.target.value })}
+          />
         </div>
 
         <div className="form-control" id="responses">
           <div className="label">Responses</div>
-          {goal.responses?.map((item, index) => (
+          {responses.map((response, index) => (
             <textarea
               className="response"
               placeholder="Type Response"
-              value={item}
-              onChange={() => onChange(item, index)}
+              value={response}
+              onChange={(e) => onChange(e.target.value, index)}
             />
           ))}
-          {goal.responses?.length > 0 && (
-            <textarea
-              className="response"
-              placeholder="Type Response"
-              onChange={(e) =>
-                setGoal({
-                  ...goal,
-                  responses: [...goal.responses, e.target.value],
-                })
-              }
-            />
-          )}
         </div>
         <div className="btn response" onClick={NewResponse}>
           <div className="text">New Response</div>
@@ -210,7 +246,9 @@ export const Goal = () => {
             ))}
           </div>
         </div>
-        <div className="submit">Submit</div>
+        <div className="submit" onClick={Submit}>
+          Submit
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { ReactComponent as XIcon } from "../assets/Icons/X.svg";
 
-const DatePicker = ({ min = "", max = "", value, onChange }) => {
+const DatePicker = ({ min = "", max = "", value = "", onChange }) => {
   const ref = useRef();
   const ref2 = useRef();
   return (

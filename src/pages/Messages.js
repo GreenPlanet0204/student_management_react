@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as MessageIcon } from "../assets/Icons/Messages.svg";
 import Avatar from "../assets/Images/avatar.jpg";
 
@@ -8,15 +8,18 @@ const Messages = () => {
   const [students, setStudents] = useState([]);
   const [parents, setParents] = useState([]);
   const [teachers, setTeachers] = useState([]);
+
   const Chat = () => {
     console.log("message", message);
     setMessage("");
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       Chat();
     }
   };
+
   return (
     <div className="container messages">
       <div className="card messages">

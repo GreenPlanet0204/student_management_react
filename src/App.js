@@ -50,6 +50,8 @@ import { Dashboard as StudentDashboard } from "./pages/student/Dashboard";
 import { Profile as StudentProfile } from "./pages/student/Profile";
 import { Goals as StudentGoals } from "./pages/student/Goals";
 import { Rewards as StudentRewards } from "./pages/student/Rewards";
+import { Messages as StudentMessages } from "./pages/student/Messages";
+
 import axios from "axios";
 import { API_URL } from "./utils";
 
@@ -85,7 +87,7 @@ function App() {
     <Layout role={role} show={show} setShow={setShow}>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/messages" element={<Messages />} />
+        {/* <Route path="/messages" element={<Messages />} /> */}
       </Routes>
       {role === "teacher" && (
         <Routes>
@@ -100,7 +102,7 @@ function App() {
           <Route path="/reward/:id" element={<TeacherReward />} />
           <Route path="/tracking" element={<TeacherTracking />} />
           <Route path="/student/:id" element={<TeacherProfile />} />
-          <Route path="/student/:id/progress" element={<TeacherProgress />} />
+          <Route path="/progress/:id" element={<TeacherProgress />} />
         </Routes>
       )}
       {role === "parent" && (
@@ -108,10 +110,11 @@ function App() {
           <Route exact path="/" element={<ParentDashboard />} />
           <Route path="/goals" element={<ParentGoals />} />
           <Route path="/goal" element={<ParentGoal />} />
+          <Route path="/goal/:id" element={<ParentGoal />} />
           <Route path="/tracking" element={<ParentProgress />} />
           <Route path="/students" element={<ParentStudents />} />
           <Route path="/student/:id" element={<ParentProfile />} />
-          <Route path="/student/:id/progress" element={<ParentProgress />} />
+          <Route path="/progress/:id" element={<ParentProgress />} />
         </Routes>
       )}
       {role === "student" && (
@@ -120,6 +123,7 @@ function App() {
           <Route path="/progress" element={<StudentProfile />} />
           <Route path="/goals" element={<StudentGoals />} />
           <Route path="/rewards" element={<StudentRewards />} />
+          <Route path="/messages" element={<StudentMessages />} />
         </Routes>
       )}
       {role === "admin" && (

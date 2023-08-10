@@ -1,7 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 
-const Select = ({ value = "", options = [], onChange, placeholder = "" }) => {
+const Select = ({
+  value = "",
+  text = "",
+  options = [],
+  onChange,
+  placeholder = "",
+}) => {
   const ref = useRef();
   const [open, setOpen] = useState(false);
 
@@ -27,7 +33,7 @@ const Select = ({ value = "", options = [], onChange, placeholder = "" }) => {
       <input
         type="text"
         className="text"
-        value={value}
+        value={text + value}
         disabled
         placeholder={placeholder}
       />
@@ -39,7 +45,7 @@ const Select = ({ value = "", options = [], onChange, placeholder = "" }) => {
         <div className="details">
           {options.map((option, index) => (
             <div className="text" onClick={() => onChange(option)} key={index}>
-              {option}
+              {text + option}
             </div>
           ))}
         </div>

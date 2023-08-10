@@ -1,25 +1,42 @@
-import React from "react";
-import { students } from "../../utils";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
+import { API_URL } from "../../utils";
+import axios from "axios";
 
 export const Tracking = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [students, setStudents] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [coins, setCoins] = useState(0);
   const getColor = (point) => {
-    if (point === 3) {
-      return "#F4B200";
-    } else if (point < 3) {
-      return "#913A7E";
-    } else {
-      return "#CCCC00";
-    }
+    // if (point === 3) {
+    return "#F4B200";
+    // } else if (point < 3) {
+    //   return "#913A7E";
+    // } else {
+    //   return "#CCCC00";
+    // }
   };
+  /* eslint-disable */
+  useEffect(() => {
+    axios.get(API_URL + "/student/?teacher=" + user.id).then((res) => {
+      setStudents(res.data);
+      let val = 0;
+      res.data.map((item) => (val += item.coin));
+      setCoins(val);
+    });
+    axios.get(API_URL + "/goal/?user=" + user.user).then((res) => {
+      setGoals(res.data);
+    });
+  }, []);
+  /* eslint-enable */
   const pieData = students.map((student) => ({
     name: student.name,
-    value: student.value,
+    value: student.coin,
   }));
   const COLORS = ["#CCCC00", "#913A7E", "#CCCC00", "#F4B200"];
   const COLORS1 = ["#F4B200", "#913A7E", "#F4B200", "#003595"];
   const COLORS2 = ["#003595", "#913A7E", "#003595", "#F4B200"];
-  console.log("data", pieData);
   return (
     <div className="container tracking">
       <div className="blue text">
@@ -33,11 +50,11 @@ export const Tracking = () => {
       <div className="category">
         <div className="card students">
           <div className="label">Students</div>
-          <div className="number">4</div>
+          <div className="number">{students.length}</div>
         </div>
         <div className="card goals">
           <div className="label">Goals</div>
-          <div className="number">45</div>
+          <div className="number">{goals.length}</div>
         </div>
       </div>
       <div className="details">
@@ -49,23 +66,25 @@ export const Tracking = () => {
               <div className="label">Coins Earned</div>
             </div>
             <div className="divider" />
-            {students.map((student) => (
-              <div className="row">
+            {students.map((student, index) => (
+              <div className="row" key={index}>
                 <div className="name">{student.name}</div>
 
                 <div
                   className="result"
-                  style={{ color: getColor(student.earned) }}
+                  style={{ color: getColor(student.coin) }}
                 >
                   <div className="line">
                     <div
                       className="progress"
                       style={{
-                        width: 100 * (student.earned / 5) + "%",
+                        width: 100 * (student.coin / coins) + "%",
                       }}
                     />
                   </div>
-                  <div className="text">{student.earned} of 40</div>
+                  <div className="text">
+                    {student.coin} of {coins}
+                  </div>
                 </div>
               </div>
             ))}
