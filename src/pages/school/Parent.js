@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import Password from "../../components/Password";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Parent = () => {
   const user = JSON.parse(localStorage.getItem("user"));

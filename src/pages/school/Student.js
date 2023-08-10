@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import Password from "../../components/Password";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import axios from "axios";

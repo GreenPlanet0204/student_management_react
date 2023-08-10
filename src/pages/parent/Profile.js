@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import Avatar from "../../assets/Images/avatar.jpg";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { goals, rewards } from "../../utils";
+import { goals, rewards } from "../../utils/constants";
 
 export const Profile = () => {
   const time = new Date();
+  const [goals, setGoals] = useState([]);
+  const [records, setRecords] = useState([]);
+  const [rewards, setRewards] = useState([]);
   const [modal, setModal] = useState(false);
   const [select, setSelect] = useState("");
   const confirm = () => {

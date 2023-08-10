@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import Select from "../../components/Select";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import DatePicker from "../../components/DatePicker";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";

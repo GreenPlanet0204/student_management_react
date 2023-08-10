@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { ServerURL.BASE_URL, goals, rewards } from "../../utils";
+import ServerURL from "../../utils/constants";
 import axios from "axios";
 
 export const Profile = () => {
+  const rewards = [];
+  const goals = [];
   const [student, setStudent] = useState();
   const user = JSON.parse(localStorage.getItem("user"));
   const [modal, setModal] = useState(false);

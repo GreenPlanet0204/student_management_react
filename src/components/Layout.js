@@ -8,7 +8,7 @@ import { ReactComponent as TrackingIcon } from "../assets/Icons/Tracking.svg";
 import { ReactComponent as BiArrow } from "../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 import { useLocation, Link } from "react-router-dom";
-import ServerURL from "../utils";
+import ServerURL from "../utils/constants";
 
 const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();

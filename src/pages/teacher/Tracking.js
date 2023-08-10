@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import axios from "axios";
 
 export const Tracking = () => {

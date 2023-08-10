@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as MessageIcon } from "../assets/Icons/Messages.svg";
 import Avatar from "../assets/Images/avatar.jpg";
+import ServerURL from "../utils/constants";
+const user = JSON.parse(localStorage.getItem("user"));
 
-let socket = new WebSocket();
+let socket = new WebSocket(
+  ServerURL.WS_BASE_URL + `/ws/users/${user.id}/chat/`
+);
+let typingTimer = 0;
+let isTypingSignalSent = false;
 
-const Messages = () => {
-  const role = localStorage.getItem("role");
+const Messages = ({ match }) => {
+  const role = user.role;
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState({});
+  const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState([]);
   const [parents, setParents] = useState([]);
-  const [teachers, setTeachers] = useState([]);
+  const [typing, setTyping] = useState(false);
+  const [currentChattingMember, setCurrentChattingMember] = useState({});
+  const [onlineUserList, setOnlineUserList] = useState([]);
+
+  const fetchChatMessage = async () => {};
 
   const Chat = () => {
-    console.log("message", message);
+    console.log("message", messages);
     setMessage("");
   };
 

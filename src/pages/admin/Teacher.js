@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select from "../../components/Select";
 import MultiSelect from "../../components/MultiSelect";
 import Password from "../../components/Password";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import axios from "axios";
 import UserSelect from "../../components/UserSelect";
 import MultiUserSelect from "../../components/MultiUserSelect";

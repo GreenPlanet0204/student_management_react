@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 import { ReactComponent as XIcon } from "../assets/Icons/X.svg";
-import ServerURL from "../utils";
+import ServerURL from "../utils/constants";
 
 const MultiUserSelect = ({
   values = [],

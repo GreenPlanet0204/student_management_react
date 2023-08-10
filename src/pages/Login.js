@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as Logo } from "../assets/Icons/Logo.svg";
 import axios from "axios";
-import ServerURL from "../utils";
+import ServerURL from "../utils/constants";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

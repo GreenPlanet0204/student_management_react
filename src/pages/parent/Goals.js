@@ -3,7 +3,7 @@ import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 
 export const Goals = () => {
   const user = JSON.parse(localStorage.getItem("user"));

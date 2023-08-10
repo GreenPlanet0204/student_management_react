@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as Xout } from "../../assets/Icons/Xout - New Gray.svg";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import axios from "axios";
 
 export const Reward = () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import { Link } from "react-router-dom";
-import ServerURL from "../../utils";
+import ServerURL from "../../utils/constants";
 import axios from "axios";
 
 export const Rewards = () => {
