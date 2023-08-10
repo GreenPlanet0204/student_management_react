@@ -19,7 +19,7 @@ export const Dashboard = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?id=" + user.id).then((res) => {
+    axios.get(API_URL + "/student/?id=" + user.profile.id).then((res) => {
       setStudent(res.data);
       fetch(res.data.goals);
     });

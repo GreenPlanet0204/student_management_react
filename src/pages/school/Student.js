@@ -20,7 +20,7 @@ export const Student = () => {
     interests: [],
     password: "",
     confirm: "",
-    school: user.id,
+    school: user.profile.id,
     teachers: [],
     role: "student",
   });
@@ -96,7 +96,7 @@ export const Student = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/teacher/?school=" + user.id).then((res) => {
+    axios.get(API_URL + "/teacher/?school=" + user.profile.id).then((res) => {
       setTeachers(res.data);
     });
   }, []);

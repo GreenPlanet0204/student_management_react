@@ -95,9 +95,9 @@ export const Tracking = () => {
               {data.map((item, index) => (
                 <div className="item school" key={index}>
                   <div className="image">
-                    <img src={API_URL + item.school?.image} alt="School" />
+                    <img src={API_URL + item?.school?.image} alt="School" />
                   </div>
-                  <div className="name">{item.school?.name}</div>
+                  <div className="name">{item?.school?.name}</div>
                 </div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export const Tracking = () => {
               <div className="label">Teacher Count</div>
               {data.map((item, index) => (
                 <div className="item" key={index}>
-                  {item.teachers?.length}
+                  {item.teachers}
                 </div>
               ))}
             </div>
@@ -127,7 +127,7 @@ export const Tracking = () => {
               <div className="label">Student Count</div>
               {data.map((item, index) => (
                 <div className="item" key={index}>
-                  {item.students?.length}
+                  {item?.students}
                 </div>
               ))}
             </div>
@@ -146,7 +146,7 @@ export const Tracking = () => {
                 <div className="label">Used</div>
                 {data.map((item, index) => (
                   <div className="item" key={index}>
-                    {item.students?.length}
+                    {item.students}
                   </div>
                 ))}
               </div>
@@ -157,7 +157,8 @@ export const Tracking = () => {
               <div className="label">Last Active</div>
               {data.map((item, index) => (
                 <div className="item" key={index}>
-                  {item.last && moment(item.last).format("MM/DD/YYYY")}
+                  {item.last_login &&
+                    moment(item.last_login).format("MM/DD/YYYY")}
                 </div>
               ))}
             </div>

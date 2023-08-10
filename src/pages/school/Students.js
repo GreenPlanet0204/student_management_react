@@ -9,7 +9,7 @@ export const Students = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get(API_URL + "/student/?school=" + user.id)
+      .get(API_URL + "/student/?school=" + user.profile.id)
       .then((res) => setStudents(res.data));
   }, []);
   /* eslint-enable */

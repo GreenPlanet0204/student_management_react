@@ -19,7 +19,7 @@ export const Tracking = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?teacher=" + user.id).then((res) => {
+    axios.get(API_URL + "/student/?teacher=" + user.profile.id).then((res) => {
       setStudents(res.data);
       let val = 0;
       res.data.map((item) => (val += item.coin));

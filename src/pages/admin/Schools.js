@@ -8,7 +8,6 @@ export const Schools = () => {
 
   const fetchData = async () => {
     axios.get(API_URL + "/school/").then((res) => {
-      console.log("res", res.data);
       setSchools(res.data);
     });
   };
@@ -50,7 +49,7 @@ export const Schools = () => {
             <div className="label">Student Count</div>
             {schools.map((school, index) => (
               <div className="item" key={index}>
-                {school.students.length}
+                {school.students}
               </div>
             ))}
           </div>

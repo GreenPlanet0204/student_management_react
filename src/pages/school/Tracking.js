@@ -14,7 +14,7 @@ export const Tracking = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get(`${API_URL}/${tab}/?school=${user.id}`)
+      .get(`${API_URL}/${tab}/?school=${user.profile.id}`)
       .then((res) => setData(res.data));
   }, [tab]);
   /* eslint-enable */

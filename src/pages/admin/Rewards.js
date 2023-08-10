@@ -62,7 +62,7 @@ export const Rewards = () => {
             <div className="label">Used</div>
             {rewards.map((reward, index) => (
               <div className="item" key={index}>
-                {reward.students.length}
+                {reward.students}
               </div>
             ))}
           </div>

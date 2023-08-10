@@ -8,7 +8,7 @@ export const Teachers = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get(API_URL + "/teacher/?school=" + user.id)
+      .get(API_URL + "/teacher/?school=" + user.profile.id)
       .then((res) => setTeachers(res.data));
   }, []);
   return (
@@ -37,7 +37,7 @@ export const Teachers = () => {
             <div className="label">Student Count</div>
             {teachers.map((teacher, index) => (
               <div className="item" key={index}>
-                {teacher.students?.length}
+                {teacher.students}
               </div>
             ))}
           </div>

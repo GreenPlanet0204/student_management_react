@@ -21,7 +21,7 @@ export const Teacher = () => {
     gender: "male",
     password: "",
     confirm: "",
-    school: user.id,
+    school: user.profile.id,
     students: [],
   });
 
@@ -75,7 +75,7 @@ export const Teacher = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?school=" + user.id).then((res) => {
+    axios.get(API_URL + "/student/?school=" + user.profile.id).then((res) => {
       setStudents(res.data);
     });
   }, []);

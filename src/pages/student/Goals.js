@@ -12,9 +12,11 @@ export const Goals = () => {
   const [teacher, setTeacher] = useState();
 
   const fetchData = async () => {
-    const res1 = await axios.get(API_URL + "/goal/?student=" + user.id);
+    const res1 = await axios.get(API_URL + "/goal/?student=" + user.profile.id);
     setGoals(res1.data);
-    const res2 = await axios.get(API_URL + "/teacher/?student=" + user.id);
+    const res2 = await axios.get(
+      API_URL + "/teacher/?student=" + user.profile.id
+    );
     setTeachers(res2.data);
     if (res2.data && res2.data.length > 0) {
       setTeacher(res2.data[0].user);

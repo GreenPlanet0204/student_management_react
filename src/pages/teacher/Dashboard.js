@@ -20,7 +20,7 @@ export const Dashboard = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/student/?teacher=" + user.id)
+      .get(API_URL + "/student/?teacher=" + user.profile.id)
       .then((res) => setStudents(res.data));
   }, []);
 

@@ -11,7 +11,7 @@ export const Rewards = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/reward/?school=" + user.id)
+      .get(API_URL + "/reward/?school=" + user.profile.id)
       .then((res) => setRewards(res.data));
   }, []);
   /* eslint-enable */
@@ -66,7 +66,7 @@ export const Rewards = () => {
             <div className="label">Used</div>
             {rewards.map((reward, index) => (
               <div className="item" key={index}>
-                {reward.students.length}
+                {reward.students}
               </div>
             ))}
           </div>

@@ -15,7 +15,7 @@ export const Profile = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/student/?id=" + user.id)
+      .get(API_URL + "/student/?id=" + user.profile.id)
       .then((res) => setStudent(res.data));
   }, []);
   /* eslint-enable */
