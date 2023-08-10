@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import Password from "../../components/Password";
 import UserSelect from "../../components/UserSelect";
 import MultiUserSelect from "../../components/MultiUserSelect";
@@ -87,7 +87,7 @@ export const Student = () => {
         ...student,
         interests: JSON.stringify(student.interests),
       };
-      await axios.post(API_URL + "/student/", data, {
+      await axios.post(ServerURL.BASE_URL + "/student/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -99,10 +99,10 @@ export const Student = () => {
   };
   /* eslint-enable */
   useEffect(() => {
-    axios.get(API_URL + "/school/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
       setSchools(res.data);
     });
-    axios.get(API_URL + "/teacher/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/teacher/").then((res) => {
       setTeachers(res.data);
       setFilterTeachers(res.data);
     });
@@ -111,15 +111,17 @@ export const Student = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(API_URL + "/student/?id=" + params.id).then((res) => {
-        const data = {
-          ...res.data,
-          school: res.data.school.id,
-          teachers: res.data.teachers.map((item) => item.id),
-        };
+      axios
+        .get(ServerURL.BASE_URL + "/student/?id=" + params.id)
+        .then((res) => {
+          const data = {
+            ...res.data,
+            school: res.data.school.id,
+            teachers: res.data.teachers.map((item) => item.id),
+          };
 
-        setStudent(data);
-      });
+          setStudent(data);
+        });
     }
   }, [params.id]);
   /* eslint-disable */
@@ -180,7 +182,7 @@ export const Student = () => {
             <img
               src={
                 typeof student.image === "string"
-                  ? API_URL + student.image
+                  ? ServerURL.BASE_URL + student.image
                   : URL.createObjectURL(student.image)
               }
               alt="Student"

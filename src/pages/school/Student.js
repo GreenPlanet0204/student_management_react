@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import Password from "../../components/Password";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import axios from "axios";
@@ -84,7 +84,7 @@ export const Student = () => {
         ...student,
         interests: JSON.stringify(student.interests),
       };
-      await axios.post(API_URL + "/student/", data, {
+      await axios.post(ServerURL.BASE_URL + "/student/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -96,9 +96,11 @@ export const Student = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/teacher/?school=" + user.profile.id).then((res) => {
-      setTeachers(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/teacher/?school=" + user.profile.id)
+      .then((res) => {
+        setTeachers(res.data);
+      });
   }, []);
   /* eslint-enable */
   return (
@@ -152,7 +154,7 @@ export const Student = () => {
             <img
               src={
                 typeof student.image === "string"
-                  ? API_URL + student.image
+                  ? ServerURL.BASE_URL + student.image
                   : URL.createObjectURL(student.image)
               }
               alt="Student"

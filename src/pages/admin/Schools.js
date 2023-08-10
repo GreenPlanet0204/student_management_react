@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 
 export const Schools = () => {
   const [schools, setSchools] = useState([]);
 
   const fetchData = async () => {
-    axios.get(API_URL + "/school/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
       setSchools(res.data);
     });
   };
@@ -31,7 +31,7 @@ export const Schools = () => {
             {schools.map((school, index) => (
               <div className="item names" key={index}>
                 <div className="image">
-                  <img src={API_URL + school.image} alt="School" />
+                  <img src={ServerURL.BASE_URL + school.image} alt="School" />
                 </div>
                 <div className="name">{school.name}</div>
               </div>

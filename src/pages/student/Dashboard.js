@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 import moment from "moment";
 import Select from "../../components/Select";
@@ -19,10 +19,12 @@ export const Dashboard = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?id=" + user.profile.id).then((res) => {
-      setStudent(res.data);
-      fetch(res.data.goals);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/student/?id=" + user.profile.id)
+      .then((res) => {
+        setStudent(res.data);
+        fetch(res.data.goals);
+      });
   }, []);
 
   useEffect(() => {

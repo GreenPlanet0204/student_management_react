@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import { Link } from "react-router-dom";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 
 export const Rewards = () => {
@@ -11,7 +11,7 @@ export const Rewards = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/reward/?school=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.id)
       .then((res) => setRewards(res.data));
   }, []);
   /* eslint-enable */
@@ -48,7 +48,7 @@ export const Rewards = () => {
             {rewards.map((reward, index) => (
               <div className="item names" key={index}>
                 <div className="image reward">
-                  <img src={API_URL + reward.image} alt="reward" />
+                  <img src={ServerURL.BASE_URL + reward.image} alt="reward" />
                 </div>
                 <div className="name">{reward.title}</div>
               </div>

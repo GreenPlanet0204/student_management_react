@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 
 export const Tracking = () => {
@@ -8,24 +8,20 @@ export const Tracking = () => {
   const [students, setStudents] = useState([]);
   const [goals, setGoals] = useState([]);
   const [coins, setCoins] = useState(0);
-  const getColor = (point) => {
-    // if (point === 3) {
+  const getColor = () => {
     return "#F4B200";
-    // } else if (point < 3) {
-    //   return "#913A7E";
-    // } else {
-    //   return "#CCCC00";
-    // }
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?teacher=" + user.profile.id).then((res) => {
-      setStudents(res.data);
-      let val = 0;
-      res.data.map((item) => (val += item.coin));
-      setCoins(val);
-    });
-    axios.get(API_URL + "/goal/?user=" + user.user).then((res) => {
+    axios
+      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
+      .then((res) => {
+        setStudents(res.data);
+        let val = 0;
+        res.data.map((item) => (val += item.coin));
+        setCoins(val);
+      });
+    axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
       setGoals(res.data);
     });
   }, []);

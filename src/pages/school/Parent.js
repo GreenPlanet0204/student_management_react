@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import Password from "../../components/Password";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Parent = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -56,7 +56,7 @@ export const Parent = () => {
     e.preventDefault();
     await require();
     try {
-      await axios.post(API_URL + "/parent/", parent, {
+      await axios.post(ServerURL.BASE_URL + "/parent/", parent, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -68,9 +68,11 @@ export const Parent = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?school=" + user.profile.id).then((res) => {
-      setStudents(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
+      .then((res) => {
+        setStudents(res.data);
+      });
   }, []);
   /* eslint-enable */
 
@@ -113,7 +115,7 @@ export const Parent = () => {
             <img
               src={
                 typeof parent.image === "string"
-                  ? API_URL + parent.image
+                  ? ServerURL.BASE_URL + parent.image
                   : URL.createObjectURL(parent.image)
               }
               alt="Student"

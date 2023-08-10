@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import axios from "axios";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 
 export const Rewards = () => {
   const [rewards, setRewards] = useState([]);
 
   useEffect(() => {
-    axios.get(API_URL + "/reward/").then((res) => setRewards(res.data));
+    axios
+      .get(ServerURL.BASE_URL + "/reward/")
+      .then((res) => setRewards(res.data));
   }, []);
   return (
     <div className="container rewards">
@@ -39,7 +41,7 @@ export const Rewards = () => {
             <div className="reward" key={index}>
               <div className="detail">
                 <div className="image">
-                  <img src={API_URL + reward.image} alt="reward" />
+                  <img src={ServerURL.BASE_URL + reward.image} alt="reward" />
                 </div>
                 <div className="name">{reward.title}</div>
                 <div className="coin">

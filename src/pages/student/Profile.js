@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { API_URL, goals, rewards } from "../../utils";
+import { ServerURL.BASE_URL, goals, rewards } from "../../utils";
 import axios from "axios";
 
 export const Profile = () => {
@@ -15,7 +15,7 @@ export const Profile = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/student/?id=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?id=" + user.profile.id)
       .then((res) => setStudent(res.data));
   }, []);
   /* eslint-enable */
@@ -27,7 +27,7 @@ export const Profile = () => {
             <div className="title">My Progress</div>
             <div className="info">
               <div className="image">
-                <img src={API_URL + student?.image} alt="avatar" />
+                <img src={ServerURL.BASE_URL + student?.image} alt="avatar" />
               </div>
               <div className="status">
                 <div className="status-info">
@@ -39,8 +39,8 @@ export const Profile = () => {
                 </div>
                 <div className="login-info">
                   Last login:{" "}
-                  {student?.last &&
-                    moment(student.last).format("MMM. DD, YYYY hh:mm")}
+                  {student?.last_login &&
+                    moment(student.last_login).format("MMM. DD, YYYY hh:mm")}
                 </div>
               </div>
             </div>

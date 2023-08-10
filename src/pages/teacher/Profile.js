@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Select from "../../components/Select";
@@ -21,7 +21,7 @@ export const Profile = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?id=" + params.id).then((res) => {
+    axios.get(ServerURL.BASE_URL + "/student/?id=" + params.id).then((res) => {
       setStudent(res.data);
       const data = res.data.goals;
       setGoals(data?.filter((item) => item.type === type));
@@ -32,7 +32,7 @@ export const Profile = () => {
       );
     });
     axios
-      .get(API_URL + "/reward/?school=" + user.school)
+      .get(ServerURL.BASE_URL + "/reward/?school=" + user.school)
       .then((res) => setRewards(res.data));
   }, []);
 
@@ -51,7 +51,7 @@ export const Profile = () => {
             <div className="title">Student Profile</div>
             <div className="info">
               <div className="image">
-                <img src={API_URL + student.image} alt="avatar" />
+                <img src={ServerURL.BASE_URL + student.image} alt="avatar" />
               </div>
               <div className="status">
                 <div className="status-info">
@@ -155,7 +155,10 @@ export const Profile = () => {
                 {rewards?.map((reward, index) => (
                   <div className="reward" key={index}>
                     <div className="image">
-                      <img src={API_URL + reward.image} alt="reward" />
+                      <img
+                        src={ServerURL.BASE_URL + reward.image}
+                        alt="reward"
+                      />
                     </div>
                     <div className="mark">{reward.coin}</div>
                   </div>
@@ -213,7 +216,10 @@ export const Profile = () => {
                   {rewards.map((reward) => (
                     <div className="reward" onClick={() => setSelect(reward)}>
                       <div className="image">
-                        <img src={API_URL + reward.image} alt="reward" />
+                        <img
+                          src={ServerURL.BASE_URL + reward.image}
+                          alt="reward"
+                        />
                       </div>
                       {select === reward && (
                         <div className="selected">Selected</div>

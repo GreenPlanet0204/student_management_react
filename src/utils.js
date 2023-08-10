@@ -5,12 +5,7 @@ import TV from "./assets/Images/TV.jpg";
 import Avatar from "./assets/Images/avatar.jpg";
 import axios from "axios";
 
-// export const API_URL = "https://lobster-app-mhbu4.ondigitalocean.app";
-export const API_URL = "http://127.0.0.1:8000";
-
-export const http = axios.create({
-  baseURL: API_URL,
-});
+// export const ServerURL.BASE_URL = "https://lobster-app-mhbu4.ondigitalocean.app";
 
 export const students = [
   {
@@ -110,33 +105,7 @@ export const rewards = [
   { image: TV, name: "Samsung TV", coins: 35 },
 ];
 
-export const records = [
-  {
-    id: 1,
-    date: "2023-04-01",
-    score: 51,
-    notes:
-      "Administration and or teacher identifies students who need more intervention support than what the School wide Positive Behavior",
-  },
-  {
-    id: 2,
-    date: "2023-05-01",
-    score: 49,
-    notes:
-      "Administration and or teacher identifies students who need more intervention support than what the School wide Positive Behavior",
-  },
-  {
-    id: 3,
-    date: "2023-05-28",
-    score: 49,
-    notes:
-      "Administration and or teacher identifies students who need more intervention support than what the School wide Positive Behavior",
-  },
-  {
-    id: 4,
-    date: "2023-06-02",
-    score: 49,
-    notes:
-      "Administration and or teacher identifies students who need more intervention support than what the School wide Positive Behavior",
-  },
-];
+export default ServerURL = {
+  BASE_URL: "http://127.0.0.1:8000",
+  WS_BASE_URL: "ws://127.0.0.1:8000",
+};

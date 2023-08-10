@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 export const Goals = () => {
-  const teacher = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
   const [type, setType] = useState("Behavioral");
   const [goals, setGoals] = useState([]);
   const [filterGoals, setFilterGoals] = useState([]);
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/goal/?user=" + teacher.user).then((res) => {
+    axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
       setGoals(res.data);
       setFilterGoals(res.data.filter((item) => item.type === type));
     });

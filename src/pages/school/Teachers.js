@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 
 export const Teachers = () => {
@@ -8,7 +8,7 @@ export const Teachers = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get(API_URL + "/teacher/?school=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/teacher/?school=" + user.profile.id)
       .then((res) => setTeachers(res.data));
   }, []);
   return (
@@ -27,7 +27,7 @@ export const Teachers = () => {
             {teachers.map((teacher, index) => (
               <div className="item names" key={index}>
                 <div className="image">
-                  <img src={API_URL + teacher.image} alt="Teacher" />
+                  <img src={ServerURL.BASE_URL + teacher.image} alt="Teacher" />
                 </div>
                 <div className="name">{teacher.name}</div>
               </div>

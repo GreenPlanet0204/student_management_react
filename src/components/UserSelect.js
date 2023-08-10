@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
-import { API_URL } from "../utils";
+import ServerURL from "../utils";
 
 const UserSelect = ({
   value = "",
@@ -35,7 +35,10 @@ const UserSelect = ({
           <div className="image">
             {options.find((item) => item.id === value)?.image && (
               <img
-                src={API_URL + options.find((item) => item.id === value).image}
+                src={
+                  ServerURL.BASE_URL +
+                  options.find((item) => item.id === value).image
+                }
                 alt="School"
               />
             )}
@@ -59,7 +62,7 @@ const UserSelect = ({
             >
               <div className="image">
                 {option?.image && (
-                  <img src={API_URL + option.image} alt="School" />
+                  <img src={ServerURL.BASE_URL + option.image} alt="School" />
                 )}
               </div>
               <div className="name">{option.name}</div>

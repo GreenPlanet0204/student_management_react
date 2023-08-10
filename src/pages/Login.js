@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as Logo } from "../assets/Icons/Logo.svg";
 import axios from "axios";
-import { API_URL } from "../utils";
+import ServerURL from "../utils";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -12,10 +12,10 @@ const Login = () => {
   const navigate = useNavigate();
   const Submit = async () => {
     try {
-      const res = await axios.post(API_URL + "/token/", user);
+      const res = await axios.post(ServerURL.BASE_URL + "/token/", user);
       const token = res.data.access;
       localStorage.setItem("token", token);
-      const res2 = await axios.get(API_URL + "/profile/", {
+      const res2 = await axios.get(ServerURL.BASE_URL + "/profile/", {
         headers: {
           Authorization: "Bearer " + token,
         },

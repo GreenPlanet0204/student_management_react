@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MultiSelect from "../../components/MultiSelect";
 import Password from "../../components/Password";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ export const Teacher = () => {
         ...teacher,
         subject: JSON.stringify(teacher.subject),
       };
-      await axios.post(API_URL + "/teacher/", data, {
+      await axios.post(ServerURL.BASE_URL + "/teacher/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -75,9 +75,11 @@ export const Teacher = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/?school=" + user.profile.id).then((res) => {
-      setStudents(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
+      .then((res) => {
+        setStudents(res.data);
+      });
   }, []);
   /* eslint-enable */
   return (
@@ -144,7 +146,7 @@ export const Teacher = () => {
             <img
               src={
                 typeof teacher.image === "string"
-                  ? API_URL + teacher.image
+                  ? ServerURL.BASE_URL + teacher.image
                   : URL.createObjectURL(teacher.image)
               }
               alt="Logo"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
@@ -14,7 +14,7 @@ export const Tracking = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get(`${API_URL}/${tab}/?school=${user.profile.id}`)
+      .get(`${ServerURL.BASE_URL}/${tab}/?school=${user.profile.id}`)
       .then((res) => setData(res.data));
   }, [tab]);
   /* eslint-enable */
@@ -75,7 +75,7 @@ export const Tracking = () => {
             {data.map((item, index) => (
               <div className="item names" key={index}>
                 <div className="image">
-                  <img src={API_URL + item?.image} alt="Logo" />
+                  <img src={ServerURL.BASE_URL + item?.image} alt="Logo" />
                 </div>
                 <div className="name">
                   {tab !== "reward" ? item?.name : item.title}
@@ -98,7 +98,7 @@ export const Tracking = () => {
               <div className="label">Student Count</div>
               {data.map((item, index) => (
                 <div className="item" key={index}>
-                  {item.students?.length}
+                  {item.students}
                 </div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export const Tracking = () => {
                 <div className="label">Used</div>
                 {data.map((item, index) => (
                   <div className="item" key={index}>
-                    {item.students?.length}
+                    {item.students}
                   </div>
                 ))}
               </div>
@@ -129,7 +129,8 @@ export const Tracking = () => {
               <div className="label">Last Active</div>
               {data.map((item, index) => (
                 <div className="item" key={index}>
-                  {item.last && moment(item.last).format("MM/DD/YYYY")}
+                  {item.last_login &&
+                    moment(item.last_login).format("MM/DD/YYYY")}
                 </div>
               ))}
             </div>

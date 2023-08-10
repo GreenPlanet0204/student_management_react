@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 import { ReactComponent as XIcon } from "../assets/Icons/X.svg";
-import { API_URL } from "../utils";
+import ServerURL from "../utils";
 
 const MultiUserSelect = ({
   values = [],
@@ -41,7 +41,8 @@ const MultiUserSelect = ({
                 {options.find((item) => item.id === value)?.image && (
                   <img
                     src={
-                      API_URL + options.find((item) => item.id === value).image
+                      ServerURL.BASE_URL +
+                      options.find((item) => item.id === value).image
                     }
                     alt="School"
                   />
@@ -70,7 +71,7 @@ const MultiUserSelect = ({
             <div className="detail" onClick={() => add(option.id)} key={index}>
               <div className="image">
                 {option?.image && (
-                  <img src={API_URL + option.image} alt="School" />
+                  <img src={ServerURL.BASE_URL + option.image} alt="School" />
                 )}
               </div>
               <div className="name">{option.name}</div>

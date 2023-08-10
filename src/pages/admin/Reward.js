@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 
 export const Reward = () => {
@@ -36,13 +36,13 @@ export const Reward = () => {
   /* eslint-enable */
   const params = useParams();
   useEffect(() => {
-    axios.get(API_URL + "/school/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
       setSchools(res.data);
       setFilterSchools(res.data);
     });
 
     if (params.id) {
-      axios.get(API_URL + "/reward/?id=" + params.id).then((res) => {
+      axios.get(ServerURL.BASE_URL + "/reward/?id=" + params.id).then((res) => {
         let school_list = [];
         res.data.schools.forEach((item) => school_list.push(item.id));
         setReward({ ...res.data, schools: school_list });
@@ -55,13 +55,17 @@ export const Reward = () => {
     console.log("reward", reward);
     try {
       if (params.id) {
-        await axios.post(API_URL + "/reward/?id=" + params.id, reward, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios.post(
+          ServerURL.BASE_URL + "/reward/?id=" + params.id,
+          reward,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       } else {
-        await axios.post(API_URL + "/reward/", reward, {
+        await axios.post(ServerURL.BASE_URL + "/reward/", reward, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -123,7 +127,7 @@ export const Reward = () => {
             <img
               src={
                 typeof reward.image === "string"
-                  ? API_URL + reward.image
+                  ? ServerURL.BASE_URL + reward.image
                   : URL.createObjectURL(reward.image)
               }
               alt="Reward"
@@ -190,7 +194,7 @@ export const Reward = () => {
                 </div>
                 <div className="col names">
                   <div className="image">
-                    <img src={API_URL + item.image} alt="avatar" />
+                    <img src={ServerURL.BASE_URL + item.image} alt="avatar" />
                   </div>
                   <div className="name">{item.name}</div>
                 </div>

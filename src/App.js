@@ -52,7 +52,7 @@ import { Goals as StudentGoals } from "./pages/student/Goals";
 import { Rewards as StudentRewards } from "./pages/student/Rewards";
 
 import axios from "axios";
-import { API_URL } from "./utils";
+import ServerURL from "./utils";
 
 function App() {
   const location = useLocation();
@@ -63,7 +63,7 @@ function App() {
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(API_URL + "/auth/", {
+      const res = await axios.get(ServerURL.BASE_URL + "/auth/", {
         headers: { Authorization: "Bearer " + token },
       });
       if (!res.data) navigate("/login");

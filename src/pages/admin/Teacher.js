@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select from "../../components/Select";
 import MultiSelect from "../../components/MultiSelect";
 import Password from "../../components/Password";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 import UserSelect from "../../components/UserSelect";
 import MultiUserSelect from "../../components/MultiUserSelect";
@@ -68,7 +68,7 @@ export const Teacher = () => {
         ...teacher,
         subject: JSON.stringify(teacher.subject),
       };
-      await axios.post(API_URL + "/teacher/", data, {
+      await axios.post(ServerURL.BASE_URL + "/teacher/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -80,11 +80,11 @@ export const Teacher = () => {
   };
 
   useEffect(() => {
-    axios.get(API_URL + "/school/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
       setSchools(res.data);
       setFilterSchools(res.data);
     });
-    axios.get(API_URL + "/student/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/student/").then((res) => {
       console.log("res", res.data);
       setStudents(res.data);
       setFilterStudents(res.data);
@@ -191,7 +191,7 @@ export const Teacher = () => {
             <img
               src={
                 typeof teacher.image === "string"
-                  ? API_URL + teacher.image
+                  ? ServerURL.BASE_URL + teacher.image
                   : URL.createObjectURL(teacher.image)
               }
               alt="Logo"

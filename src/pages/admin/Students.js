@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import axios from "axios";
 
 export const Students = () => {
   const [students, setStudents] = useState([]);
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/student/").then((res) => setStudents(res.data));
+    axios
+      .get(ServerURL.BASE_URL + "/student/")
+      .then((res) => setStudents(res.data));
   }, []);
   /* eslint-enable */
   return (
@@ -28,7 +30,7 @@ export const Students = () => {
             {students.map((student, index) => (
               <div className="item names" key={index}>
                 <div className="image">
-                  <img src={API_URL + student.image} alt="avatar" />
+                  <img src={ServerURL.BASE_URL + student.image} alt="avatar" />
                 </div>
                 <div className="name">{student.name}</div>
               </div>
@@ -39,7 +41,10 @@ export const Students = () => {
             {students.map((student, index) => (
               <div className="item school" key={index}>
                 <div className="image">
-                  <img src={API_URL + student.school.image} alt="School" />
+                  <img
+                    src={ServerURL.BASE_URL + student.school.image}
+                    alt="School"
+                  />
                 </div>
                 <div className="name">{student.school.name}</div>
               </div>

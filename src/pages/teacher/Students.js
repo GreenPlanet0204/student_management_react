@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ProgressLine from "../../components/ProgressLine";
@@ -10,7 +10,7 @@ export const Students = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/student/?teacher=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
       .then((res) => setStudents(res.data));
   }, []);
   /* eslint-enable */
@@ -32,7 +32,7 @@ export const Students = () => {
             {students.map((student, index) => (
               <div className="item names" key={index}>
                 <div className="image">
-                  <img src={API_URL + student.image} alt="avatar" />
+                  <img src={ServerURL.BASE_URL + student.image} alt="avatar" />
                 </div>
                 <Link to={"/student/" + student.id}>
                   <div className="name">{student.name}</div>

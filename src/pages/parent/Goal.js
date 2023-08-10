@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import DatePicker from "../../components/DatePicker";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -13,7 +13,7 @@ export const Goal = () => {
     start_date: "",
     end_date: "",
     type: "Parent",
-    reporter: user?.user,
+    reporter: user.id,
     student: "",
     name: "",
     responses: [],
@@ -43,14 +43,16 @@ export const Goal = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(API_URL + "/goal/?id=" + params.id).then((res) => {
+      axios.get(ServerURL.BASE_URL + "/goal/?id=" + params.id).then((res) => {
         setGoal({ ...res.data });
       });
     }
-    axios.get(API_URL + "/student/?school=" + user.school).then((res) => {
-      setStudents(res.data);
-      setFilterStudents(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
+      .then((res) => {
+        setStudents(res.data);
+        setFilterStudents(res.data);
+      });
   }, []);
   /* eslint-enable */
 
@@ -65,7 +67,7 @@ export const Goal = () => {
       var data = { ...goal, responses: responses };
       data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
       data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
-      await axios.post(API_URL + "/goal/", data, {
+      await axios.post(ServerURL.BASE_URL + "/goal/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -183,7 +185,7 @@ export const Goal = () => {
                 </div>
                 <div className="col names">
                   <div className="image">
-                    <img src={API_URL + item.image} alt="avatar" />
+                    <img src={ServerURL.BASE_URL + item.image} alt="avatar" />
                   </div>
                   <div className="name">{item.name}</div>
                 </div>

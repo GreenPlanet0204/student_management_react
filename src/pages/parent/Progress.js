@@ -4,7 +4,7 @@ import { ReactComponent as PrintIcon } from "../../assets/Icons/Print - New Gray
 import { ReactComponent as GoalIcon } from "../../assets/Icons/Goals.svg";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "../../components/Select";
@@ -91,7 +91,7 @@ export const Progress = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/goal/?user=" + user.user).then((res) => {
+    axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
       setGoals(res.data);
       let data = [];
 
@@ -106,7 +106,7 @@ export const Progress = () => {
       });
       console.log(data);
     });
-  }, []);
+  }, [modalOpen]);
 
   useEffect(() => {
     let data = [];
@@ -166,7 +166,7 @@ export const Progress = () => {
   };
 
   const Undo = () => {
-    axios.delete(API_URL + "/record/?id=" + record.id);
+    axios.delete(ServerURL.BASE_URL + "/record/?id=" + record.id);
   };
 
   const getProgress = (start_date, end_date) => {
@@ -185,7 +185,7 @@ export const Progress = () => {
       goal: goals[index].id,
     };
     try {
-      await axios.post(API_URL + "/record/", data);
+      await axios.post(ServerURL.BASE_URL + "/record/", data);
       setModalOpen(false);
     } catch {
       console.error("error");
@@ -209,7 +209,7 @@ export const Progress = () => {
             <div className="info">
               <div className="image">
                 <img
-                  src={API_URL + goals[index]?.student?.image}
+                  src={ServerURL.BASE_URL + goals[index]?.student?.image}
                   alt="avatar"
                 />
               </div>
@@ -223,8 +223,8 @@ export const Progress = () => {
                 </div>
                 <div className="login-info">
                   Last login:{" "}
-                  {goals[index]?.student?.last &&
-                    moment(goals[index]?.student?.last).format(
+                  {goals[index]?.student?.last_login &&
+                    moment(goals[index]?.student?.last_login).format(
                       "MMM. DD, YYYY hh:mm"
                     )}
                 </div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as MessageIcon } from "../assets/Icons/Messages.svg";
 import Avatar from "../assets/Images/avatar.jpg";
 
+let socket = new WebSocket();
+
 const Messages = () => {
   const role = localStorage.getItem("role");
   const [message, setMessage] = useState("");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
@@ -12,7 +12,7 @@ export const Tracking = () => {
 
   /* eslint-disable */
   useEffect(() => {
-    axios.get(`${API_URL}/${tab}/`).then((res) => setData(res.data));
+    axios.get(`${ServerURL.BASE_URL}/${tab}/`).then((res) => setData(res.data));
   }, [tab]);
   /* eslint-enable */
   return (
@@ -81,7 +81,7 @@ export const Tracking = () => {
                 key={index}
               >
                 <div className="image">
-                  <img src={API_URL + item?.image} alt="Logo" />
+                  <img src={ServerURL.BASE_URL + item?.image} alt="Logo" />
                 </div>
                 <div className="name">
                   {tab !== "reward" ? item?.name : item.title}
@@ -95,7 +95,10 @@ export const Tracking = () => {
               {data.map((item, index) => (
                 <div className="item school" key={index}>
                   <div className="image">
-                    <img src={API_URL + item?.school?.image} alt="School" />
+                    <img
+                      src={ServerURL.BASE_URL + item?.school?.image}
+                      alt="School"
+                    />
                   </div>
                   <div className="name">{item?.school?.name}</div>
                 </div>

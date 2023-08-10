@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import Select from "../../components/Select";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import DatePicker from "../../components/DatePicker";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -19,7 +19,7 @@ export const Goal = () => {
     type: "Behavioral",
     score: "",
     goal: null,
-    reporter: user?.user,
+    reporter: user.id,
     student: "",
     name: "",
     responses: [],
@@ -58,25 +58,27 @@ export const Goal = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(API_URL + "/goal/?id=" + params.id).then((res) => {
+      axios.get(ServerURL.BASE_URL + "/goal/?id=" + params.id).then((res) => {
         setGoal({ ...res.data });
       });
     }
-    axios.get(API_URL + "/student/?school=" + user.school).then((res) => {
-      setStudents(res.data);
-      setFilterStudents(res.data);
-    });
     axios
-      .get(API_URL + "/goals/?user=" + user.user)
+      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.school)
+      .then((res) => {
+        setStudents(res.data);
+        setFilterStudents(res.data);
+      });
+    axios
+      .get(ServerURL.BASE_URL + "/goals/?user=" + user.id)
       .then((res) => setGoals(res.data));
   }, []);
   /* eslint-enable */
 
   const Submit = async () => {
     let messages = init;
-    if (goal.start_date) messages["start_date"] = "This field is required!";
-    if (goal.end_date) messages["end_date"] = "This field is required!";
-    if (goal.student) messages["student"] = "This field is required!";
+    if (!goal.start_date) messages["start_date"] = "This field is required!";
+    if (!goal.end_date) messages["end_date"] = "This field is required!";
+    if (!goal.student) messages["student"] = "This field is required!";
     setMessage(messages);
     if (messages !== init) return;
     try {
@@ -89,7 +91,7 @@ export const Goal = () => {
       }
       data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
       data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
-      await axios.post(API_URL + "/goal/", data, {
+      await axios.post(ServerURL.BASE_URL + "/goal/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -234,11 +236,13 @@ export const Goal = () => {
                         student: item.id,
                       })
                     }
+                    value={item.id}
+                    checked={item.id === goal.student}
                   />
                 </div>
                 <div className="col names">
                   <div className="image">
-                    <img src={API_URL + item.image} alt="avatar" />
+                    <img src={ServerURL.BASE_URL + item.image} alt="avatar" />
                   </div>
                   <div className="name">{item.name}</div>
                 </div>

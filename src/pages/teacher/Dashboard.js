@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -20,16 +20,12 @@ export const Dashboard = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(API_URL + "/student/?teacher=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
       .then((res) => setStudents(res.data));
-  }, []);
-
-  useEffect(() => {
     axios
-      .get(API_URL + "/reward/?school=" + user.school)
+      .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.school)
       .then((res) => setRewards(res.data));
   }, []);
-
   /* eslint-enable */
   return (
     <div className="container">
@@ -96,7 +92,7 @@ export const Dashboard = () => {
             <div className="row" key={reward.id}>
               <div className="detail">
                 <div className="image">
-                  <img src={API_URL + reward.image} alt="goal" />
+                  <img src={ServerURL.BASE_URL + reward.image} alt="goal" />
                 </div>
                 <div className="name">{reward.title}</div>
               </div>

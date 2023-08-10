@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import Password from "../../components/Password";
 import UserSelect from "../../components/UserSelect";
 import MultiUserSelect from "../../components/MultiUserSelect";
@@ -58,7 +58,7 @@ export const Parent = () => {
     e.preventDefault();
     await require();
     try {
-      await axios.post(API_URL + "/parent/", parent, {
+      await axios.post(ServerURL.BASE_URL + "/parent/", parent, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -70,10 +70,10 @@ export const Parent = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(API_URL + "/school/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
       setSchools(res.data);
     });
-    axios.get(API_URL + "/student/").then((res) => {
+    axios.get(ServerURL.BASE_URL + "/student/").then((res) => {
       setStudents(res.data);
       setFilterStudents(res.data);
     });
@@ -124,7 +124,7 @@ export const Parent = () => {
             <img
               src={
                 typeof parent.image === "string"
-                  ? API_URL + parent.image
+                  ? ServerURL.BASE_URL + parent.image
                   : URL.createObjectURL(parent.image)
               }
               alt="Student"

@@ -8,7 +8,7 @@ import { ReactComponent as TrackingIcon } from "../assets/Icons/Tracking.svg";
 import { ReactComponent as BiArrow } from "../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 import { useLocation, Link } from "react-router-dom";
-import { API_URL } from "../utils";
+import ServerURL from "../utils";
 
 const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();
@@ -234,7 +234,10 @@ const Layout = ({ children, role, show, setShow }) => {
               <div className="navmenu">
                 <div className="school-logo">
                   <div className="image">
-                    <img src={API_URL + user.image} alt="SchoolLogo" />
+                    <img
+                      src={ServerURL.BASE_URL + user.image}
+                      alt="SchoolLogo"
+                    />
                   </div>
                   <div className="name">{user.name}</div>
                 </div>

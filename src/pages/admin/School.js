@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Select from "../../components/Select";
 import Password from "../../components/Password";
-import { API_URL } from "../../utils";
+import ServerURL from "../../utils";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -61,7 +61,7 @@ export const School = () => {
   const Submit = async () => {
     await require();
     try {
-      await axios.post(API_URL + "/school/", school, {
+      await axios.post(ServerURL.BASE_URL + "/school/", school, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -153,7 +153,7 @@ export const School = () => {
               <img
                 src={
                   typeof school.image === "string"
-                    ? API_URL + school.image
+                    ? ServerURL.BASE_URL + school.image
                     : URL.createObjectURL(school.image)
                 }
                 alt="Logo"
