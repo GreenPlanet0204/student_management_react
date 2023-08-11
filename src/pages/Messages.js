@@ -61,7 +61,7 @@ const Messages = () => {
   const fetchChatUser = async () => {
     const url = `/users/${CommonUtil.getUserId()}/chats/`;
     const chatUsers = await ApiConnector.sendGetRequest(url);
-    const formatedChatUser = CommonUtil.getFormatedChatUser(
+    const formatedChatUser = await CommonUtil.getFormatedChatUser(
       chatUsers,
       onlineUserList
     );
@@ -115,13 +115,13 @@ const Messages = () => {
       true,
       false
     );
-    fetchChatUser();
+    await fetchChatUser();
     setIsShowAddPeopleModal(false);
   };
 
   const removeMemberClickHandler = async (roomId) => {
     await ApiConnector.sendDeleteRequest(`/chat/${roomId}/`);
-    fetchChatUser();
+    await fetchChatUser();
   };
 
   const getActiveChatClass = (roomId) => {
