@@ -52,14 +52,14 @@ const Messages = () => {
   const fetchChatMessage = async () => {
     const currentChatId = CommonUtil.getActiveChatId(params);
     if (currentChatId) {
-      const url = `/chats/${currentChatId}/messages?limit=20&offset=0`;
+      const url = `/chats/${currentChatId}/messages/?limit=20&offset=0`;
       const chatMessages = await ApiConnector.sendGetRequest(url);
       setMessages(chatMessages);
     }
   };
 
   const fetchChatUser = async () => {
-    const url = `/users/${CommonUtil.getUserId()}/chats`;
+    const url = `/users/${CommonUtil.getUserId()}/chats/`;
     const chatUsers = await ApiConnector.sendGetRequest(url);
     const formatedChatUser = CommonUtil.getFormatedChatUser(
       chatUsers,
