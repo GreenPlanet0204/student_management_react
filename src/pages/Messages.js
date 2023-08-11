@@ -38,8 +38,15 @@ const Messages = () => {
   const [onlineUserList, setOnlineUserList] = useState([]);
 
   const redirectUserToDefaultChatRoom = (chatUsers) => {
-    if (location.pathname === "/messages" && chatUsers.length > 0) {
+    if (chatUsers.length === 0) return navigate("/messages");
+    if (location.pathname === "/messages") {
       navigate("/message/" + chatUsers[0].roomId);
+    } else {
+      const activeChatId = CommonUtil.getActiveChatId(params);
+      const chatUser = chatUsers.find((user) => user.roomId === activeChatId);
+      if (!chatUser) {
+        navigate("/message/" + chatUsers[0].roomId);
+      }
     }
   };
 
@@ -169,7 +176,9 @@ const Messages = () => {
           roomId: CommonUtil.getActiveChatId(params),
         })
       );
+      fetchChatMessage();
     }
+
     setInputMessage("");
   };
 
