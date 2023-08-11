@@ -66,9 +66,9 @@ const Messages = () => {
       onlineUserList
     );
     setChatUsers(formatedChatUser);
-    setTeachers(formatedChatUser.filter((item) => item.role === "teacher"));
-    setStudents(formatedChatUser.filter((item) => item.role === "student"));
-    setParents(formatedChatUser.filter((item) => item.role === "parent"));
+    setTeachers(formatedChatUser?.filter((item) => item.role === "teacher"));
+    setStudents(formatedChatUser?.filter((item) => item.role === "student"));
+    setParents(formatedChatUser?.filter((item) => item.role === "parent"));
     redirectUserToDefaultChatRoom(formatedChatUser);
   };
   const loggedInUserId = CommonUtil.getUserId();
