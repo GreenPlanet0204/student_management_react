@@ -39,6 +39,12 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    localStorage.clear();
+    CookieUtil.deleteCookie(Constants.ACCESS_PROPERTY);
+    CookieUtil.deleteCookie(Constants.REFRESH_PROPERTY);
+  }, []);
+
   return (
     <div className="auth">
       <div className="topbar">
