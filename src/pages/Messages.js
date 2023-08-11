@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as MessageIcon } from "../assets/Icons/Messages.svg";
-import Avatar from "../assets/Images/avatar.jpg";
 import ServerURL from "../utils/ServerURL";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import CommonUtil from "../utils/CommonUtil";
@@ -121,7 +120,7 @@ const Messages = () => {
   };
 
   const removeMemberClickHandler = async (roomId) => {
-    await ApiConnector.sendDeleteRequest(`/chat/${roomId}`);
+    await ApiConnector.sendDeleteRequest(`/chat/${roomId}/`);
     fetchChatUser();
   };
 
