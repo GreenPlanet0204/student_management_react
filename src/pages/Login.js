@@ -27,13 +27,18 @@ const Login = () => {
         });
       }
       const token = data.access;
-      const res2 = await axios.get(ServerURL.BASE_URL + "/profile/", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      localStorage.setItem("user", JSON.stringify(res2.data));
-      navigate("/");
+      axios
+        .get(ServerURL.BASE_URL + "/profile/", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((res) => {
+          localStorage.setItem("user", JSON.stringify(res.data));
+        })
+        .then(() => {
+          navigate("/");
+        });
     } catch {
       console.error("error");
     }
