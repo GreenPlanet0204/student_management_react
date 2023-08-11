@@ -1,6 +1,6 @@
 const ServerURL = {
-  BASE_URL: "http://127.0.0.1:8000",
-  WS_BASE_URL: "ws://127.0.0.1:8000",
+  BASE_URL: "https://lobster-app-mhbu4.ondigitalocean.app",
+  WS_BASE_URL: "ws://lobster-app-mhbu4.ondigitalocean.app",
 };
 
 export default ServerURL;
