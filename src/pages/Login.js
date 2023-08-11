@@ -25,20 +25,20 @@ const Login = () => {
         Object.keys(data).forEach((key) => {
           CookieUtil.setCookie(key, data[key]);
         });
+        const token = data.access;
+        axios
+          .get(ServerURL.BASE_URL + "/profile/", {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          })
+          .then((res) => {
+            localStorage.setItem("user", JSON.stringify(res.data));
+          })
+          .then(() => {
+            navigate("/");
+          });
       }
-      const token = data.access;
-      axios
-        .get(ServerURL.BASE_URL + "/profile/", {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-        .then((res) => {
-          localStorage.setItem("user", JSON.stringify(res.data));
-        })
-        .then(() => {
-          navigate("/");
-        });
     } catch {
       console.error("error");
     }

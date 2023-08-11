@@ -35,17 +35,11 @@ const Messages = () => {
   const [parents, setParents] = useState([]);
 
   const [typing, setTyping] = useState(false);
-  const [currentChattingMember, setCurrentChattingMember] = useState({});
   const [onlineUserList, setOnlineUserList] = useState([]);
 
   const redirectUserToDefaultChatRoom = (chatUsers) => {
     if (location.pathname === "/messages" && chatUsers.length > 0) {
-      setCurrentChattingMember(chatUsers[0]);
       navigate("/message/" + chatUsers[0].roomId);
-    } else {
-      const activeChatId = CommonUtil.getActiveChatId(params);
-      const chatUser = chatUsers.find((user) => user.roomId === activeChatId);
-      setCurrentChattingMember(chatUser);
     }
   };
 
@@ -75,15 +69,15 @@ const Messages = () => {
   const getChatMessageClassName = (userId) => {
     return loggedInUserId === userId ? "message mime" : "message other";
   };
-
+  /* eslint-disable */
   useEffect(() => {
     fetchChatUser();
   }, []);
 
   useEffect(() => {
     fetchChatMessage();
-  }, [CommonUtil.getActiveChatId(params)]);
-
+  }, [location.pathname]);
+  /* eslint-enable */
   const getConnectedUserIds = () => {
     let connectedUsers = "";
     chatUsers?.forEach((chatUser) => {
@@ -120,8 +114,9 @@ const Messages = () => {
   };
 
   const removeMemberClickHandler = async (roomId) => {
-    await ApiConnector.sendDeleteRequest(`/chat/${roomId}/`);
+    await ApiConnector.sendDeleteRequest(`/chats/?roomId=${roomId}`);
     await fetchChatUser();
+    await fetchChatMessage();
   };
 
   const getActiveChatClass = (roomId) => {
