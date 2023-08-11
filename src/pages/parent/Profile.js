@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Avatar from "../../assets/Images/avatar.jpg";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import { goals, rewards } from "../../utils/constants";
+import { goals, rewards } from "../../utils/ServerURL";
 
 export const Profile = () => {
   const time = new Date();

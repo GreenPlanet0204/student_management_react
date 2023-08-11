@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MultiSelect from "../../components/MultiSelect";
 import Password from "../../components/Password";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 
 export const Reward = () => {

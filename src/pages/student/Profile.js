@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 
 export const Profile = () => {

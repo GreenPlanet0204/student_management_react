@@ -50,9 +50,8 @@ import { Dashboard as StudentDashboard } from "./pages/student/Dashboard";
 import { Profile as StudentProfile } from "./pages/student/Profile";
 import { Goals as StudentGoals } from "./pages/student/Goals";
 import { Rewards as StudentRewards } from "./pages/student/Rewards";
-
-import axios from "axios";
-import ServerURL from "./utils";
+import CookieUtil from "./utils/CookieUtil";
+import Constants from "./utils/constants";
 
 function App() {
   const location = useLocation();
@@ -60,21 +59,11 @@ function App() {
   const [role, setRole] = useState("");
   const [show, setShow] = useState(false);
 
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(ServerURL.BASE_URL + "/auth/", {
-        headers: { Authorization: "Bearer " + token },
-      });
-      if (!res.data) navigate("/login");
-    } catch {
-      navigate("/login");
-    }
-  };
-
   /* eslint-disable */
   useEffect(() => {
-    checkAuth();
+    if (!CookieUtil.getCookie(Constants.ACCESS_PROPERTY)) {
+      navigate("/login");
+    }
   }, []);
 
   useEffect(() => {
@@ -87,6 +76,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/message/:chatId" element={<Messages />} />
       </Routes>
       {role === "teacher" && (
         <Routes>

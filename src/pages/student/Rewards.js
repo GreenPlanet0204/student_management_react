@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as BiArrow } from "../../assets/Icons/Bi Arrow.svg";
 import axios from "axios";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 
 export const Rewards = () => {
   const [rewards, setRewards] = useState([]);

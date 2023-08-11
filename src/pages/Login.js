@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as Logo } from "../assets/Icons/Logo.svg";
 import axios from "axios";
-import ServerURL from "../utils/constants";
+import ServerURL from "../utils/ServerURL";
 import { useNavigate } from "react-router-dom";
+import CookieUtil from "../utils/CookieUtil";
+import Constants from "../utils/constants";
+import ApiConnector from "../utils/ApiConnector";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -12,9 +15,18 @@ const Login = () => {
   const navigate = useNavigate();
   const Submit = async () => {
     try {
-      const res = await axios.post(ServerURL.BASE_URL + "/token/", user);
-      const token = res.data.access;
-      localStorage.setItem("token", token);
+      const data = await ApiConnector.sendPostRequest(
+        "/token/",
+        JSON.stringify(user),
+        false,
+        false
+      );
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          CookieUtil.setCookie(key, data[key]);
+        });
+      }
+      const token = data.access;
       const res2 = await axios.get(ServerURL.BASE_URL + "/profile/", {
         headers: {
           Authorization: "Bearer " + token,
@@ -26,10 +38,6 @@ const Login = () => {
       console.error("error");
     }
   };
-
-  useEffect(() => {
-    localStorage.removeItem("user");
-  }, []);
 
   return (
     <div className="auth">

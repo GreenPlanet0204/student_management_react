@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 import moment from "moment";
 import Select from "../../components/Select";

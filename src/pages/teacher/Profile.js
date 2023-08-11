@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Select from "../../components/Select";

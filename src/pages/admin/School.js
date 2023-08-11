@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Select from "../../components/Select";
 import Password from "../../components/Password";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

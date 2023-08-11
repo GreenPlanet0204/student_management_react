@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ProgressLine from "../../components/ProgressLine";

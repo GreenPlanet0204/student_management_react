@@ -4,7 +4,7 @@ import { ReactComponent as PrintIcon } from "../../assets/Icons/Print - New Gray
 import { ReactComponent as GoalIcon } from "../../assets/Icons/Goals.svg";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "../../components/Select";

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ServerURL from "../../utils/constants";
+import ServerURL from "../../utils/ServerURL";
 
 export const Schools = () => {
   const [schools, setSchools] = useState([]);

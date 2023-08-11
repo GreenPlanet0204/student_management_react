@@ -8,7 +8,7 @@ import { ReactComponent as TrackingIcon } from "../assets/Icons/Tracking.svg";
 import { ReactComponent as BiArrow } from "../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
 import { useLocation, Link } from "react-router-dom";
-import ServerURL from "../utils/constants";
+import ServerURL from "../utils/ServerURL";
 
 const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();
@@ -112,7 +112,9 @@ const Layout = ({ children, role, show, setShow }) => {
                 </Link>
                 <Link
                   to="/messages"
-                  className={location.pathname === "/messages" ? "active" : ""}
+                  className={
+                    location.pathname.startsWith("/message") ? "active" : ""
+                  }
                 >
                   <MessageIcon />
                   <div className="text">Messages</div>
