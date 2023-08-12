@@ -105,7 +105,8 @@ function App() {
           <Route path="/tracking" element={<ParentProgress />} />
           <Route path="/students" element={<ParentStudents />} />
           <Route path="/student/:id" element={<ParentProfile />} />
-          <Route path="/progress/:id" element={<ParentProgress />} />
+          <Route path="/student/progress/:id" element={<ParentProgress />} />
+          <Route path="/goal/progress/:goalId" element={<ParentProgress />} />
         </Routes>
       )}
       {role === "student" && (

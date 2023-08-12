@@ -123,7 +123,20 @@ export const Profile = () => {
               </div>
               <div className="progress-line">
                 <div className="line">
-                  <div className="progress" />
+                  <div
+                    className="progress"
+                    style={{
+                      width:
+                        100 *
+                          (goals?.filter(
+                            (item) =>
+                              item.type === type && item.status === "completed"
+                          ).length /
+                            goals?.filter((item) => item.type === type)
+                              .length) +
+                        "%",
+                    }}
+                  />
                 </div>
                 <div className="text">
                   {
@@ -150,7 +163,7 @@ export const Profile = () => {
                         alt="reward"
                       />
                     </div>
-                    <div className="mark">{reward.coins}</div>
+                    <div className="mark">{reward.coin}</div>
                   </div>
                 ))}
               </div>

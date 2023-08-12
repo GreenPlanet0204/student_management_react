@@ -94,63 +94,43 @@ export const Progress = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios
-      .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
-      .then((res) => {
+    if (params.goalId) {
+      axios
+        .get(ServerURL.BASE_URL + "/goal/?id=" + params.goalId)
+        .then((res) => {
+          setGoal(res.data);
+          setStudent(res.data.student);
+          fetchTableData(res.data);
+        });
+    } else if (params.id) {
+      axios
+        .get(ServerURL.BASE_URL + "/goal/?student=" + params.id)
+        .then((res) => {
+          setGoals(res.data.filter((item) => item.type === "Parent"));
+          setGoal(res.data.filter((item) => item.type === "Parent")[index]);
+          fetchTableData(
+            res.data.filter((item) => item.type === "Parent")[index]
+          );
+        })
+        .catch(() => console.error("error"));
+      axios
+        .get(ServerURL.BASE_URL + "/student/?id=" + params.id)
+        .then((res) => setStudent(res.data))
+        .catch(() => console.error("error"));
+    } else {
+      axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
         setGoals(res.data);
         setGoal(res.data[index]);
         fetchTableData(res.data[index]);
-      })
-      .catch(() => console.error("error"));
+        setStudent(res.data[index]?.student);
+      });
+    }
   }, [modalOpen]);
 
   useEffect(() => {
-    let data = [];
-
-    goal?.records?.forEach((item) =>
-      data.push({
-        date: item.date,
-        value: item.score,
-        val1: 10,
-        val2: 20,
-        val3: 30,
-        val4: 40,
-        val5: 50,
-        val6: 60,
-        val7: 70,
-        val8: 80,
-        val9: 90,
-        val10: 100,
-      })
-    );
-    data.push({
-      date: goal?.start_date,
-      value: 0,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    });
-    data.push({
-      date: goal?.end_date,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    });
-    setData([data]);
+    setGoal(goals[index]);
+    fetchTableData(goals[index]);
+    if (!params.id) setStudent(goals[index]?.student);
   }, [index]);
   /* eslint-enable */
   const NewRecord = () => {
@@ -235,7 +215,7 @@ export const Progress = () => {
                 <Select
                   text="Goal "
                   value={index + 1}
-                  options={goals?.map((item, index) => index + 1)}
+                  options={goals && goals?.map((item, index) => index + 1)}
                   onChange={(val) => setIndex(val - 1)}
                 />
               </div>
@@ -246,7 +226,7 @@ export const Progress = () => {
             </div>
             <div className="detail">
               <div className="text">Coin Value</div>
-              <div className="value">{goal?.student?.coin}</div>
+              <div className="value">{student?.coin}</div>
             </div>
           </div>
           <div className="details">
@@ -272,10 +252,7 @@ export const Progress = () => {
                 <div
                   className="progress"
                   style={{
-                    width: getProgress(
-                      goals[index]?.start_date,
-                      goals[index]?.end_date
-                    ),
+                    width: getProgress(goal?.start_date, goal?.end_date),
                   }}
                 />
               </div>
@@ -469,44 +446,41 @@ export const Progress = () => {
         </div>
       </div>
       {open && (
-        <>
-          <div className="panel" />
-          <div className="modal">
-            <div className="card">
-              <div className="header">
-                <div className="title">Complete Goal</div>
-                <div className="btn" onClick={() => setOpen(false)}>
-                  Close
-                </div>
+        <div className="modal">
+          <div className="card modal-main">
+            <div className="header">
+              <div className="title">Complete Goal</div>
+              <div className="btn" onClick={() => setOpen(false)}>
+                Close
               </div>
-              <div className="coins">
-                <div className="text">Maximum Coins Available</div>
-                <div className="circle">3</div>
+            </div>
+            <div className="coins">
+              <div className="text">Maximum Coins Available</div>
+              <div className="circle">3</div>
+            </div>
+            <div className="rewards coins">
+              <div className="text">Select Coins Earned</div>
+              <div className="coins large-text bold">
+                <div className="coin">1</div>
+                <div className="coin">2</div>
+                <div className="coin">3</div>
               </div>
-              <div className="rewards coins">
-                <div className="text">Select Coins Earned</div>
-                <div className="coins large-text bold">
-                  <div className="coin">1</div>
-                  <div className="coin">2</div>
-                  <div className="coin">3</div>
-                </div>
-                <div className="explain">
-                  <div className="text bold">Explaination of Coins Earned</div>
-                  <textarea placeholder="Explanation for Coins Earned" />
-                </div>
+              <div className="explain">
+                <div className="text bold">Explaination of Coins Earned</div>
+                <textarea placeholder="Explanation for Coins Earned" />
               </div>
+            </div>
 
-              <div className="btn-group">
-                <div className="btn deny" onClick={() => setOpen(false)}>
-                  Cancel
-                </div>
-                <div className="btn confirm" onClick={() => confirm()}>
-                  Confirm
-                </div>
+            <div className="btn-group">
+              <div className="btn deny" onClick={() => setOpen(false)}>
+                Cancel
+              </div>
+              <div className="btn confirm" onClick={() => confirm()}>
+                Confirm
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {modalOpen && (

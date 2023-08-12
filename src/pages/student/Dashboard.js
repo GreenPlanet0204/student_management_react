@@ -113,7 +113,7 @@ export const Dashboard = () => {
               {student.rewards?.map((reward, index) => (
                 <div className="reward" key={index}>
                   <div className="image">
-                    <img src={reward.image} alt="reward" />
+                    <img src={ServerURL.BASE_URL + reward.image} alt="reward" />
                   </div>
                   <div className="mark">{reward.coin}</div>
                 </div>
