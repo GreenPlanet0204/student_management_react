@@ -7,21 +7,18 @@ import { LineChart, Line, XAxis, YAxis } from "recharts";
 import ServerURL from "../../utils/ServerURL";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import Select from "../../components/Select";
 
 export const Progress = () => {
   const params = useParams();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
 
   const [data, setData] = useState([]);
   const [select, setSelect] = useState({});
   const [goal, setGoal] = useState({});
-  const [record, setRecord] = useState();
   const [student, setStudent] = useState();
-  const [complete, setComplete] = useState({ coin: 1, complete: "" });
+  const [complete, setComplete] = useState({});
   const dateFormatter = (date) => {
     return moment(new Date(date + " 01:00:00")).format("MMM DD");
   };
@@ -36,7 +33,7 @@ export const Progress = () => {
   };
 
   const confirm = () => {
-    navigate("/students");
+    setOpen(false);
   };
 
   const fetch = () => {
@@ -47,6 +44,10 @@ export const Progress = () => {
         fetchTableData(res.data);
         setStudent(res.data.student);
       })
+      .catch(() => console.error("error"));
+    axios
+      .get(ServerURL.BASE_URL + "/complete/?goal=" + params.id)
+      .then((res) => setComplete(res.data))
       .catch(() => console.error("error"));
   };
 
@@ -103,18 +104,6 @@ export const Progress = () => {
   }, [modalOpen]);
 
   /* eslint-enable */
-  const NewRecord = () => {
-    setRecord({
-      score: "",
-      note: "",
-    });
-    setModalOpen(true);
-  };
-
-  const Undo = () => {
-    axios.delete(ServerURL.BASE_URL + "/record/?id=" + record.id);
-    fetch();
-  };
 
   const getProgress = (start_date, end_date) => {
     const time = new Date().getTime();
@@ -124,28 +113,6 @@ export const Progress = () => {
     if (time > end) return "100%";
     const percent = ((100 * (time - start)) / (end - start)).toFixed(0) + "%";
     return percent;
-  };
-
-  const addRecord = async () => {
-    const data = {
-      ...record,
-      goal: goal.id,
-    };
-    try {
-      await axios.post(ServerURL.BASE_URL + "/record/", data);
-      setModalOpen(false);
-    } catch {
-      console.error("error");
-    }
-  };
-
-  const handleChangeScore = (val) => {
-    if (val > 100) val = 100;
-    if (val < 0) val = 0;
-    setRecord({
-      ...record,
-      score: val,
-    });
   };
   return (
     <>
@@ -402,8 +369,12 @@ export const Progress = () => {
                 <div className={complete.coin === 1 ? "coin active" : "coin"}>
                   1
                 </div>
-                <div className="coin">2</div>
-                <div className="coin">3</div>
+                <div className={complete.coin === 2 ? "coin active" : "coin"}>
+                  2
+                </div>
+                <div className={complete.coin === 3 ? "coin active" : "coin"}>
+                  3
+                </div>
               </div>
               <div className="explain">
                 <div className="text bold">Explaination of Coins Earned</div>

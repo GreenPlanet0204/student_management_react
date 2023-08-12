@@ -25,6 +25,7 @@ export const Progress = () => {
   const [record, setRecord] = useState();
   const [index, setIndex] = useState(0);
   const [student, setStudent] = useState();
+  const [complete, setComplete] = useState({ coin: 1, explain: "" });
   const dateFormatter = (date) => {
     return moment(new Date(date + " 01:00:00")).format("MMM DD");
   };
@@ -36,8 +37,15 @@ export const Progress = () => {
     });
   };
 
-  const confirm = () => {
-    navigate("/students");
+  const confirm = async () => {
+    const data = {
+      ...complete,
+      goal: goal.id,
+    };
+    axios
+      .post(ServerURL.BASE_URL + "/complete/", data)
+      .then(() => navigate("students"))
+      .catch(() => console.error("error"));
   };
 
   const fetchTableData = (data) => {
@@ -471,13 +479,34 @@ export const Progress = () => {
             <div className="rewards coins">
               <div className="text">Select Coins Earned</div>
               <div className="coins large-text bold">
-                <div className="coin">1</div>
-                <div className="coin">2</div>
-                <div className="coin">3</div>
+                <div
+                  className={complete.coin === 1 ? "coin active" : "coin"}
+                  onClick={() => setComplete({ ...complete, coin: 1 })}
+                >
+                  1
+                </div>
+                <div
+                  className={complete.coin === 2 ? "coin active" : "coin"}
+                  onClick={() => setComplete({ ...complete, coin: 2 })}
+                >
+                  2
+                </div>
+                <div
+                  className={complete.coin === 3 ? "coin active" : "coin"}
+                  onClick={() => setComplete({ ...complete, coin: 3 })}
+                >
+                  3
+                </div>
               </div>
               <div className="explain">
                 <div className="text bold">Explaination of Coins Earned</div>
-                <textarea placeholder="Explanation for Coins Earned" />
+                <textarea
+                  placeholder="Explanation for Coins Earned"
+                  value={complete.explain}
+                  onClick={(e) =>
+                    setComplete({ ...complete, explain: e.target.value })
+                  }
+                />
               </div>
             </div>
 
