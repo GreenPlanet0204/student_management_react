@@ -38,8 +38,15 @@ export const Progress = () => {
     });
   };
 
-  const confirm = () => {
-    navigate("/students");
+  const confirm = async () => {
+    const data = {
+      ...complete,
+      goal: goal.id,
+    };
+    axios
+      .post(ServerURL.BASE_URL + "/complete/", data)
+      .then(() => navigate("students"))
+      .catch(() => console.error("error"));
   };
 
   const fetchTableData = (data) => {
