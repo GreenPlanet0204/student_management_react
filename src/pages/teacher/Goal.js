@@ -58,19 +58,28 @@ export const Goal = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(ServerURL.BASE_URL + "/goal/?id=" + params.id).then((res) => {
-        setGoal({ ...res.data });
-      });
+      axios
+        .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
+        .then((res) => {
+          setGoal({
+            ...res.data,
+            student: res.data.student.id,
+            score: res.data.score.toFixed(4),
+          });
+        })
+        .catch(() => console.error("error"));
     }
     axios
-      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.school)
+      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
       .then((res) => {
         setStudents(res.data);
         setFilterStudents(res.data);
-      });
+      })
+      .catch(() => console.error("error"));
     axios
       .get(ServerURL.BASE_URL + "/goals/?user=" + user.id)
-      .then((res) => setGoals(res.data));
+      .then((res) => setGoals(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
 
@@ -81,23 +90,34 @@ export const Goal = () => {
     if (!goal.student) messages["student"] = "This field is required!";
     setMessage(messages);
     if (messages !== init) return;
-    try {
-      let data = goal;
+    let data = goal;
 
-      if (goal.goal) {
-        data = { ...goal, responses: [], name: "" };
-      } else {
-        data = { ...goal, responses: responses };
-      }
-      data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
-      data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
-      await axios.post(ServerURL.BASE_URL + "/goal/", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/goals");
-    } catch {}
+    if (goal.goal) {
+      data = { ...goal, responses: [], name: "" };
+    } else {
+      data = { ...goal, responses: responses };
+    }
+    data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
+    data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
+    if (params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/goal/?id=" + goal.id, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await axios
+        .post(ServerURL.BASE_URL + "/goal/", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    }
+
+    navigate("/goals");
   };
 
   const onChange = (value, index) => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as Search } from "../../assets/Icons/Search - New Gray.svg";
 import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export const Goals = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -106,7 +107,9 @@ export const Goals = () => {
               <div className="name">{goal.name}</div>
             </div>
             <div className="action">
-              <div className="btn">View</div>
+              <Link className="btn" to={"/progress/" + goal.id}>
+                View
+              </Link>
             </div>
           </div>
         ))}

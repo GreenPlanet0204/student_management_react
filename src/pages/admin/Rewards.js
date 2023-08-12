@@ -70,6 +70,7 @@ export const Rewards = () => {
             ))}
           </div>
           <div className="col action">
+            <div className="label">Actions</div>
             {rewards.map((reward, index) => (
               <div className="item" key={index}>
                 <Link to={"/reward/" + reward.id}>

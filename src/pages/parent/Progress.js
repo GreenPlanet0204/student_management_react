@@ -5,11 +5,12 @@ import { ReactComponent as GoalIcon } from "../../assets/Icons/Goals.svg";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
 import ServerURL from "../../utils/ServerURL";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Select from "../../components/Select";
 
 export const Progress = () => {
+  const params = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
@@ -19,8 +20,10 @@ export const Progress = () => {
   const [data, setData] = useState([]);
   const [select, setSelect] = useState({});
   const [goals, setGoals] = useState([]);
+  const [goal, setGoal] = useState({});
   const [record, setRecord] = useState();
   const [index, setIndex] = useState(0);
+  const [student, setStudent] = useState();
   const dateFormatter = (date) => {
     return moment(new Date(date + " 01:00:00")).format("MMM DD");
   };
@@ -38,7 +41,25 @@ export const Progress = () => {
 
   const fetchTableData = (data) => {
     const record = [];
-    data.records?.forEach((item) => {
+
+    const start = record.filter((item) => item.date === data?.start_date);
+    const end = data?.records?.filter((item) => item.date === data?.end_date);
+    if (start.length < 1) {
+      record.push({
+        date: data?.start_date,
+        val1: 10,
+        val2: 20,
+        val3: 30,
+        val4: 40,
+        val5: 50,
+        val6: 60,
+        val7: 70,
+        val8: 80,
+        val9: 90,
+        val10: 100,
+      });
+    }
+    data?.records?.forEach((item) => {
       record.push({
         date: item.date,
         value: item.score,
@@ -54,24 +75,6 @@ export const Progress = () => {
         val10: 100,
       });
     });
-    const start = record.filter((item) => item.date === data?.start_date);
-    const end = data?.records?.filter((item) => item.date === data?.end_date);
-    if (start.length < 1) {
-      record.push({
-        date: data?.start_date,
-        value: 0,
-        val1: 10,
-        val2: 20,
-        val3: 30,
-        val4: 40,
-        val5: 50,
-        val6: 60,
-        val7: 70,
-        val8: 80,
-        val9: 90,
-        val10: 100,
-      });
-    }
     if (end?.length < 1) {
       record.push({
         date: data?.end_date,
@@ -91,27 +94,20 @@ export const Progress = () => {
   };
   /* eslint-disable */
   useEffect(() => {
-    axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
-      setGoals(res.data);
-      let data = [];
-
-      fetchTableData(res.data[index]);
-      setSelect({
-        date: res.data[index]?.start_date,
-        note: `Administration and or teacher identifies students who need more
-        intervention support than what the School wide Positive Behavior
-        Intervention Support (PBIS) -a framework for supporting
-        students’ behavioral, academic, ocial,emotional, and mental
-        health can offer.`,
-      });
-      console.log(data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
+      .then((res) => {
+        setGoals(res.data);
+        setGoal(res.data[index]);
+        fetchTableData(res.data[index]);
+      })
+      .catch(() => console.error("error"));
   }, [modalOpen]);
 
   useEffect(() => {
     let data = [];
 
-    goals[index]?.records.map((item) =>
+    goal?.records?.forEach((item) =>
       data.push({
         date: item.date,
         value: item.score,
@@ -128,7 +124,7 @@ export const Progress = () => {
       })
     );
     data.push({
-      date: goals[index]?.start_date,
+      date: goal?.start_date,
       value: 0,
       val1: 10,
       val2: 20,
@@ -142,7 +138,7 @@ export const Progress = () => {
       val10: 100,
     });
     data.push({
-      date: goals[index]?.end_date,
+      date: goal?.end_date,
       val1: 10,
       val2: 20,
       val3: 30,
@@ -162,7 +158,7 @@ export const Progress = () => {
       score: "",
       note: "",
     });
-    setModalOpen(false);
+    setModalOpen(true);
   };
 
   const Undo = () => {
@@ -182,7 +178,7 @@ export const Progress = () => {
   const addRecord = async () => {
     const data = {
       ...record,
-      goal: goals[index].id,
+      goal: goal.id,
     };
     try {
       await axios.post(ServerURL.BASE_URL + "/record/", data);
@@ -208,10 +204,9 @@ export const Progress = () => {
             <div className="title">Progress Monitoring</div>
             <div className="info">
               <div className="image">
-                <img
-                  src={ServerURL.BASE_URL + goals[index]?.student?.image}
-                  alt="avatar"
-                />
+                {student?.image && (
+                  <img src={ServerURL.BASE_URL + student?.image} alt="avatar" />
+                )}
               </div>
               <div className="status">
                 <div className="status-info">
@@ -223,16 +218,14 @@ export const Progress = () => {
                 </div>
                 <div className="login-info">
                   Last login:{" "}
-                  {goals[index]?.student?.last_login &&
-                    moment(goals[index]?.student?.last_login).format(
-                      "MMM. DD, YYYY hh:mm"
-                    )}
+                  {student?.last_login &&
+                    moment(student?.last_login).format("MMM. DD, YYYY hh:mm")}
                 </div>
               </div>
             </div>
             <div className="user-info">
-              <div className="name">{goals[index]?.student?.name}</div>
-              <div className="email">{goals[index]?.student?.email}</div>
+              <div className="name">{student?.name}</div>
+              <div className="email">{student?.email}</div>
             </div>
           </div>
           <div className="goal-details">
@@ -249,20 +242,21 @@ export const Progress = () => {
             </div>
             <div className="detail col">
               <div className="text">Goal Name</div>
-              <div className="value">{goals[index]?.name}</div>
+              <div className="value">{goal?.name}</div>
             </div>
             <div className="detail">
               <div className="text">Coin Value</div>
-              <div className="value">{goals[index]?.student?.coin}</div>
+              <div className="value">{goal?.student?.coin}</div>
             </div>
           </div>
           <div className="details">
             <div className="description">
               <div className="date">
                 Completion Date:{" "}
-                {moment(new Date(goals[index]?.end_date + " 01:00:00")).format(
-                  "MM/DD/YYYY"
-                )}
+                {goal?.end_date &&
+                  moment(new Date(goal?.end_date + " 01:00:00")).format(
+                    "MM/DD/YYYY"
+                  )}
               </div>
               <div className="text">
                 Administration and or teacher identifies students who need more
@@ -286,11 +280,11 @@ export const Progress = () => {
                 />
               </div>
               <div className="text">
-                {getProgress(goals[index]?.start_date, goals[index]?.end_date)}
+                {goal && getProgress(goal?.start_date, goal?.end_date)}
               </div>
             </div>
           </div>
-          <div className="btn complete" onClick={() => setOpen(true)}>
+          <div className="btn complete" onClick={() => goal && setOpen(true)}>
             Complete
           </div>
         </div>
@@ -320,9 +314,10 @@ export const Progress = () => {
                 <div className="text">Entry Date From</div>
                 <div className="btn">
                   <div className="date">
-                    {moment(
-                      new Date(goals[index]?.start_date + " 01:00:00")
-                    ).format("MM/DD/YYYY")}
+                    {goal &&
+                      moment(new Date(goal?.start_date + " 01:00:00")).format(
+                        "MM/DD/YYYY"
+                      )}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -333,9 +328,10 @@ export const Progress = () => {
                 <div className="text">Entry Date To</div>
                 <div className="btn">
                   <div className="date">
-                    {moment(
-                      new Date(goals[index]?.end_date + " 01:00:00")
-                    ).format("MM/DD/YYYY")}
+                    {goal &&
+                      moment(
+                        new Date(goals[index]?.end_date + " 01:00:00")
+                      ).format("MM/DD/YYYY")}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -412,14 +408,17 @@ export const Progress = () => {
           <div className="records">
             <div className="record-header">
               <div className="btn-group">
-                <div className="btn fill" onClick={() => setModalOpen(true)}>
+                <div
+                  className="btn fill"
+                  onClick={() => goal && setModalOpen(true)}
+                >
                   Update
                 </div>
-                <div className="btn" onClick={Undo}>
+                <div className="btn" onClick={goal && Undo}>
                   Undo
                 </div>
               </div>
-              <div className="btn" onClick={() => setModalOpen(true)}>
+              <div className="btn" onClick={() => goal && NewRecord()}>
                 <div className="text">New Record</div>
                 <div className="icon">+</div>
               </div>
@@ -437,7 +436,7 @@ export const Progress = () => {
                 </div>
               </div>
               <div className="tbody">
-                {goals[index]?.records.map((rec, index) => (
+                {goal?.records?.map((rec, index) => (
                   <div className="row text-1 medium" key={index}>
                     <div className="select">
                       <input
@@ -511,51 +510,48 @@ export const Progress = () => {
       )}
 
       {modalOpen && (
-        <>
-          <div className="panel" />
-          <div className="modal">
-            <div className="card">
-              <div className="header">
-                <div className="title">New Record</div>
-                <div className="btn" onClick={NewRecord}>
-                  Close
-                </div>
+        <div className="modal">
+          <div className="card modal-main">
+            <div className="header">
+              <div className="title">New Record</div>
+              <div className="btn" onClick={NewRecord}>
+                Close
               </div>
-              <div className="record">
-                <div className="score">
-                  <div className="text bold">Score</div>
-                  <input
-                    type="number"
-                    className="text"
-                    min={0}
-                    max={100}
-                    value={record?.score}
-                    onChange={(e) => handleChangeScore(e.target.value)}
-                  />
-                </div>
-                <div className="explain">
-                  <div className="text bold">Note</div>
-                  <textarea
-                    value={record?.note}
-                    onChange={(e) =>
-                      setRecord({ ...record, note: e.target.value })
-                    }
-                    placeholder="Explanation for Coins Earned"
-                  />
-                </div>
+            </div>
+            <div className="record">
+              <div className="score">
+                <div className="text bold">Score</div>
+                <input
+                  type="number"
+                  className="text"
+                  min={0}
+                  max={100}
+                  value={record?.score}
+                  onChange={(e) => handleChangeScore(e.target.value)}
+                />
               </div>
+              <div className="explain">
+                <div className="text bold">Note</div>
+                <textarea
+                  value={record?.note}
+                  onChange={(e) =>
+                    setRecord({ ...record, note: e.target.value })
+                  }
+                  placeholder="Explanation for Coins Earned"
+                />
+              </div>
+            </div>
 
-              <div className="btn-group">
-                <div className="btn deny" onClick={() => setModalOpen(false)}>
-                  Cancel
-                </div>
-                <div className="btn confirm" onClick={() => addRecord()}>
-                  Confirm
-                </div>
+            <div className="btn-group">
+              <div className="btn deny" onClick={() => setModalOpen(false)}>
+                Cancel
+              </div>
+              <div className="btn confirm" onClick={() => addRecord()}>
+                Confirm
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

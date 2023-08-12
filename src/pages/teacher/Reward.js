@@ -12,7 +12,7 @@ export const Reward = () => {
     url: "",
     coin: "",
     image: null,
-    school: user.profile.id,
+    schools: [user.profile.school],
     students: [],
   });
   const [students, setStudents] = useState([]);
@@ -25,11 +25,15 @@ export const Reward = () => {
       axios.get(ServerURL.BASE_URL + "/reward/?id=" + params.id).then((res) => {
         let student_list = [];
         res.data.students.forEach((item) => student_list.push(item.id));
-        setReward({ ...res.data, schools: student_list });
+        setReward({
+          ...res.data,
+          students: student_list,
+          schools: null,
+        });
       });
     }
     axios
-      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
       .then((res) => {
         setStudents(res.data);
         setFilterStudents(res.data);

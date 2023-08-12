@@ -3,10 +3,13 @@ import { ReactComponent as DownArrow } from "../../assets/Icons/DownArrow.svg";
 import moment from "moment";
 import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
+import Select from "../../components/Select";
+import { Link } from "react-router-dom";
 
 export const Profile = () => {
-  const rewards = [];
-  const goals = [];
+  const [type, setType] = useState("Behavioral");
+  const [rewards, setRewards] = useState([]);
+  const [goals, setGoals] = useState([]);
   const [student, setStudent] = useState();
   const user = JSON.parse(localStorage.getItem("user"));
   const [modal, setModal] = useState(false);
@@ -18,7 +21,14 @@ export const Profile = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/student/?id=" + user.profile.id)
-      .then((res) => setStudent(res.data));
+      .then((res) => {
+        setStudent(res.data);
+        setGoals(res.data.goals);
+      })
+      .catch(() => console.error("error"));
+    axios
+      .get(ServerURL.BASE_URL + "/reward/")
+      .then((res) => setRewards(res.data));
   }, []);
   /* eslint-enable */
   return (
@@ -105,20 +115,25 @@ export const Profile = () => {
             <div className="progress">
               <div className="header">
                 <div className="title">This Week's Progress</div>
-                <div className="select">
-                  <div className="btn">
-                    <div className="text">Behavioral</div>
-                    <div className="icon">
-                      <DownArrow />
-                    </div>
-                  </div>
-                </div>
+                <Select
+                  value={type}
+                  options={["Behavioral", "Academic", "Parent"]}
+                  onChange={(val) => setType(val)}
+                />
               </div>
               <div className="progress-line">
                 <div className="line">
                   <div className="progress" />
                 </div>
-                <div className="text">3 of 5</div>
+                <div className="text">
+                  {
+                    goals?.filter(
+                      (item) =>
+                        item.type === type && item.status === "completed"
+                    ).length
+                  }{" "}
+                  of {goals?.filter((item) => item.type === type).length}
+                </div>
               </div>
             </div>
             <div className="divider" />
@@ -127,10 +142,13 @@ export const Profile = () => {
                 <div className="title">Selected Rewards</div>
               </div>
               <div className="row">
-                {rewards.map((reward) => (
+                {student?.rewards?.map((reward) => (
                   <div className="reward">
                     <div className="image">
-                      <img src={reward.image} alt="reward" />
+                      <img
+                        src={ServerURL.BASE_URL + reward.image}
+                        alt="reward"
+                      />
                     </div>
                     <div className="mark">{reward.coins}</div>
                   </div>
@@ -141,74 +159,78 @@ export const Profile = () => {
           <div className="card progress">
             <div className="header">
               <div className="title">
-                <div className="text">Behavioral</div>
+                <div className="text">{type}</div>
                 <div className="icon">
                   <DownArrow />
                 </div>
               </div>
             </div>
             <div className="goals">
-              {goals.map((goal) => (
-                <div className="goal-content">
-                  <div className="goal">
-                    <div className="detail">
-                      <div className="step">Goal {goal.step}</div>
-                      <div className="name">{goal.name}</div>
-                    </div>
+              {goals
+                ?.filter((item) => item.type === type)
+                ?.map((goal, index) => (
+                  <div className="goal-content" key={goal.id}>
+                    <div className="goal">
+                      <div className="detail">
+                        <div className="step">Goal {index + 1}</div>
+                        <div className="name">{goal.name}</div>
+                      </div>
 
-                    <div className="action">
-                      <div className="btn">View</div>
+                      <div className="action">
+                        <Link to={"/progress/" + goal.id} className="btn">
+                          View
+                        </Link>
+                      </div>
                     </div>
+                    <div className={"status " + goal.status}>{goal.status}</div>
                   </div>
-                  <div className={"status " + goal.status}>{goal.status}</div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
       </div>
       {modal && (
-        <>
-          <div className="panel" />
-          <div className="modal">
-            <div className="card">
-              <div className="header">
-                <div className="title">Redeeming Coins</div>
-                <div className="btn" onClick={() => setModal(false)}>
-                  Close
-                </div>
+        <div className="modal">
+          <div className="card modal-main">
+            <div className="header">
+              <div className="title">Redeeming Coins</div>
+              <div className="btn" onClick={() => setModal(false)}>
+                Close
               </div>
-              <div className="coins">
-                <div className="text">Current Coin Count</div>
-                <div className="circle">25</div>
-              </div>
-              <div className="rewards">
-                <div className="text">Select Reward</div>
-                <div className="row">
-                  {rewards.map((reward) => (
-                    <div className="reward" onClick={() => setSelect(reward)}>
-                      <div className="image">
-                        <img src={reward.image} alt="reward" />
-                      </div>
-                      {select === reward && (
-                        <div className="selected">Selected</div>
-                      )}
-                      <div className="mark">{reward.coins}</div>
+            </div>
+            <div className="coins">
+              <div className="text">Current Coin Count</div>
+              <div className="circle">{student.coin}</div>
+            </div>
+            <div className="rewards">
+              <div className="text">Select Reward</div>
+              <div className="row">
+                {rewards.map((reward) => (
+                  <div className="reward" onClick={() => setSelect(reward)}>
+                    <div className="image">
+                      <img
+                        src={ServerURL.BASE_URL + reward.image}
+                        alt="reward"
+                      />
                     </div>
-                  ))}
-                </div>
+                    {select === reward && (
+                      <div className="selected">Selected</div>
+                    )}
+                    <div className="mark">{reward.coin}</div>
+                  </div>
+                ))}
               </div>
-              <div className="btn-group">
-                <div className="btn deny" onClick={() => setModal(false)}>
-                  Cancel
-                </div>
-                <div className="btn confirm" onClick={() => confirm()}>
-                  Redeem
-                </div>
+            </div>
+            <div className="btn-group">
+              <div className="btn deny" onClick={() => setModal(false)}>
+                Cancel
+              </div>
+              <div className="btn confirm" onClick={() => confirm()}>
+                Redeem
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

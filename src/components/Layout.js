@@ -52,7 +52,9 @@ const Layout = ({ children, role, show, setShow }) => {
                 </Link>
                 <Link
                   to="/messages"
-                  className={location.pathname === "/messages" ? "active" : ""}
+                  className={
+                    location.pathname.startsWith("/message") ? "active" : ""
+                  }
                 >
                   <MessageIcon />
                   <div className="text">Messages</div>
@@ -140,14 +142,18 @@ const Layout = ({ children, role, show, setShow }) => {
                 </Link>
                 <Link
                   to="/progress"
-                  className={location.pathname === "/progress" ? "active" : ""}
+                  className={
+                    location.pathname.startsWith("/progress") ? "active" : ""
+                  }
                 >
                   <TrackingIcon />
                   <div className="text">My Progress</div>
                 </Link>
                 <Link
                   to="/messages"
-                  className={location.pathname === "/messages" ? "active" : ""}
+                  className={
+                    location.pathname.startsWith("/message") ? "active" : ""
+                  }
                 >
                   <MessageIcon />
                   <div className="text">Messages</div>

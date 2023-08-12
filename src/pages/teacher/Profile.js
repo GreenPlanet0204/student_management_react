@@ -13,26 +13,39 @@ export const Profile = () => {
   const [student, setStudent] = useState({});
   const [rewards, setRewards] = useState([]);
   const [modal, setModal] = useState(false);
-  const [select, setSelect] = useState("");
+  const [select, setSelect] = useState([]);
   const [goals, setGoals] = useState([]);
   const [complete, setComplete] = useState([]);
-  const confirm = () => {
-    setModal(false);
+  const confirm = async () => {
+    axios
+      .post(ServerURL.BASE_URL + "/reward/?student=" + params.id, {
+        select: select,
+      })
+      .then(() => {
+        setStudent({
+          ...student,
+          rewards: rewards.filter((item) => select.includes(item.id)),
+        });
+      })
+      .then(() => setModal(false))
+      .catch(() => {
+        console.error("error");
+      });
   };
   /* eslint-disable */
   useEffect(() => {
     axios.get(ServerURL.BASE_URL + "/student/?id=" + params.id).then((res) => {
       setStudent(res.data);
-      const data = res.data.goals;
-      setGoals(data?.filter((item) => item.type === type));
+      setSelect(res.data.rewards.map((item) => item.id));
+      setGoals(res.data.goals?.filter((item) => item.type === type));
       setComplete(
-        data?.filter(
+        res.data.goals?.filter(
           (item) => item.type === type && item.status === "completed"
         )
       );
     });
     axios
-      .get(ServerURL.BASE_URL + "/reward/?school=" + user.school)
+      .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.school)
       .then((res) => setRewards(res.data));
   }, []);
 
@@ -43,6 +56,7 @@ export const Profile = () => {
     setComplete(complete);
   }, [type]);
   /* eslint-enable */
+
   return (
     <>
       <div className="container profile">
@@ -152,7 +166,7 @@ export const Profile = () => {
                 <div className="title">Selected Rewards</div>
               </div>
               <div className="row">
-                {rewards?.map((reward, index) => (
+                {student.rewards?.map((reward, index) => (
                   <div className="reward" key={index}>
                     <div className="image">
                       <img
@@ -196,50 +210,54 @@ export const Profile = () => {
         </div>
       </div>
       {modal && (
-        <>
-          <div className="panel" />
-          <div className="modal">
-            <div className="card">
-              <div className="header">
-                <div className="title">Redeeming Coins</div>
-                <div className="btn" onClick={() => setModal(false)}>
-                  Close
-                </div>
+        <div className="modal">
+          <div className="card modal-main">
+            <div className="header">
+              <div className="title">Redeeming Coins</div>
+              <div className="btn" onClick={() => setModal(false)}>
+                Close
               </div>
-              <div className="coins">
-                <div className="text">Current Coin Count</div>
-                <div className="circle">{student.coin}</div>
-              </div>
-              <div className="rewards">
-                <div className="text">Select Reward</div>
-                <div className="row">
-                  {rewards.map((reward) => (
-                    <div className="reward" onClick={() => setSelect(reward)}>
-                      <div className="image">
-                        <img
-                          src={ServerURL.BASE_URL + reward.image}
-                          alt="reward"
-                        />
-                      </div>
-                      {select === reward && (
-                        <div className="selected">Selected</div>
-                      )}
-                      <div className="mark">{reward.coin}</div>
+            </div>
+            <div className="coins">
+              <div className="text">Current Coin Count</div>
+              <div className="circle">{student.coin}</div>
+            </div>
+            <div className="rewards">
+              <div className="text">Select Reward</div>
+              <div className="row">
+                {rewards.map((reward) => (
+                  <div
+                    className="reward"
+                    onClick={() =>
+                      select.includes(reward.id)
+                        ? setSelect(select.filter((item) => item !== reward.id))
+                        : setSelect([...select, reward.id])
+                    }
+                  >
+                    <div className="image">
+                      <img
+                        src={ServerURL.BASE_URL + reward.image}
+                        alt="reward"
+                      />
                     </div>
-                  ))}
-                </div>
+                    {select.includes(reward.id) && (
+                      <div className="selected">Selected</div>
+                    )}
+                    <div className="mark">{reward.coin}</div>
+                  </div>
+                ))}
               </div>
-              <div className="btn-group">
-                <div className="btn deny" onClick={() => setModal(false)}>
-                  Deny
-                </div>
-                <div className="btn confirm" onClick={() => confirm()}>
-                  Confirm
-                </div>
+            </div>
+            <div className="btn-group">
+              <div className="btn deny" onClick={() => setModal(false)}>
+                Deny
+              </div>
+              <div className="btn confirm" onClick={() => confirm()}>
+                Confirm
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import ServerURL from "../../utils/ServerURL";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export const Tracking = () => {
@@ -44,14 +45,18 @@ export const Tracking = () => {
         </div>
       </div>
       <div className="category">
-        <div className="card students">
-          <div className="label">Students</div>
-          <div className="number">{students.length}</div>
-        </div>
-        <div className="card goals">
-          <div className="label">Goals</div>
-          <div className="number">{goals.length}</div>
-        </div>
+        <Link to="/students">
+          <div className="card students">
+            <div className="label">Students</div>
+            <div className="number">{students.length}</div>
+          </div>
+        </Link>
+        <Link to="/goals">
+          <div className="card goals">
+            <div className="label">Goals</div>
+            <div className="number">{goals.length}</div>
+          </div>
+        </Link>
       </div>
       <div className="details">
         <div className="card">
@@ -94,10 +99,14 @@ export const Tracking = () => {
                 <div
                   className="line"
                   style={{ color: getColor(student.earned) }}
+                  key={student.id}
                 >
                   <div
                     className="progress"
-                    style={{ height: 100 * (student.earned / 5) + "%" }}
+                    style={{
+                      height:
+                        coins !== 0 ? 100 * (student.coin / coins) + "%" : "",
+                    }}
                   ></div>
                 </div>
               ))}
@@ -121,10 +130,17 @@ export const Tracking = () => {
         <div className="graphs">
           <div className="lines">
             {students.map((student) => (
-              <div className="line" style={{ color: getColor(student.earned) }}>
+              <div
+                className="line"
+                style={{ color: getColor(student.earned) }}
+                key={student.id}
+              >
                 <div
                   className="progress"
-                  style={{ height: 100 * (student.earned / 5) + "%" }}
+                  style={{
+                    height:
+                      coins !== 0 ? 100 * (student.coin / coins) + "%" : "",
+                  }}
                 ></div>
               </div>
             ))}

@@ -151,47 +151,44 @@ export const Profile = () => {
         </div>
       </div>
       {modal && (
-        <>
-          <div className="panel" />
-          <div className="modal">
-            <div className="card">
-              <div className="header">
-                <div className="title">Redeeming Coins</div>
-                <div className="btn" onClick={() => setModal(false)}>
-                  Close
-                </div>
+        <div className="modal">
+          <div className="card modal-main">
+            <div className="header">
+              <div className="title">Redeeming Coins</div>
+              <div className="btn" onClick={() => setModal(false)}>
+                Close
               </div>
-              <div className="coins">
-                <div className="text">Current Coin Count</div>
-                <div className="circle">25</div>
-              </div>
-              <div className="rewards">
-                <div className="text">Select Reward</div>
-                <div className="row">
-                  {rewards.map((reward) => (
-                    <div className="reward" onClick={() => setSelect(reward)}>
-                      <div className="image">
-                        <img src={reward.image} alt="reward" />
-                      </div>
-                      {select === reward && (
-                        <div className="selected">Selected</div>
-                      )}
-                      <div className="mark">{reward.coins}</div>
+            </div>
+            <div className="coins">
+              <div className="text">Current Coin Count</div>
+              <div className="circle">25</div>
+            </div>
+            <div className="rewards">
+              <div className="text">Select Reward</div>
+              <div className="row">
+                {rewards.map((reward) => (
+                  <div className="reward" onClick={() => setSelect(reward)}>
+                    <div className="image">
+                      <img src={reward.image} alt="reward" />
                     </div>
-                  ))}
-                </div>
+                    {select === reward && (
+                      <div className="selected">Selected</div>
+                    )}
+                    <div className="mark">{reward.coins}</div>
+                  </div>
+                ))}
               </div>
-              <div className="btn-group">
-                <div className="btn deny" onClick={() => setModal(false)}>
-                  Deny
-                </div>
-                <div className="btn confirm" onClick={() => confirm()}>
-                  Confirm
-                </div>
+            </div>
+            <div className="btn-group">
+              <div className="btn deny" onClick={() => setModal(false)}>
+                Deny
+              </div>
+              <div className="btn confirm" onClick={() => confirm()}>
+                Confirm
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

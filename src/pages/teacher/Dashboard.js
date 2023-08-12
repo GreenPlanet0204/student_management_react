@@ -8,6 +8,7 @@ export const Dashboard = () => {
 
   const [students, setStudents] = useState([]);
   const [rewards, setRewards] = useState([]);
+  const [goals, setGoals] = useState([]);
   const getColor = (point) => {
     if (point === 3) {
       return "#F4B200";
@@ -21,10 +22,16 @@ export const Dashboard = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
-      .then((res) => setStudents(res.data));
+      .then((res) => setStudents(res.data))
+      .catch(() => console.error("error"));
     axios
       .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.school)
-      .then((res) => setRewards(res.data));
+      .then((res) => setRewards(res.data))
+      .catch(() => console.error("error"));
+    axios
+      .get(ServerURL.BASE_URL + "/goal/?user=" + user.id)
+      .then((res) => setGoals(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
   return (
@@ -49,7 +56,7 @@ export const Dashboard = () => {
         <Link to="/goals">
           <div className="card goals">
             <div className="label">Goals</div>
-            <div className="number">3</div>
+            <div className="number">{goals.length}</div>
           </div>
         </Link>
       </div>

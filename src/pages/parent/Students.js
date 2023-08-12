@@ -46,7 +46,7 @@ export const Students = () => {
             <div className="label">Actions</div>
             {students.map((student, index) => (
               <div className="item" key={index}>
-                <Link to={"/student/" + student.id + "/progress"}>
+                <Link to={"/progress/" + student.id}>
                   <div className="btn">View</div>
                 </Link>
               </div>

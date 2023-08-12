@@ -4,6 +4,7 @@ import axios from "axios";
 import ServerURL from "../../utils/ServerURL";
 
 export const Rewards = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const [rewards, setRewards] = useState([]);
 
   useEffect(() => {
@@ -11,6 +12,12 @@ export const Rewards = () => {
       .get(ServerURL.BASE_URL + "/reward/")
       .then((res) => setRewards(res.data));
   }, []);
+
+  const select = (id) => {
+    axios.post(ServerURL.BASE_URL + "/reward/?id=" + id, {
+      student: user.profile.id,
+    });
+  };
   return (
     <div className="container rewards">
       <div className="header">
@@ -48,7 +55,9 @@ export const Rewards = () => {
                   <div className="circle">{reward.coin}</div>
                 </div>
               </div>
-              <div className="btn">Select</div>
+              <div className="btn" onClick={() => select(reward.id)}>
+                Select
+              </div>
             </div>
           ))}
         </div>

@@ -50,6 +50,8 @@ import { Dashboard as StudentDashboard } from "./pages/student/Dashboard";
 import { Profile as StudentProfile } from "./pages/student/Profile";
 import { Goals as StudentGoals } from "./pages/student/Goals";
 import { Rewards as StudentRewards } from "./pages/student/Rewards";
+import { Progress as StudentProgress } from "./pages/student/Progress";
+
 import CookieUtil from "./utils/CookieUtil";
 import Constants from "./utils/constants";
 
@@ -110,6 +112,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<StudentDashboard />} />
           <Route path="/progress" element={<StudentProfile />} />
+          <Route path="/progress/:id" element={<StudentProgress />} />
           <Route path="/goals" element={<StudentGoals />} />
           <Route path="/rewards" element={<StudentRewards />} />
         </Routes>

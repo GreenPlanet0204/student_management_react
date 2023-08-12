@@ -18,18 +18,16 @@ export const Progress = () => {
 
   const [data, setData] = useState([]);
   const [select, setSelect] = useState({});
-  const [goals, setGoals] = useState([]);
   const [goal, setGoal] = useState({});
   const [record, setRecord] = useState();
-  const [index, setIndex] = useState(0);
-  const [student, setStudent] = useState({});
-  const [complete, setComplete] = useState({ coin: 0, explain: "" });
+  const [student, setStudent] = useState();
+  const [complete, setComplete] = useState({ coin: 1, complete: "" });
   const dateFormatter = (date) => {
     return moment(new Date(date + " 01:00:00")).format("MMM DD");
   };
   const dotClick = (e) => {
     const { payload } = e;
-    const note = goal.records?.find((item) => item.date === payload.date).note;
+    const note = goal?.records?.find((item) => (item.date = payload.date)).note;
     setSelect({
       date: payload.date,
       value: payload.value,
@@ -41,27 +39,33 @@ export const Progress = () => {
     navigate("/students");
   };
 
-  const fetchTableData = (data) => {
-    const record = [];
+  const fetch = () => {
+    axios
+      .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
+      .then((res) => {
+        setGoal(res.data);
+        fetchTableData(res.data);
+        setStudent(res.data.student);
+      })
+      .catch(() => console.error("error"));
+  };
 
-    const start = record.filter((item) => item.date === data?.start_date);
-    const end = data?.records?.filter((item) => item.date === data?.end_date);
-    if (start.length < 1) {
-      record.push({
-        date: data?.start_date,
-        val1: 10,
-        val2: 20,
-        val3: 30,
-        val4: 40,
-        val5: 50,
-        val6: 60,
-        val7: 70,
-        val8: 80,
-        val9: 90,
-        val10: 100,
-      });
-    }
-    data?.records?.forEach((item) => {
+  const fetchTableData = (goal) => {
+    const record = [];
+    record.push({
+      date: goal?.start_date,
+      val1: 10,
+      val2: 20,
+      val3: 30,
+      val4: 40,
+      val5: 50,
+      val6: 60,
+      val7: 70,
+      val8: 80,
+      val9: 90,
+      val10: 100,
+    });
+    goal?.records?.forEach((item) => {
       record.push({
         date: item.date,
         value: item.score,
@@ -77,110 +81,39 @@ export const Progress = () => {
         val10: 100,
       });
     });
-    if (end?.length < 1) {
-      record.push({
-        date: data?.end_date,
-        val1: 10,
-        val2: 20,
-        val3: 30,
-        val4: 40,
-        val5: 50,
-        val6: 60,
-        val7: 70,
-        val8: 80,
-        val9: 90,
-        val10: 100,
-      });
-    }
+
+    record.push({
+      date: goal?.end_date,
+      val1: 10,
+      val2: 20,
+      val3: 30,
+      val4: 40,
+      val5: 50,
+      val6: 60,
+      val7: 70,
+      val8: 80,
+      val9: 90,
+      val10: 100,
+    });
     setData(record);
   };
   /* eslint-disable */
   useEffect(() => {
-    axios
-      .get(ServerURL.BASE_URL + "/goal/?student=" + params.id)
-      .then((res) => {
-        setGoals(res.data);
-        setGoal(res.data[index]);
-        let data = [];
-
-        fetchTableData(res.data[index]);
-        setSelect({
-          date: res.data[index]?.start_date,
-          note: `Administration and or teacher identifies students who need more
-        intervention support than what the School wide Positive Behavior
-        Intervention Support (PBIS) -a framework for supporting
-        students’ behavioral, academic, ocial,emotional, and mental
-        health can offer.`,
-        });
-      });
+    fetch();
   }, [modalOpen]);
 
-  useEffect(() => {
-    let data = [];
-    setGoal(goals[index]);
-
-    goals[index]?.records.map((item) =>
-      data.push({
-        date: item.date,
-        value: item.score,
-        val1: 10,
-        val2: 20,
-        val3: 30,
-        val4: 40,
-        val5: 50,
-        val6: 60,
-        val7: 70,
-        val8: 80,
-        val9: 90,
-        val10: 100,
-      })
-    );
-    data.push({
-      date: goals[index]?.start_date,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    });
-    data.push({
-      date: goals[index]?.end_date,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    });
-    setData(data.sort((a, b) => new Date(a.date) < new Date(b.date)));
-  }, [index]);
-
-  useEffect(() => {
-    axios
-      .get(ServerURL.BASE_URL + "/student/?id=" + params.id)
-      .then((res) => setStudent(res.data))
-      .catch(() => console.error("error"));
-  }, []);
   /* eslint-enable */
   const NewRecord = () => {
     setRecord({
       score: "",
       note: "",
     });
-    setModalOpen(false);
+    setModalOpen(true);
   };
 
   const Undo = () => {
     axios.delete(ServerURL.BASE_URL + "/record/?id=" + record.id);
+    fetch();
   };
 
   const getProgress = (start_date, end_date) => {
@@ -196,7 +129,7 @@ export const Progress = () => {
   const addRecord = async () => {
     const data = {
       ...record,
-      goal: goals[index].id,
+      goal: goal.id,
     };
     try {
       await axios.post(ServerURL.BASE_URL + "/record/", data);
@@ -222,7 +155,9 @@ export const Progress = () => {
             <div className="title">Progress Monitoring</div>
             <div className="info">
               <div className="image">
-                <img src={ServerURL.BASE_URL + student?.image} alt="avatar" />
+                {student?.image && (
+                  <img src={ServerURL.BASE_URL + student?.image} alt="avatar" />
+                )}
               </div>
               <div className="status">
                 <div className="status-info">
@@ -246,34 +181,26 @@ export const Progress = () => {
           </div>
           <div className="goal-details">
             <div className="detail">
-              <div className="text">{goal ? goal.type : "Behavioral"}</div>
-              <div className="value">
-                <Select
-                  text="Goal "
-                  value={goals.length > 0 ? index + 1 : ""}
-                  options={goals?.map((item, index) => index + 1)}
-                  onChange={(val) => setIndex(val - 1)}
-                />
-              </div>
+              <div className="text">{goal.type}</div>
+              <div className="value">Goal {goal.id}</div>
             </div>
             <div className="detail col">
               <div className="text">Goal Name</div>
-              <div className="value">{goals[index]?.name}</div>
+              <div className="value">{goal?.name}</div>
             </div>
             <div className="detail">
               <div className="text">Coin Value</div>
-              <div className="value">{goals[index]?.student?.coin}</div>
+              <div className="value">{student?.coin}</div>
             </div>
           </div>
           <div className="details">
             <div className="description">
               <div className="date">
                 Completion Date:{" "}
-                {goal?.end_date
-                  ? moment(new Date(goal.end_date + " 01:00:00")).format(
-                      "MM/DD/YYYY"
-                    )
-                  : ""}
+                {goal?.end_date &&
+                  moment(new Date(goal?.end_date + " 01:00:00")).format(
+                    "MM/DD/YYYY"
+                  )}
               </div>
               <div className="text">
                 Administration and or teacher identifies students who need more
@@ -289,19 +216,20 @@ export const Progress = () => {
                 <div
                   className="progress"
                   style={{
-                    width: goal
-                      ? getProgress(goal?.start_date, goal?.end_date)
-                      : "",
+                    width: getProgress(goal?.start_date, goal?.end_date),
                   }}
                 />
               </div>
               <div className="text">
-                {goal ? getProgress(goal?.start_date, goal?.end_date) : "0%"}
+                {goal && getProgress(goal?.start_date, goal?.end_date)}
               </div>
             </div>
           </div>
-          <div className="btn complete" onClick={() => setOpen(true)}>
-            Complete
+          <div
+            className="btn complete"
+            onClick={() => goal?.status === "completed" && setOpen(true)}
+          >
+            {goal?.status}
           </div>
         </div>
         <div className="card">
@@ -330,11 +258,10 @@ export const Progress = () => {
                 <div className="text">Entry Date From</div>
                 <div className="btn">
                   <div className="date">
-                    {goal
-                      ? moment(new Date(goal?.start_date + " 01:00:00")).format(
-                          "MM/DD/YYYY"
-                        )
-                      : ""}
+                    {goal &&
+                      moment(new Date(goal?.start_date + " 01:00:00")).format(
+                        "MM/DD/YYYY"
+                      )}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -345,11 +272,10 @@ export const Progress = () => {
                 <div className="text">Entry Date To</div>
                 <div className="btn">
                   <div className="date">
-                    {goal
-                      ? moment(
-                          new Date(goals[index]?.end_date + " 01:00:00")
-                        ).format("MM/DD/YYYY")
-                      : ""}
+                    {goal &&
+                      moment(new Date(goal?.end_date + " 01:00:00")).format(
+                        "MM/DD/YYYY"
+                      )}
                   </div>
                   <div className="icon">
                     <XIcon />
@@ -424,29 +350,9 @@ export const Progress = () => {
             </div>
           </div>
           <div className="records">
-            <div className="record-header">
-              <div className="btn-group">
-                <div
-                  className="btn fill"
-                  onClick={() => goal && setModalOpen(true)}
-                >
-                  Update
-                </div>
-                <div className="btn" onClick={goal && Undo}>
-                  Undo
-                </div>
-              </div>
-              <div className="btn" onClick={() => goal && NewRecord()}>
-                <div className="text">New Record</div>
-                <div className="icon">+</div>
-              </div>
-            </div>
             <div className="table">
               <div className="thead">
                 <div className="row text-1 medium">
-                  <div className="select">
-                    <XIcon />
-                  </div>
                   <div className="line">Line</div>
                   <div className="date">Date</div>
                   <div className="score">Score</div>
@@ -456,14 +362,6 @@ export const Progress = () => {
               <div className="tbody">
                 {goal?.records?.map((rec, index) => (
                   <div className="row text-1 medium" key={index}>
-                    <div className="select">
-                      <input
-                        type="radio"
-                        name="record"
-                        value={index}
-                        onChange={() => setRecord(rec)}
-                      />
-                    </div>
                     <div className="line">{index + 1}</div>
                     <div className="date">
                       {moment(new Date(rec.date + " 08:00:00")).format(
@@ -475,7 +373,6 @@ export const Progress = () => {
                   </div>
                 ))}
                 <div className="row text-1 medium">
-                  <div className="select"></div>
                   <div className="line"></div>
                   <div className="date"></div>
                   <div className="score"></div>
@@ -488,7 +385,7 @@ export const Progress = () => {
       </div>
       {open && (
         <div className="modal">
-          <div className="modal-main card">
+          <div className="card modal-main">
             <div className="header">
               <div className="title">Complete Goal</div>
               <div className="btn" onClick={() => setOpen(false)}>
@@ -502,13 +399,15 @@ export const Progress = () => {
             <div className="rewards coins">
               <div className="text">Select Coins Earned</div>
               <div className="coins large-text bold">
-                <div className="coin">1</div>
+                <div className={complete.coin === 1 ? "coin active" : "coin"}>
+                  1
+                </div>
                 <div className="coin">2</div>
                 <div className="coin">3</div>
               </div>
               <div className="explain">
                 <div className="text bold">Explaination of Coins Earned</div>
-                <textarea placeholder="Explanation for Coins Earned" />
+                <div>{complete.explain}</div>
               </div>
             </div>
 
@@ -517,51 +416,6 @@ export const Progress = () => {
                 Cancel
               </div>
               <div className="btn confirm" onClick={() => confirm()}>
-                Confirm
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {modalOpen && (
-        <div className="modal">
-          <div className="card modal-main">
-            <div className="header">
-              <div className="title">New Record</div>
-              <div className="btn" onClick={NewRecord}>
-                Close
-              </div>
-            </div>
-            <div className="record">
-              <div className="score">
-                <div className="text bold">Score</div>
-                <input
-                  type="number"
-                  className="text"
-                  min={0}
-                  max={100}
-                  value={record?.score}
-                  onChange={(e) => handleChangeScore(e.target.value)}
-                />
-              </div>
-              <div className="explain">
-                <div className="text bold">Note</div>
-                <textarea
-                  value={record?.note}
-                  onChange={(e) =>
-                    setRecord({ ...record, note: e.target.value })
-                  }
-                  placeholder="Explanation for Coins Earned"
-                />
-              </div>
-            </div>
-
-            <div className="btn-group">
-              <div className="btn deny" onClick={() => setModalOpen(false)}>
-                Cancel
-              </div>
-              <div className="btn confirm" onClick={() => addRecord()}>
                 Confirm
               </div>
             </div>

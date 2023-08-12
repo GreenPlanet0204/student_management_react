@@ -11,6 +11,7 @@ import Modal from "../components/Modal";
 let socket = new WebSocket(
   ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
 );
+
 let typingTimer = 0;
 let isTypingSignalSent = false;
 
@@ -141,6 +142,27 @@ const Messages = () => {
       return user;
     });
     return updatedChatList;
+  };
+
+  const start = () => {
+    socket = new WebSocket(
+      ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
+    );
+
+    const close = socket.close;
+
+    socket.close = () => {
+      close.call(socket);
+    };
+
+    socket.onerror = (e) => console.error(e);
+    socket.onclose = () => {
+      setTimeout(start, 3000);
+    };
+  };
+
+  socket.onclose = () => {
+    setTimeout(start, 3000);
   };
 
   socket.onmessage = (event) => {

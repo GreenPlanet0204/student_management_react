@@ -11,7 +11,7 @@ export const Rewards = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.school)
       .then((res) => setRewards(res.data));
   }, []);
   /* eslint-enable */

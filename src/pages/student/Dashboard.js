@@ -3,6 +3,7 @@ import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 import moment from "moment";
 import Select from "../../components/Select";
+import { Link } from "react-router-dom";
 
 export const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -44,10 +45,13 @@ export const Dashboard = () => {
         </div>
       </div>
       <div className="category">
-        <div className="card goals">
-          <div className="label">Goals</div>
-          <div className="number">{student.goals?.length}</div>
-        </div>
+        <Link to="/goals">
+          <div className="card goals">
+            <div className="label">Goals</div>
+            <div className="number">{student.goals?.length}</div>
+          </div>
+        </Link>
+
         <div className="card coins">
           <div className="label">Coins Earned</div>
           <div className="number">{student.coin}</div>

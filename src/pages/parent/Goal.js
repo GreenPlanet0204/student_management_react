@@ -46,12 +46,12 @@ export const Goal = () => {
       axios
         .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
         .then((res) => {
-          setGoal({ ...res.data });
+          setGoal({ ...res.data, student: res.data.student.id });
         })
         .catch(() => console.error("error"));
     }
     axios
-      .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?parent=" + user.profile.id)
       .then((res) => {
         setStudents(res.data);
         setFilterStudents(res.data);
