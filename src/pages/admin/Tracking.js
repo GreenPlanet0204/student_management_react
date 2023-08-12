@@ -12,7 +12,10 @@ export const Tracking = () => {
 
   /* eslint-disable */
   useEffect(() => {
-    axios.get(`${ServerURL.BASE_URL}/${tab}/`).then((res) => setData(res.data));
+    axios
+      .get(`${ServerURL.BASE_URL}/${tab}/`)
+      .then((res) => setData(res.data))
+      .catch(() => console.error("error"));
   }, [tab]);
   /* eslint-enable */
   return (

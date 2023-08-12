@@ -11,10 +11,13 @@ export const Goals = () => {
   const [filterGoals, setFilterGoals] = useState([]);
   /* eslint-disable */
   useEffect(() => {
-    axios.get(ServerURL.BASE_URL + "/goal/?user=" + user.id).then((res) => {
-      setGoals(res.data);
-      setFilterGoals(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/goal/?user=" + user.id)
+      .then((res) => {
+        setGoals(res.data);
+        setFilterGoals(res.data);
+      })
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
 

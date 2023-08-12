@@ -12,7 +12,8 @@ export const Rewards = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.id)
-      .then((res) => setRewards(res.data));
+      .then((res) => setRewards(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
 
@@ -71,6 +72,7 @@ export const Rewards = () => {
             ))}
           </div>
           <div className="col action">
+            <div className="label">Actions</div>
             {rewards.map((reward, index) => (
               <div className="item" key={index}>
                 <Link to={"/reward/" + reward.id}>

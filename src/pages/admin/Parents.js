@@ -9,7 +9,8 @@ export const Parents = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/parent/")
-      .then((res) => setParents(res.data));
+      .then((res) => setParents(res.data))
+      .catch(() => console.error("error"));
   }, []);
   return (
     <div className="container">

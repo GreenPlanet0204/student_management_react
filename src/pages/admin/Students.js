@@ -9,7 +9,8 @@ export const Students = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/student/")
-      .then((res) => setStudents(res.data));
+      .then((res) => setStudents(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
   return (

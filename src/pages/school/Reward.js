@@ -29,38 +29,39 @@ export const Reward = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(ServerURL.BASE_URL + "/reward/?id=" + params.id).then((res) => {
-        setReward({ ...res.data });
-      });
+      axios
+        .get(ServerURL.BASE_URL + "/reward/?id=" + params.id)
+        .then((res) => {
+          setReward({
+            ...res.data,
+            schools: res.data.schools.map((item) => item.id),
+          });
+        })
+        .catch(() => console.error("error"));
     }
   }, []);
   /* eslint-enable */
 
   const Submit = async () => {
-    console.log("reward", reward);
-    try {
-      if (params.id) {
-        await axios.post(
-          ServerURL.BASE_URL + "/reward/?id=" + params.id,
-          reward,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      } else {
-        await axios.post(ServerURL.BASE_URL + "/reward/", reward, {
+    if (params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/reward/?id=" + params.id, reward, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
-      }
-
-      navigate("/rewards");
-    } catch {
-      console.error("error");
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await axios
+        .post(ServerURL.BASE_URL + "/reward/", reward, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
     }
+
+    navigate("/rewards");
   };
 
   return (

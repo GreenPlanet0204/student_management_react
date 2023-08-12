@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const Student = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const [student, setStudent] = useState({
     name: "",
@@ -72,43 +73,68 @@ export const Student = () => {
     if (!student.name) messages["name"] = "This field is required!";
     if (!student.email) messages["email"] = "This field is required!";
     if (!student.school) messages["school"] = "This field is required!";
-    if (!student.password) messages["password"] = "This field is required!";
-    if (!student.confirm) messages["confirm"] = "This field is required!";
-    if (student.confirm !== student.password)
-      messages["confirm"] = "Password must be match!";
+    if (!params.id) {
+      if (!student.password) messages["password"] = "This field is required!";
+      if (!student.confirm) messages["confirm"] = "This field is required!";
+      if (student.confirm !== student.password)
+        messages["confirm"] = "Password must be match!";
+    }
+
     setMessage(messages);
   };
 
   const Submit = async (e) => {
     e.preventDefault();
     await require();
-    try {
-      const data = {
-        ...student,
-        interests: JSON.stringify(student.interests),
-      };
-      await axios.post(ServerURL.BASE_URL + "/student/", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/students");
-    } catch {
-      console.error("error");
+
+    const data = {
+      ...student,
+      interests: JSON.stringify(student.interests),
+    };
+    if (!params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/student/", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    } else {
+      let data = student;
+      if (!student.password) {
+        data = {
+          ...data,
+          password: null,
+        };
+      }
+      await axios
+        .post(ServerURL.BASE_URL + "/student/?id=" + params.id, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
     }
+
+    navigate("/students");
   };
   /* eslint-enable */
   useEffect(() => {
-    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
-      setSchools(res.data);
-    });
-    axios.get(ServerURL.BASE_URL + "/teacher/").then((res) => {
-      setTeachers(res.data);
-      setFilterTeachers(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/school/")
+      .then((res) => {
+        setSchools(res.data);
+      })
+      .catch(() => console.error("error"));
+    axios
+      .get(ServerURL.BASE_URL + "/teacher/")
+      .then((res) => {
+        setTeachers(res.data);
+        setFilterTeachers(res.data);
+      })
+      .catch(() => console.error("error"));
   }, []);
 
-  const params = useParams();
   useEffect(() => {
     if (params.id) {
       axios
@@ -121,7 +147,8 @@ export const Student = () => {
           };
 
           setStudent(data);
-        });
+        })
+        .catch(() => console.error("error"));
     }
   }, [params.id]);
   /* eslint-disable */
@@ -134,7 +161,7 @@ export const Student = () => {
   return (
     <div className="container">
       <div className="header">
-        <div className="title">New Student</div>
+        <div className="title">{params.id ? "Edit" : "New"} Student</div>
       </div>
       <div className="card new">
         <div className="form-control">
@@ -278,7 +305,7 @@ export const Student = () => {
         <div className="form-control">
           <div className="label">Interests</div>
           <div className="options">
-            {student.interests.map((interest, index) => (
+            {student?.interests?.map((interest, index) => (
               <div
                 className="option"
                 onClick={() => removeItem(interest)}

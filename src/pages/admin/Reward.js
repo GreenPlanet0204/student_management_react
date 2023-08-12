@@ -36,17 +36,23 @@ export const Reward = () => {
   /* eslint-enable */
   const params = useParams();
   useEffect(() => {
-    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
-      setSchools(res.data);
-      setFilterSchools(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/school/")
+      .then((res) => {
+        setSchools(res.data);
+        setFilterSchools(res.data);
+      })
+      .catch(() => console.error("error"));
 
     if (params.id) {
-      axios.get(ServerURL.BASE_URL + "/reward/?id=" + params.id).then((res) => {
-        let school_list = [];
-        res.data.schools.forEach((item) => school_list.push(item.id));
-        setReward({ ...res.data, schools: school_list });
-      });
+      axios
+        .get(ServerURL.BASE_URL + "/reward/?id=" + params.id)
+        .then((res) => {
+          let school_list = [];
+          res.data.schools.forEach((item) => school_list.push(item.id));
+          setReward({ ...res.data, schools: school_list });
+        })
+        .catch(() => console.error("error"));
     }
   }, [params.id]);
   /* eslint-disable */
@@ -55,21 +61,21 @@ export const Reward = () => {
     console.log("reward", reward);
     try {
       if (params.id) {
-        await axios.post(
-          ServerURL.BASE_URL + "/reward/?id=" + params.id,
-          reward,
-          {
+        await axios
+          .post(ServerURL.BASE_URL + "/reward/?id=" + params.id, reward, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          }
-        );
+          })
+          .catch(() => console.error("error"));
       } else {
-        await axios.post(ServerURL.BASE_URL + "/reward/", reward, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios
+          .post(ServerURL.BASE_URL + "/reward/", reward, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .catch(() => console.error("error"));
       }
 
       navigate("/rewards");
@@ -81,7 +87,7 @@ export const Reward = () => {
   return (
     <div className="container">
       <div className="header">
-        <div className="title">New Reward</div>
+        <div className="title">{params.id ? "Edit" : "New"} Reward</div>
         <Link to="/reward">
           <div className="btn">
             <div className="text">New Rewards</div>

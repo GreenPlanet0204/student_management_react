@@ -3,9 +3,10 @@ import ServerURL from "../../utils/ServerURL";
 import Password from "../../components/Password";
 import MultiUserSelect from "../../components/MultiUserSelect";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Parent = () => {
+  const params = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const [parent, setParent] = useState({
@@ -45,8 +46,10 @@ export const Parent = () => {
     if (!parent.name) messages["name"] = "This field is required!";
     if (!parent.email) messages["email"] = "This field is required!";
     if (!parent.school) messages["school"] = "This field is required!";
-    if (!parent.password) messages["password"] = "This field is required!";
-    if (!parent.confirm) messages["confirm"] = "This field is required!";
+    if (!params.id) {
+      if (!parent.password) messages["password"] = "This field is required!";
+      if (!parent.confirm) messages["confirm"] = "This field is required!";
+    }
     if (parent.confirm !== parent.password)
       messages["confirm"] = "Password must be match!";
     setMessage(messages);
@@ -55,16 +58,25 @@ export const Parent = () => {
   const Submit = async (e) => {
     e.preventDefault();
     await require();
-    try {
-      await axios.post(ServerURL.BASE_URL + "/parent/", parent, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/parents");
-    } catch {
-      console.error("error");
+    if (params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/parent/?id=" + params.id, parent, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await axios
+        .post(ServerURL.BASE_URL + "/parent/", parent, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
     }
+
+    navigate("/parents");
   };
   /* eslint-disable */
   useEffect(() => {
@@ -73,13 +85,22 @@ export const Parent = () => {
       .then((res) => {
         setStudents(res.data);
       });
+    if (params.id) {
+      axios.get(ServerURL.BASE_URL + "/parent/?id=" + params.id).then((res) =>
+        setParent({
+          ...res.data,
+          school: res.data.school.id,
+          students: res.data.students.map((item) => item.id),
+        })
+      );
+    }
   }, []);
   /* eslint-enable */
 
   return (
     <div className="container">
       <div className="header">
-        <div className="title">New Parent</div>
+        <div className="title">{params.id ? "Edit" : "New"} Parent</div>
       </div>
       <div className="card new">
         <div className="form-control">

@@ -10,7 +10,8 @@ export const Parents = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
       .get(ServerURL.BASE_URL + "/parent/?school=" + user.profile.id)
-      .then((res) => setParents(res.data));
+      .then((res) => setParents(res.data))
+      .catch(() => console.error("error"));
   }, []);
   return (
     <div className="container">

@@ -43,16 +43,20 @@ export const Goal = () => {
   const params = useParams();
   useEffect(() => {
     if (params.id) {
-      axios.get(ServerURL.BASE_URL + "/goal/?id=" + params.id).then((res) => {
-        setGoal({ ...res.data });
-      });
+      axios
+        .get(ServerURL.BASE_URL + "/goal/?id=" + params.id)
+        .then((res) => {
+          setGoal({ ...res.data });
+        })
+        .catch(() => console.error("error"));
     }
     axios
       .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
       .then((res) => {
         setStudents(res.data);
         setFilterStudents(res.data);
-      });
+      })
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
 
@@ -63,19 +67,17 @@ export const Goal = () => {
     if (goal.student) messages["student"] = "This field is required!";
     setMessage(messages);
     if (messages !== init) return;
-    try {
-      var data = { ...goal, responses: responses };
-      data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
-      data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
-      await axios.post(ServerURL.BASE_URL + "/goal/", data, {
+    var data = { ...goal, responses: responses };
+    data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
+    data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
+    await axios
+      .post(ServerURL.BASE_URL + "/goal/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
-      navigate("/goals");
-    } catch {
-      console.log("error");
-    }
+      })
+      .catch(() => console.error("error"));
+    navigate("/goals");
   };
 
   const onChange = (value, index) => {

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "../../components/Select";
 import Password from "../../components/Password";
 import ServerURL from "../../utils/ServerURL";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 export const School = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const levels = ["Elementary School", "Middle School", "High School"];
 
@@ -51,31 +52,51 @@ export const School = () => {
     let messages = initMessage;
     if (!school.name) messages["name"] = "This field is required!";
     if (!school.email) messages["email"] = "This field is required!";
-    if (!school.password) messages.password = "This field is required!";
-    if (!school.confirm) messages.confirm = "This field is required!";
+    if (params.id) {
+      if (!school.password) messages.password = "This field is required!";
+      if (!school.confirm) messages.confirm = "This field is required!";
+    }
     if (school.confirm !== school.password)
       messages.confirm = "Password must be match!";
+
     setMessage(messages);
   };
 
   const Submit = async () => {
     await require();
-    try {
-      await axios.post(ServerURL.BASE_URL + "/school/", school, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/schools");
-    } catch {
-      console.log("err");
+    if (params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/school/?id=" + params.id, school, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await axios
+        .post(ServerURL.BASE_URL + "/school/", school, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
     }
+    navigate("/schools");
   };
+
+  useEffect(() => {
+    if (params.id) {
+      axios
+        .get(ServerURL.BASE_URL + "/school/?id=" + params.id)
+        .then((res) => setSchool(res.data))
+        .catch(() => console.error("error"));
+    }
+  }, []);
 
   return (
     <div className="container">
       <div className="header">
-        <div className="title">New School</div>
+        <div className="title">{params.id ? "Edit" : "New"} School</div>
       </div>
       <div className="card new">
         <div className="form-control">
@@ -188,7 +209,7 @@ export const School = () => {
               type="text"
               className="text"
               value={school.city}
-              onChange={(e) => setSchool({ ...school, city: e.target })}
+              onChange={(e) => setSchool({ ...school, city: e.target.value })}
               placeholder="City"
             />
             <input

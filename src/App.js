@@ -140,11 +140,15 @@ function App() {
           <Route exact path="/" element={<SchoolTracking />} />
           <Route path="/students" element={<SchoolStudents />} />
           <Route path="/student" element={<SchoolStudent />} />
+          <Route path="/student/:id" element={<SchoolStudent />} />
           <Route path="/parent" element={<SchoolParent />} />
+          <Route path="/parent/:id" element={<SchoolParent />} />
           <Route path="/parents" element={<SchoolParents />} />
           <Route path="/reward" element={<SchoolReward />} />
+          <Route path="/reward/:id" element={<SchoolReward />} />
           <Route path="/rewards" element={<SchoolRewards />} />
           <Route path="/teacher" element={<SchoolTeacher />} />
+          <Route path="/teacher/:id" element={<SchoolTeacher />} />
           <Route path="/teachers" element={<SchoolTeachers />} />
           <Route path="/tracking" element={<SchoolTracking />} />
         </Routes>

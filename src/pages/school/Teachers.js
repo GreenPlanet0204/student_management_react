@@ -9,7 +9,10 @@ export const Teachers = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
       .get(ServerURL.BASE_URL + "/teacher/?school=" + user.profile.id)
-      .then((res) => setTeachers(res.data));
+      .then((res) => setTeachers(res.data))
+      .catch(() => {
+        console.error("error");
+      });
   }, []);
   return (
     <div className="container">
@@ -46,7 +49,7 @@ export const Teachers = () => {
             {teachers.map((teacher, index) => (
               <div className="item" key={index}>
                 <Link to={`/teacher/${teacher.id}`} className="btn">
-                  View
+                  Edit
                 </Link>
               </div>
             ))}

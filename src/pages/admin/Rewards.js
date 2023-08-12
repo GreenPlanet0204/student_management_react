@@ -10,7 +10,8 @@ export const Rewards = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/reward/")
-      .then((res) => setRewards(res.data));
+      .then((res) => setRewards(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-disable */
 

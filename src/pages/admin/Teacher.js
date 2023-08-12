@@ -6,9 +6,10 @@ import ServerURL from "../../utils/ServerURL";
 import axios from "axios";
 import UserSelect from "../../components/UserSelect";
 import MultiUserSelect from "../../components/MultiUserSelect";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Teacher = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const levels = ["Elementary School", "Middle School", "High School"];
   const [schools, setSchools] = useState([]);
@@ -54,41 +55,72 @@ export const Teacher = () => {
     if (!teacher.name) messages.name = "This field is required!";
     if (!teacher.email) messages.email = "This field is required!";
     if (!teacher.school) messages.school = "This field is required!";
-    if (!teacher.password) messages.password = "This field is required!";
-    if (!teacher.confirm) messages.confirm = "This field is required!";
-    if (teacher.confirm !== teacher.password)
-      messages.confirm = "Password must be match!";
+    if (!params.id) {
+      if (!teacher.password) messages.password = "This field is required!";
+      if (!teacher.confirm) messages.confirm = "This field is required!";
+      if (teacher.confirm !== teacher.password)
+        messages.confirm = "Password must be match!";
+    }
+
     setMessage(messages);
   };
 
   const Submit = async (e) => {
     await require();
-    try {
-      const data = {
-        ...teacher,
-        subject: JSON.stringify(teacher.subject),
-      };
-      await axios.post(ServerURL.BASE_URL + "/teacher/", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigate("/teachers");
-    } catch {
-      console.log("err");
+    const data = {
+      ...teacher,
+      subject: JSON.stringify(teacher.subject),
+    };
+    if (!params.id) {
+      await axios
+        .post(ServerURL.BASE_URL + "/teacher/", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await axios
+        .post(ServerURL.BASE_URL + "/teacher/?id=" + params.id, teacher, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .catch(() => console.error("error"));
     }
+
+    navigate("/teachers");
   };
 
   useEffect(() => {
-    axios.get(ServerURL.BASE_URL + "/school/").then((res) => {
-      setSchools(res.data);
-      setFilterSchools(res.data);
-    });
-    axios.get(ServerURL.BASE_URL + "/student/").then((res) => {
-      console.log("res", res.data);
-      setStudents(res.data);
-      setFilterStudents(res.data);
-    });
+    axios
+      .get(ServerURL.BASE_URL + "/school/")
+      .then((res) => {
+        setSchools(res.data);
+        setFilterSchools(res.data);
+      })
+      .catch(() => console.error("error"));
+    axios
+      .get(ServerURL.BASE_URL + "/student/")
+      .then((res) => {
+        console.log("res", res.data);
+        setStudents(res.data);
+        setFilterStudents(res.data);
+      })
+      .catch(() => console.error("error"));
+    if (params.id) {
+      axios
+        .get(ServerURL.BASE_URL + "/teacher/?id=" + params.id)
+        .then((res) => {
+          setTeacher({
+            ...res.data,
+            school: res.data.school.id,
+            level: res.data.school.level,
+            students: res.data.students.map((item) => item.id),
+          });
+        })
+        .catch(() => console.error("error"));
+    }
   }, []);
   /* eslint-disable */
   useEffect(() => {
@@ -121,7 +153,7 @@ export const Teacher = () => {
   return (
     <div className="container">
       <div className="header">
-        <div className="title">New Teacher</div>
+        <div className="title">{params.id ? "Edit" : "New"} Teacher</div>
       </div>
       <div className="card new">
         <div className="form-control">

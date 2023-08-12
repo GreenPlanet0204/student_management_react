@@ -10,7 +10,8 @@ export const Students = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     axios
       .get(ServerURL.BASE_URL + "/student/?school=" + user.profile.id)
-      .then((res) => setStudents(res.data));
+      .then((res) => setStudents(res.data))
+      .catch(() => console.error("error"));
   }, []);
   /* eslint-enable */
   return (
