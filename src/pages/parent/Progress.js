@@ -16,6 +16,7 @@ export const Progress = () => {
 
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
   const [select, setSelect] = useState({});
@@ -125,7 +126,7 @@ export const Progress = () => {
         setStudent(res.data[index]?.student);
       });
     }
-  }, [modalOpen]);
+  }, [modalOpen, loading]);
 
   useEffect(() => {
     setGoal(goals[index]);
@@ -142,7 +143,16 @@ export const Progress = () => {
   };
 
   const Undo = () => {
-    axios.delete(ServerURL.BASE_URL + "/record/?id=" + record.id);
+    if (record) {
+      setLoading(true);
+      axios
+        .delete(ServerURL.BASE_URL + "/record/?id=" + record.id)
+        .then(() => {
+          setLoading(false);
+          setRecord(null);
+        })
+        .catch(() => console.error("error"));
+    }
   };
 
   const getProgress = (start_date, end_date) => {
