@@ -14,8 +14,21 @@ export const Profile = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [modal, setModal] = useState(false);
   const [select, setSelect] = useState("");
-  const confirm = () => {
-    setModal(false);
+  const confirm = async () => {
+    axios
+      .post(ServerURL.BASE_URL + "/reward/?student=" + student.id, {
+        select: select,
+      })
+      .then(() => {
+        setStudent({
+          ...student,
+          rewards: [...student.rewards, select],
+        });
+      })
+      .then(() => setModal(false))
+      .catch(() => {
+        console.error("error");
+      });
   };
   /* eslint-disable */
   useEffect(() => {

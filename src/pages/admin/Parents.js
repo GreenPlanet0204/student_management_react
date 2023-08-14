@@ -16,12 +16,12 @@ export const Parents = () => {
     <div className="container">
       <div className="header">
         <div className="title">Parents</div>
-        <Link to="/parent">
+        {/* <Link to="/parent">
           <div className="btn">
             <div className="text">New Parent</div>
             <div className="plus">+</div>
           </div>
-        </Link>
+        </Link> */}
       </div>
       <div className="card students">
         <div className="row">

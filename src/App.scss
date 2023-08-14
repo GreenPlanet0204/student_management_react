@@ -1252,8 +1252,8 @@ input {
     
   }
 
-  .card.mini {
-    align-items: center;
+  .grow {
+    flex-grow: 1;
   }
 
   .card {
@@ -2886,9 +2886,15 @@ a {
 }
 
 .details.parent {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
   .card {
-    padding: 41px 65px;
+    width: 360px;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
     .btn {
       cursor: pointer;
       display: flex;

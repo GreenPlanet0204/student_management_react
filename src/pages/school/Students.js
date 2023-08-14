@@ -18,12 +18,12 @@ export const Students = () => {
     <div className="container">
       <div className="header">
         <div className="title">Students</div>
-        <Link to="/student">
+        {/* <Link to="/student">
           <div className="btn">
             <div className="text">New Student</div>
             <div className="plus">+</div>
           </div>
-        </Link>
+        </Link> */}
       </div>
       <div className="card students">
         <div className="row">

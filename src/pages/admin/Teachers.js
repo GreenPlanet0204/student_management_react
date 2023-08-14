@@ -15,10 +15,10 @@ export const Teachers = () => {
     <div className="container">
       <div className="header">
         <div className="title">Teacher</div>
-        <Link to="/teacher" className="btn">
+        {/* <Link to="/teacher" className="btn">
           <div className="text">New Teacher</div>
           <div className="plus">+</div>
-        </Link>
+        </Link> */}
       </div>
       <div className="card students">
         <div className="row">

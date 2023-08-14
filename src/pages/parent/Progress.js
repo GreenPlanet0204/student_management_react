@@ -37,7 +37,7 @@ export const Progress = () => {
     });
   };
 
-  const confirm = async () => {
+  const handleComplete = async () => {
     const data = {
       ...complete,
       goal: goal.id,
@@ -514,7 +514,7 @@ export const Progress = () => {
               <div className="btn deny" onClick={() => setOpen(false)}>
                 Cancel
               </div>
-              <div className="btn confirm" onClick={() => confirm()}>
+              <div className="btn confirm" onClick={() => handleComplete()}>
                 Confirm
               </div>
             </div>

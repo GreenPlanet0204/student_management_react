@@ -13,24 +13,11 @@ export const Profile = () => {
   const [student, setStudent] = useState({});
   const [rewards, setRewards] = useState([]);
   const [modal, setModal] = useState(false);
-  const [select, setSelect] = useState([]);
+  const [select, setSelect] = useState();
   const [goals, setGoals] = useState([]);
   const [complete, setComplete] = useState([]);
   const confirm = async () => {
-    axios
-      .post(ServerURL.BASE_URL + "/reward/?student=" + params.id, {
-        select: select,
-      })
-      .then(() => {
-        setStudent({
-          ...student,
-          rewards: rewards.filter((item) => select.includes(item.id)),
-        });
-      })
-      .then(() => setModal(false))
-      .catch(() => {
-        console.error("error");
-      });
+    setModal(false);
   };
   /* eslint-disable */
   useEffect(() => {
@@ -226,21 +213,14 @@ export const Profile = () => {
               <div className="text">Select Reward</div>
               <div className="row">
                 {rewards.map((reward) => (
-                  <div
-                    className="reward"
-                    onClick={() =>
-                      select.includes(reward.id)
-                        ? setSelect(select.filter((item) => item !== reward.id))
-                        : setSelect([...select, reward.id])
-                    }
-                  >
+                  <div className="reward" onClick={() => setSelect(reward)}>
                     <div className="image">
                       <img
                         src={ServerURL.BASE_URL + reward.image}
                         alt="reward"
                       />
                     </div>
-                    {select.includes(reward.id) && (
+                    {select === reward && (
                       <div className="selected">Selected</div>
                     )}
                     <div className="mark">{reward.coin}</div>
