@@ -17,7 +17,7 @@ export const Profile = () => {
   const confirm = async () => {
     axios
       .post(ServerURL.BASE_URL + "/reward/?student=" + student.id, {
-        select: select,
+        select: select.id,
       })
       .then(() => {
         setStudent({
@@ -42,7 +42,7 @@ export const Profile = () => {
     axios
       .get(ServerURL.BASE_URL + "/reward/")
       .then((res) => setRewards(res.data));
-  }, []);
+  }, [modal]);
   /* eslint-enable */
   return (
     <>
@@ -232,7 +232,12 @@ export const Profile = () => {
               <div className="text">Select Reward</div>
               <div className="row">
                 {rewards.map((reward) => (
-                  <div className="reward" onClick={() => setSelect(reward)}>
+                  <div
+                    className="reward"
+                    onClick={() =>
+                      reward.coin <= student.coin && setSelect(reward)
+                    }
+                  >
                     <div className="image">
                       <img
                         src={ServerURL.BASE_URL + reward.image}

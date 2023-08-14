@@ -5,13 +5,11 @@ import { ReactComponent as GoalIcon } from "../../assets/Icons/Goals.svg";
 import { ReactComponent as XIcon } from "../../assets/Icons/X.svg";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
 import ServerURL from "../../utils/ServerURL";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const Progress = () => {
   const params = useParams();
-  const navigate = useNavigate();
-
   const [open, setOpen] = useState(false);
 
   const [data, setData] = useState([]);
@@ -101,7 +99,7 @@ export const Progress = () => {
   /* eslint-disable */
   useEffect(() => {
     fetch();
-  }, [modalOpen]);
+  }, []);
 
   /* eslint-enable */
 
