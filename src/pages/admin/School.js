@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "../../components/Select";
+import CountrySelect from "../../components/CountrySelect";
 import Password from "../../components/Password";
 import ServerURL from "../../utils/ServerURL";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,6 +10,7 @@ export const School = () => {
   const params = useParams();
   const navigate = useNavigate();
   const levels = ["Elementary School", "Middle School", "High School"];
+  const [countries, setCountries] = useState([]);
 
   const [school, setSchool] = useState({
     name: "",
@@ -83,7 +85,7 @@ export const School = () => {
     }
     navigate("/schools");
   };
-
+  /* eslint-disable */
   useEffect(() => {
     if (params.id) {
       axios
@@ -91,7 +93,11 @@ export const School = () => {
         .then((res) => setSchool(res.data))
         .catch(() => console.error("error"));
     }
+    axios
+      .get("https://valid.layercode.workers.dev/list/countries?format=select")
+      .then((res) => setCountries(res.data.countries));
   }, []);
+  /* eslint-disable */
 
   return (
     <div className="container">
@@ -223,9 +229,9 @@ export const School = () => {
         </div>
         <div className="form-control">
           <div className="group">
-            <Select
+            <CountrySelect
               value={school.country}
-              options={[]}
+              options={countries}
               onChange={(val) => setSchool({ ...school, country: val })}
               placeholder="Country"
             />

@@ -157,12 +157,12 @@ const Messages = () => {
 
     socket.onerror = (e) => console.error(e);
     socket.onclose = () => {
-      setTimeout(start, 3000);
+      setTimeout(start, 1000);
     };
   };
 
   socket.onclose = () => {
-    setTimeout(start, 3000);
+    setTimeout(start, 1000);
   };
 
   socket.onmessage = (event) => {
@@ -225,7 +225,7 @@ const Messages = () => {
       typingTimer = setTimeout(() => {
         sendTypingSignal(false);
         isTypingSignalSent = false;
-      }, 3000);
+      }, 1000);
     } else {
       clearTimeout(typingTimer);
       isTypingSignalSent = false;
