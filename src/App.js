@@ -38,6 +38,8 @@ import { Progress as TeacherProgress } from "./pages/teacher/Progress";
 import { Student as TeacherStudent } from "./pages/teacher/Student";
 import { Reward as TeacherReward } from "./pages/teacher/Reward";
 import { Goal as TeacherGoal } from "./pages/teacher/Goal";
+import { Parents as TeacherParents } from "./pages/teacher/Parents";
+import { Parent as TeacherParent } from "./pages/teacher/Parent";
 
 import { Dashboard as ParentDashboard } from "./pages/parent/Dashboard";
 import { Goals as ParentGoals } from "./pages/parent/Goals";
@@ -94,6 +96,9 @@ function App() {
           <Route path="/tracking" element={<TeacherTracking />} />
           <Route path="/student/:id" element={<TeacherProfile />} />
           <Route path="/progress/:id" element={<TeacherProgress />} />
+          <Route path="/parents" element={<TeacherParents />} />
+          <Route path="/parent" element={<TeacherParent />} />
+          <Route path="/parent/:id" element={<TeacherParent />} />
         </Routes>
       )}
       {role === "parent" && (

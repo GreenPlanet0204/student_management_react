@@ -42,6 +42,15 @@ const Layout = ({ children, role, show, setShow }) => {
                   <div className="text">Students</div>
                 </Link>
                 <Link
+                  to={"/parents"}
+                  className={
+                    location.pathname.startsWith("/parent") ? "active" : ""
+                  }
+                >
+                  <StudentIcon />
+                  <div className="text">Parents</div>
+                </Link>
+                <Link
                   to="/goals"
                   className={
                     location.pathname.startsWith("/goal") ? "active" : ""
