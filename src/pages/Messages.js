@@ -39,7 +39,7 @@ const Messages = () => {
   const [onlineUserList, setOnlineUserList] = useState([]);
 
   const redirectUserToDefaultChatRoom = (chatUsers) => {
-    if (chatUsers.length === 0) return navigate("/messages");
+    if (chatUsers?.length === 0) return navigate("/messages");
     if (location.pathname === "/messages") {
       navigate("/message/" + chatUsers[0].roomId);
     } else {
@@ -60,8 +60,16 @@ const Messages = () => {
     }
   };
 
+  const filterChatUser = async (formatedChatUser) => {
+    setChatUsers(formatedChatUser);
+    setTeachers(formatedChatUser?.filter((item) => item.role === "teacher"));
+    setStudents(formatedChatUser?.filter((item) => item.role === "student"));
+    setParents(formatedChatUser?.filter((item) => item.role === "parent"));
+    redirectUserToDefaultChatRoom(formatedChatUser);
+  };
+
   const fetchChatUser = async () => {
-    const url = `/users/${CommonUtil.getUserId()}/chats/`;
+    const url = `/chats/?user=${CommonUtil.getUserId()}`;
     const chatUsers = await ApiConnector.sendGetRequest(url);
     const formatedChatUser = await CommonUtil.getFormatedChatUser(
       chatUsers,
@@ -111,19 +119,32 @@ const Messages = () => {
       members: [memberId, userId],
       type: "DM",
     };
-    await ApiConnector.sendPostRequest(
+    const chatUser = await ApiConnector.sendPostRequest(
       "/chats/",
       JSON.stringify(requestBody),
       true,
       false
     );
-    await fetchChatUser();
+    const formatUser = await CommonUtil.getFormatedChatUser(
+      [chatUser],
+      onlineUserList
+    );
+    await filterChatUser([...chatUsers, formatUser[0]]);
     setIsShowAddPeopleModal(false);
   };
 
   const removeMemberClickHandler = async (roomId) => {
-    await ApiConnector.sendDeleteRequest(`/chats/?roomId=${roomId}`);
-    await fetchChatUser();
+    const requestBody = {
+      roomId: roomId,
+    };
+    await ApiConnector.sendPostRequest(
+      `/chats/`,
+      JSON.stringify(requestBody),
+      true,
+      false
+    );
+    const formatUsers = chatUsers.filter((item) => item.roomId !== roomId);
+    await filterChatUser(formatUsers);
     await fetchChatMessage();
   };
 
@@ -133,7 +154,7 @@ const Messages = () => {
   };
 
   const getChatListWithOnlineUser = (users) => {
-    let updatedChatList = users.map((user) => {
+    let updatedChatList = users?.map((user) => {
       if (onlineUserList.includes(user.id)) {
         user.isOnline = true;
       } else {
@@ -144,25 +165,10 @@ const Messages = () => {
     return updatedChatList;
   };
 
-  const start = () => {
+  const connectSocket = () => {
     socket = new WebSocket(
       ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
     );
-
-    const close = socket.close;
-
-    socket.close = () => {
-      close.call(socket);
-    };
-
-    socket.onerror = (e) => console.error(e);
-    socket.onclose = () => {
-      setTimeout(start, 1000);
-    };
-  };
-
-  socket.onclose = () => {
-    start();
   };
 
   socket.onmessage = (event) => {
@@ -187,31 +193,48 @@ const Messages = () => {
     }
   };
 
+  socket.onerror = (e) => {
+    console.error(e);
+  };
+
+  socket.onclose = () => {
+    setTimeout(connectSocket, 1000);
+  };
+
   const messageSubmitHandler = async (event) => {
     event.preventDefault();
     if (inputMessage) {
-      socket.send(
-        JSON.stringify({
-          action: SocketActions.MESSAGE,
-          message: inputMessage,
-          user: CommonUtil.getUserId(),
-          roomId: CommonUtil.getActiveChatId(params),
-        })
-      );
+      if (socket.readyState === WebSocket.CONNECTING) {
+        socket.addEventListener("open", () => messageSubmitHandler(event));
+      } else {
+        socket.send(
+          JSON.stringify({
+            action: SocketActions.MESSAGE,
+            message: inputMessage,
+            user: CommonUtil.getUserId(),
+            roomId: CommonUtil.getActiveChatId(params),
+          })
+        );
+        socket.removeEventListener("open", () => messageSubmitHandler(event));
+      }
     }
-    await fetchChatMessage();
     setInputMessage("");
   };
 
   const sendTypingSignal = (typing) => {
-    socket.send(
-      JSON.stringify({
-        action: SocketActions.TYPING,
-        typing: typing,
-        user: CommonUtil.getUserId(),
-        roomId: CommonUtil.getActiveChatId(params),
-      })
-    );
+    if (socket.readyState === WebSocket.CONNECTING) {
+      socket.addEventListener("open", () => sendTypingSignal(typing));
+    } else {
+      socket.send(
+        JSON.stringify({
+          action: SocketActions.TYPING,
+          typing: typing,
+          user: CommonUtil.getUserId(),
+          roomId: CommonUtil.getActiveChatId(params),
+        })
+      );
+      socket.removeEventListener("open", () => sendTypingSignal(typing));
+    }
   };
 
   const chatMessageTypingHandler = (event) => {
@@ -298,11 +321,11 @@ const Messages = () => {
                   <div className="title">Students</div>
 
                   <div className="col">
-                    {getChatListWithOnlineUser(students).map((student) => (
+                    {getChatListWithOnlineUser(students)?.map((student) => (
                       <Link
                         className={"item " + getActiveChatClass(student.roomId)}
                         to={"/message/" + student.roomId}
-                        key={student.id}
+                        key={student.roomId}
                       >
                         <div className="avatar">
                           <img src={student.image} alt="Avatar" />
@@ -343,11 +366,11 @@ const Messages = () => {
                   <div className="title">Teacher</div>
 
                   <div className="col">
-                    {getChatListWithOnlineUser(teachers).map((teacher) => (
+                    {getChatListWithOnlineUser(teachers)?.map((teacher) => (
                       <Link
                         className={"item " + getActiveChatClass(teacher.roomId)}
                         to={"/message/" + teacher.roomId}
-                        key={teacher.id}
+                        key={teacher.roomId}
                       >
                         <div className="avatar">
                           <img src={teacher.image} alt="Avatar" />
@@ -387,11 +410,11 @@ const Messages = () => {
                 <div className="part">
                   <div className="title">Parents</div>
                   <div className="col">
-                    {getChatListWithOnlineUser(parents).map((parent) => (
+                    {getChatListWithOnlineUser(parents)?.map((parent) => (
                       <Link
                         className={"item " + getActiveChatClass(parent.roomId)}
                         to={"/message/" + parent.roomId}
-                        key={parent.id}
+                        key={parent.roomId}
                       >
                         <div className="avatar">
                           <img src={parent.image} alt="Avatar" />

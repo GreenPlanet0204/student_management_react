@@ -161,6 +161,24 @@
       }
     }
   }
+
+  .logout {
+    cursor: pointer;
+    height: 40px;
+    font-size: 16px;
+    line-height: 25px;
+    display: flex;
+    background-color: #913A7E;
+    color: #FFFFFF;
+    width: 160px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    font-weight: 500;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }
 }
 .top {
   display: flex;
@@ -416,7 +434,7 @@ input {
 
 .container {
   padding: 30px 20px 20px 30px;
-  height: calc(100vh - 61px);
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   background: #F5F5F5;
@@ -663,7 +681,7 @@ input {
   }
 
   .card.goals {
-    height: 100%;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     padding: 18px 24px;
@@ -787,7 +805,7 @@ input {
   }
 
   .card.students {
-    min-height: calc(100% - 64px);
+    flex: 1 1 auto;
     padding: 40px 50px 40px 30px;
     display: flex;
     flex-direction: column;
@@ -1439,7 +1457,7 @@ input {
   }
 
   .card.more {
-    height: 100%;
+    flex: 1 1 auto;
     gap: 0;
     padding-bottom:0 ;
   }

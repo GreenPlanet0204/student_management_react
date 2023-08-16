@@ -7,12 +7,23 @@ import { ReactComponent as RewardsIcon } from "../assets/Icons/Rewards.svg";
 import { ReactComponent as TrackingIcon } from "../assets/Icons/Tracking.svg";
 import { ReactComponent as BiArrow } from "../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import ServerURL from "../utils/ServerURL";
+
+import CookieUtil from "../utils/CookieUtil";
+import Constants from "../utils/constants";
 
 const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const logout = async () => {
+    localStorage.clear();
+    CookieUtil.deleteCookie(Constants.ACCESS_PROPERTY);
+    CookieUtil.deleteCookie(Constants.REFRESH_PROPERTY);
+    navigate("/login");
+  };
   return (
     <>
       {location.pathname !== "/login" ? (
@@ -316,6 +327,9 @@ const Layout = ({ children, role, show, setShow }) => {
                 </Link>
               </div>
             )}
+            <div className="logout" onClick={logout}>
+              Sign Out
+            </div>
           </div>
           <div className="main">
             <div className="top">
