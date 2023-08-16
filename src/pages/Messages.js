@@ -7,6 +7,7 @@ import ApiConnector from "../utils/ApiConnector";
 import SocketActions from "../utils/SocketActions";
 import Constants from "../utils/constants";
 import Modal from "../components/Modal";
+import axios from "axios";
 
 let socket = new WebSocket(
   ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
@@ -137,15 +138,14 @@ const Messages = () => {
     const requestBody = {
       roomId: roomId,
     };
-    await ApiConnector.sendPostRequest(
-      `/chats/`,
-      JSON.stringify(requestBody),
-      true,
-      false
-    );
-    const formatUsers = chatUsers.filter((item) => item.roomId !== roomId);
-    await filterChatUser(formatUsers);
-    await fetchChatMessage();
+    axios
+      .post(ServerURL.BASE_URL + `/chats/`, requestBody)
+      .then(() => {
+        const formatUsers = chatUsers.filter((item) => item.roomId !== roomId);
+        filterChatUser(formatUsers);
+        fetchChatMessage();
+      })
+      .catch((err) => console.error(err));
   };
 
   const getActiveChatClass = (roomId) => {
@@ -165,10 +165,16 @@ const Messages = () => {
     return updatedChatList;
   };
 
-  const connectSocket = () => {
-    socket = new WebSocket(
-      ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
-    );
+  const waitForOpenConnection = () => {
+    return new Promise((resolve) => {
+      const intervalTime = 100; //ms
+      const interval = setInterval(() => {
+        if (socket.readyState === socket.OPEN) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, intervalTime);
+    });
   };
 
   socket.onmessage = (event) => {
@@ -193,19 +199,39 @@ const Messages = () => {
     }
   };
 
-  socket.onerror = (e) => {
-    console.error(e);
+  const connectSocket = () => {
+    socket = new WebSocket(
+      ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
+    );
+
+    socket.onerror = (err) => console.error(err);
+    socket.onclose = () => {
+      setTimeout(connectSocket, 100);
+    };
   };
 
   socket.onclose = () => {
-    setTimeout(connectSocket, 1000);
+    setTimeout(connectSocket, 100);
   };
 
   const messageSubmitHandler = async (event) => {
     event.preventDefault();
     if (inputMessage) {
-      if (socket.readyState === WebSocket.CONNECTING) {
-        socket.addEventListener("open", () => messageSubmitHandler(event));
+      if (socket.readyState !== socket.OPEN) {
+        try {
+          setTimeout(connectSocket, 100);
+          await waitForOpenConnection();
+          socket.send(
+            JSON.stringify({
+              action: SocketActions.MESSAGE,
+              message: inputMessage,
+              user: CommonUtil.getUserId(),
+              roomId: CommonUtil.getActiveChatId(params),
+            })
+          );
+        } catch (err) {
+          console.error(err);
+        }
       } else {
         socket.send(
           JSON.stringify({
@@ -215,15 +241,26 @@ const Messages = () => {
             roomId: CommonUtil.getActiveChatId(params),
           })
         );
-        socket.removeEventListener("open", () => messageSubmitHandler(event));
       }
     }
     setInputMessage("");
   };
 
-  const sendTypingSignal = (typing) => {
-    if (socket.readyState === WebSocket.CONNECTING) {
-      socket.addEventListener("open", () => sendTypingSignal(typing));
+  const sendTypingSignal = async (typing) => {
+    if (socket.readyState !== socket.OPEN) {
+      try {
+        await waitForOpenConnection(socket);
+        socket.send(
+          JSON.stringify({
+            action: SocketActions.TYPING,
+            typing: typing,
+            user: CommonUtil.getUserId(),
+            roomId: CommonUtil.getActiveChatId(params),
+          })
+        );
+      } catch (err) {
+        console.error(err);
+      }
     } else {
       socket.send(
         JSON.stringify({
@@ -233,7 +270,6 @@ const Messages = () => {
           roomId: CommonUtil.getActiveChatId(params),
         })
       );
-      socket.removeEventListener("open", () => sendTypingSignal(typing));
     }
   };
 
