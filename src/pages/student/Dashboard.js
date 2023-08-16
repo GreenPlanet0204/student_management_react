@@ -39,8 +39,7 @@ export const Dashboard = () => {
           Welcome back <span>{student.name}</span>
         </div>
         <div className="text medium">
-          “Do what you can, with what you
-          <br /> have, where you are.”{" "}
+          “Do what you can, with what you have, where you are.”{" "}
           <span className="bold">―Theodore Roosevelt.</span>
         </div>
       </div>

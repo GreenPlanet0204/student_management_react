@@ -37,9 +37,9 @@ const GoalSelect = ({
               : options.find((item) => item.id === value)?.name}
           </div>
         </div>
-      </div>
-      <div className="icon">
-        <DownArrow />
+        <div className="icon">
+          <DownArrow />
+        </div>
       </div>
 
       <div className="options">

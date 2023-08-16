@@ -10,6 +10,7 @@ import axios from "axios";
 
 export const Progress = () => {
   const params = useParams();
+  const [width, setWidth] = useState(600);
   const [open, setOpen] = useState(false);
 
   const [data, setData] = useState([]);
@@ -96,9 +97,32 @@ export const Progress = () => {
     });
     setData(record);
   };
+  const updateSize = () => {
+    if (window.innerWidth > 1250) {
+      const w = window.innerWidth - 800;
+      setWidth(w);
+    } else if (window.innerWidth > 892) {
+      const w = window.innerWidth - 530;
+      setWidth(w);
+    } else if (window.innerWidth > 640) {
+      const w = window.innerWidth - 330;
+      setWidth(w);
+    } else {
+      const w = window.innerWidth - 105;
+      setWidth(w);
+    }
+  };
   /* eslint-disable */
   useEffect(() => {
     fetch();
+    updateSize();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateSize);
+    return () => {
+      window.removeEventListener("resize", updateSize);
+    };
   }, []);
 
   /* eslint-enable */
@@ -114,7 +138,7 @@ export const Progress = () => {
   };
   return (
     <>
-      <div className="container profile">
+      <div className="container profile progress">
         <div className="card profile progress">
           <div className="header">
             <div className="title">Progress Monitoring</div>
@@ -250,7 +274,7 @@ export const Progress = () => {
             </div>
             <div className="gray-container">
               <div className="graph">
-                <LineChart width={600} height={360} data={data}>
+                <LineChart width={width} height={360} data={data}>
                   <XAxis
                     dataKey="date"
                     tickFormatter={dateFormatter}
@@ -316,32 +340,44 @@ export const Progress = () => {
           </div>
           <div className="records">
             <div className="table">
-              <div className="thead">
-                <div className="row text-1 medium">
-                  <div className="line">Line</div>
-                  <div className="date">Date</div>
-                  <div className="score">Score</div>
-                  <div className="notes">Notes</div>
+              <div className="row ">
+                <div className="col line">
+                  <div className="row thead">Line</div>
+                  {goal?.records?.map((rec, index) => (
+                    <div className="row tbody" key={index}>
+                      {index + 1}
+                    </div>
+                  ))}
+                  <div className="row tbody" />
                 </div>
-              </div>
-              <div className="tbody">
-                {goal?.records?.map((rec, index) => (
-                  <div className="row text-1 medium" key={index}>
-                    <div className="line">{index + 1}</div>
-                    <div className="date">
+                <div className="col date">
+                  <div className="row thead">Date</div>
+                  {goal?.records?.map((rec, index) => (
+                    <div className="row tbody" key={index}>
                       {moment(new Date(rec.date + " 08:00:00")).format(
                         "MM/DD/YYYY"
                       )}
                     </div>
-                    <div className="score">{rec.score.toFixed(4)}</div>
-                    <div className="notes">{rec.note}</div>
-                  </div>
-                ))}
-                <div className="row text-1 medium">
-                  <div className="line"></div>
-                  <div className="date"></div>
-                  <div className="score"></div>
-                  <div className="notes"></div>
+                  ))}
+                  <div className="row tbody" />
+                </div>
+                <div className="col score">
+                  <div className="row thead">Score</div>
+                  {goal?.records?.map((rec, index) => (
+                    <div className="row tbody" key={index}>
+                      {rec.score.toFixed(4)}
+                    </div>
+                  ))}
+                  <div className="row tbody" />
+                </div>
+                <div className="col notes">
+                  <div className="row thead">Notes</div>
+                  {goal?.records?.map((rec, index) => (
+                    <div className="row tbody" key={index}>
+                      {rec.note}
+                    </div>
+                  ))}
+                  <div className="row tbody" />
                 </div>
               </div>
             </div>

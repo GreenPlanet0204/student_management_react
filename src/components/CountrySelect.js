@@ -23,7 +23,7 @@ const CountrySelect = ({
     };
   }, []);
   /* eslint-enable */
-  const label = options?.find((item) => item.value === value).label;
+  const label = options?.find((item) => item.value === value)?.label;
   return (
     <div
       className={open ? "select open" : "select"}

@@ -41,9 +41,8 @@ export const Dashboard = () => {
           Welcome back <span>{user.name}</span>
         </div>
         <div className="text medium">
-          <span className="bold">80%</span> of your students engaged
-          <br />
-          their assignments this week.
+          <span className="bold">80%</span> of your students engaged their
+          assignments this week.
         </div>
       </div>
       <div className="category">

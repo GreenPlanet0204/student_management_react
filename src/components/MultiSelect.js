@@ -39,14 +39,14 @@ const MultiSelect = ({
             <XIcon />
           </div>
         ))}
-      </div>
-      <div className="icon">
-        {value.length > 0 && (
-          <div className="remove" onClick={removeAll}>
-            <XIcon />
-          </div>
-        )}
-        <DownArrow />
+        <div className="icon">
+          {value.length > 0 && (
+            <div className="remove" onClick={removeAll}>
+              <XIcon />
+            </div>
+          )}
+          <DownArrow />
+        </div>
       </div>
 
       <div className="options">

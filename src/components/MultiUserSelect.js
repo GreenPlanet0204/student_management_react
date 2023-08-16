@@ -55,14 +55,14 @@ const MultiUserSelect = ({
             <XIcon />
           </div>
         ))}
-      </div>
-      <div className="icon">
-        {values.length > 0 && (
-          <div className="remove" onClick={removeAll}>
-            <XIcon />
-          </div>
-        )}
-        <DownArrow />
+        <div className="icon">
+          {values.length > 0 && (
+            <div className="remove" onClick={removeAll}>
+              <XIcon />
+            </div>
+          )}
+          <DownArrow />
+        </div>
       </div>
 
       <div className="options">

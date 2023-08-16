@@ -23,9 +23,7 @@ export const Tracking = () => {
       <div className="blue tracking">
         <div className="title">Tracking</div>
         <div className="text">
-          <span>80%</span> of your students engaged
-          <br />
-          their assignments this week.
+          <span>80%</span> of your students engaged their assignments this week.
         </div>
       </div>
       <div className="card students">

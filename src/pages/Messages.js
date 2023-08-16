@@ -162,7 +162,7 @@ const Messages = () => {
   };
 
   socket.onclose = () => {
-    setTimeout(start, 1000);
+    start();
   };
 
   socket.onmessage = (event) => {
@@ -187,7 +187,7 @@ const Messages = () => {
     }
   };
 
-  const messageSubmitHandler = (event) => {
+  const messageSubmitHandler = async (event) => {
     event.preventDefault();
     if (inputMessage) {
       socket.send(
@@ -198,9 +198,8 @@ const Messages = () => {
           roomId: CommonUtil.getActiveChatId(params),
         })
       );
-      fetchChatMessage();
     }
-
+    await fetchChatMessage();
     setInputMessage("");
   };
 
