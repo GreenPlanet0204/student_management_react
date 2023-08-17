@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as MessageIcon } from "../assets/Icons/Messages.svg";
+import { ReactComponent as BarsCode } from "../assets/Icons/bars-solid.svg";
+import { ReactComponent as XIcon } from "../assets/Icons/X.svg";
 import ServerURL from "../utils/ServerURL";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import CommonUtil from "../utils/CommonUtil";
@@ -22,6 +24,8 @@ const Messages = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const role = user.role;
+
+  const [open, setOpen] = useState(false);
 
   const [tab, setTab] = useState(role === "teacher" ? "parent" : "teacher");
 
@@ -257,7 +261,13 @@ const Messages = () => {
       <div className="container messages">
         <div className="card messages">
           <div className="messages">
-            <div className="title">Messages</div>
+            <div className="row">
+              <div className="title">Messages</div>
+              <div className="icon" onClick={() => setOpen(true)}>
+                <BarsCode />
+              </div>
+            </div>
+
             <div className="chat-messages">
               {typing && (
                 <div className="chat-message-left chat-bubble mb-1">
@@ -309,10 +319,16 @@ const Messages = () => {
               </div>
             </form>
           </div>
-          <div className="users">
-            <div className="btn" onClick={addPeopleClickHandler}>
-              Add People
+          <div className={open ? "users active" : "users"}>
+            <div className="close">
+              <div className="icon" onClick={() => setOpen(false)}>
+                <XIcon />
+              </div>
+              <div className="btn" onClick={addPeopleClickHandler}>
+                Add People
+              </div>
             </div>
+
             <div className="user-list-container">
               {role !== "student" && (
                 <div className="part">

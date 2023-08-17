@@ -50,6 +50,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    
     .logo {
       display: flex;
       align-items: center;
@@ -127,6 +128,17 @@
   box-shadow: 0px 3px 8px #00000029;
   height: 100vh;
 
+  .icon {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
   .logo {
     margin-top:37px;
     display: flex;
@@ -231,9 +243,23 @@
     padding: 13px 24px 8px 22px;
     box-shadow: 0px 3px 6px #00000029;
     background: #FFFFFF;
+
+    .search > .icon {
+      display: none;
+      align-self: center;
+      cursor: pointer;
+      svg {
+        height: 24px;
+        fill: #913A7E;
+      }
+    }
+
     .search {
       width: 100%;
-    max-width: 549px;
+      max-width: 549px;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
     }
     
 
@@ -1005,6 +1031,17 @@ input {
       flex-direction: column;
       justify-content: space-between;
       gap: 12px;
+      .row {
+        cursor: pointer;
+        .icon {
+          display: none;
+          svg {
+            width: 24px;
+            height: 24px;
+            fill: #003595;
+          }
+        }
+      }
       .chat {
         position: relative;
         input {
@@ -1105,6 +1142,11 @@ input {
       flex-direction: column;
       gap: 40px;
       height: 100%;
+      .close {
+        .icon {
+          display: none;
+        }
+      }
       .btn {
         cursor: pointer;
         height: 40px;
@@ -3677,8 +3719,23 @@ a {
     display: none;
   }
   .navbar.active {
+    position: fixed;
     display: flex;
+    .icon {
+      display: block;
+      fill: #913A7E;
+    }
   }
+
+  .main {
+    .topbar {
+      .search > .icon {
+        display: block;
+      }
+    }
+  }
+
+  
   .message-sidebar {
     display: none;
   }
@@ -3689,16 +3746,49 @@ a {
   }
   .container {
     .card.messages {
+      position: relative;
       .messages {
         width: 100%;
         border: none;
         padding: 0;
+        .row > .icon {
+          display: block;
+        }
       }
       .users {
         display: none;
-        z-index: 1000;
       }
-      
+      .users.active {
+        position: absolute;
+        z-index: 500;
+        right: 0;
+        top: 0;
+        border-left: 1px solid #DDDDDD;
+        padding: 20px;
+        min-width: 200px;
+        display: flex;
+        background-color: #FFFFFF;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0px 4px 4px 0px;
+        .close {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 4px;
+          .icon {
+            display: block;
+            cursor: pointer;
+            svg {
+              width: 16px;
+              height: 16px;
+              fill: #003595;
+            }
+          }
+          .btn {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }

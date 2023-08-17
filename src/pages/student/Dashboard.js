@@ -10,6 +10,7 @@ export const Dashboard = () => {
   const [student, setStudent] = useState({});
   const [type, setType] = useState("Behavioral");
   const [goals, setGoals] = useState([]);
+  const [length, setLength] = useState();
   const [complete, setComplete] = useState(0);
 
   const fetch = (data = []) => {
@@ -26,6 +27,9 @@ export const Dashboard = () => {
         setStudent(res.data);
         fetch(res.data.goals);
       });
+    axios.get(ServerURL.BASE_URL + "/goals/").then((res) => {
+      setLength(res.data.length);
+    });
   }, []);
 
   useEffect(() => {
@@ -61,13 +65,15 @@ export const Dashboard = () => {
           <div className="title">My Engagement</div>
           <div className="small-text ">
             <div className="bold">Goals Met:</div>
-            <div className="medium">3 of 34</div>
+            <div className="medium">
+              {student.goals?.length} of {length}
+            </div>
           </div>
           <div className="small-text">
             <div className="bold">Last login:</div>
             <div className="medium">
-              {student.last &&
-                moment(student.last).format("MMM. DD, YYYY hh:mm")}
+              {student.last_login &&
+                moment(student.last_login).format("MMM. DD, YYYY hh:mm")}
             </div>
           </div>
           <div className="small-text">

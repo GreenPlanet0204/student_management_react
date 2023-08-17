@@ -9,6 +9,7 @@ export const Dashboard = () => {
   const [students, setStudents] = useState([]);
   const [rewards, setRewards] = useState([]);
   const [goals, setGoals] = useState([]);
+  const [coins, setCoins] = useState(0);
   const getColor = (point) => {
     if (point === 3) {
       return "#F4B200";
@@ -22,7 +23,12 @@ export const Dashboard = () => {
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
-      .then((res) => setStudents(res.data))
+      .then((res) => {
+        setStudents(res.data);
+        let val = 0;
+        res.data.map((item) => (val += item.coin));
+        setCoins(val);
+      })
       .catch(() => console.error("error"));
     axios
       .get(ServerURL.BASE_URL + "/reward/?school=" + user.profile.school)
@@ -82,11 +88,13 @@ export const Dashboard = () => {
                     <div
                       className="progress"
                       style={{
-                        width: 100 * (student.coin / 5) + "%",
+                        width: 100 * (student.coin / coins) + "%",
                       }}
                     />
                   </div>
-                  <div className="text">{student.coin} of 5</div>
+                  <div className="text">
+                    {student.coin} of {coins}
+                  </div>
                 </div>
               </div>
             ))}

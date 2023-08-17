@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ReactComponent as Logo } from "../assets/Icons/Logo.svg";
 import { ReactComponent as StudentIcon } from "../assets/Icons/Student.svg";
 import { ReactComponent as GoalIcon } from "../assets/Icons/Goals.svg";
@@ -7,6 +7,8 @@ import { ReactComponent as RewardsIcon } from "../assets/Icons/Rewards.svg";
 import { ReactComponent as TrackingIcon } from "../assets/Icons/Tracking.svg";
 import { ReactComponent as BiArrow } from "../assets/Icons/Bi Arrow.svg";
 import { ReactComponent as DownArrow } from "../assets/Icons/DownArrow.svg";
+import { ReactComponent as BarsCode } from "../assets/Icons/bars-solid.svg";
+import { ReactComponent as XIcon } from "../assets/Icons/X.svg";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import ServerURL from "../utils/ServerURL";
 
@@ -17,6 +19,7 @@ const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [open, setOpen] = useState(false);
 
   const logout = async () => {
     localStorage.clear();
@@ -28,7 +31,10 @@ const Layout = ({ children, role, show, setShow }) => {
     <>
       {location.pathname !== "/login" ? (
         <>
-          <div className="navbar">
+          <div className={open ? "navbar active" : "navbar"}>
+            <div className="icon" onClick={() => setOpen(false)}>
+              <XIcon />
+            </div>
             <Link to="/">
               <div className="logo">
                 <Logo />
@@ -335,6 +341,9 @@ const Layout = ({ children, role, show, setShow }) => {
             <div className="top">
               <div className="topbar">
                 <div className="search">
+                  <div className="icon" onClick={() => setOpen(true)}>
+                    <BarsCode />
+                  </div>
                   <input
                     className="small-text"
                     type="text"
