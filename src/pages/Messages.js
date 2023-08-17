@@ -93,7 +93,8 @@ const Messages = () => {
 
   useEffect(() => {
     fetchChatMessage();
-  }, [location.pathname]);
+    connectSocket();
+  }, [CommonUtil.getActiveChatId(params)]);
   /* eslint-enable */
   const getConnectedUserIds = () => {
     let connectedUsers = "";
@@ -143,7 +144,7 @@ const Messages = () => {
       .then(() => {
         const formatUsers = chatUsers.filter((item) => item.roomId !== roomId);
         filterChatUser(formatUsers);
-        fetchChatMessage();
+        redirectUserToDefaultChatRoom(formatUsers);
       })
       .catch((err) => console.error(err));
   };
@@ -165,74 +166,45 @@ const Messages = () => {
     return updatedChatList;
   };
 
-  const waitForOpenConnection = () => {
-    return new Promise((resolve) => {
-      const intervalTime = 100; //ms
-      const interval = setInterval(() => {
-        if (socket.readyState === socket.OPEN) {
-          clearInterval(interval);
-          resolve();
-        }
-      }, intervalTime);
-    });
-  };
-
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    const chatId = CommonUtil.getActiveChatId(params);
-    const userId = CommonUtil.getUserId();
-    if (chatId === data.roomId) {
-      if (data.action === SocketActions.MESSAGE) {
-        data["userImage"] = ServerURL.BASE_URL + data.userImage;
-        setMessages((prevState) => {
-          let messagesState = JSON.parse(JSON.stringify(prevState));
-          messagesState.results.unshift(data);
-          return messagesState;
-        });
-        setTyping(false);
-      } else if (data.action === SocketActions.TYPING && data.user !== userId) {
-        setTyping(data.typing);
-      }
-    }
-    if (data.action === SocketActions.ONLINE_USER) {
-      setOnlineUserList(data.userList);
-    }
-  };
-
   const connectSocket = () => {
     socket = new WebSocket(
       ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
     );
 
-    socket.onerror = (err) => console.error(err);
     socket.onclose = () => {
-      setTimeout(connectSocket, 100);
+      setTimeout(connectSocket, 1000);
     };
-  };
 
-  socket.onclose = () => {
-    setTimeout(connectSocket, 100);
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const chatId = CommonUtil.getActiveChatId(params);
+      const userId = CommonUtil.getUserId();
+      if (chatId === data.roomId) {
+        if (data.action === SocketActions.MESSAGE) {
+          data["userImage"] = ServerURL.BASE_URL + data.userImage;
+          setMessages((prevState) => {
+            let messagesState = JSON.parse(JSON.stringify(prevState));
+            messagesState.results.unshift(data);
+            return messagesState;
+          });
+          setTyping(false);
+        } else if (
+          data.action === SocketActions.TYPING &&
+          data.user !== userId
+        ) {
+          setTyping(data.typing);
+        }
+      }
+      if (data.action === SocketActions.ONLINE_USER) {
+        setOnlineUserList(data.userList);
+      }
+    };
   };
 
   const messageSubmitHandler = async (event) => {
     event.preventDefault();
     if (inputMessage) {
-      if (socket.readyState !== socket.OPEN) {
-        try {
-          setTimeout(connectSocket, 100);
-          await waitForOpenConnection();
-          socket.send(
-            JSON.stringify({
-              action: SocketActions.MESSAGE,
-              message: inputMessage,
-              user: CommonUtil.getUserId(),
-              roomId: CommonUtil.getActiveChatId(params),
-            })
-          );
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
+      try {
         socket.send(
           JSON.stringify({
             action: SocketActions.MESSAGE,
@@ -241,27 +213,15 @@ const Messages = () => {
             roomId: CommonUtil.getActiveChatId(params),
           })
         );
+      } catch (err) {
+        console.error(err);
       }
     }
     setInputMessage("");
   };
 
   const sendTypingSignal = async (typing) => {
-    if (socket.readyState !== socket.OPEN) {
-      try {
-        await waitForOpenConnection(socket);
-        socket.send(
-          JSON.stringify({
-            action: SocketActions.TYPING,
-            typing: typing,
-            user: CommonUtil.getUserId(),
-            roomId: CommonUtil.getActiveChatId(params),
-          })
-        );
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
+    try {
       socket.send(
         JSON.stringify({
           action: SocketActions.TYPING,
@@ -270,6 +230,8 @@ const Messages = () => {
           roomId: CommonUtil.getActiveChatId(params),
         })
       );
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -283,7 +245,7 @@ const Messages = () => {
       typingTimer = setTimeout(() => {
         sendTypingSignal(false);
         isTypingSignalSent = false;
-      }, 1000);
+      }, 3000);
     } else {
       clearTimeout(typingTimer);
       isTypingSignalSent = false;
