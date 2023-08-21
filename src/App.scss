@@ -341,7 +341,6 @@ input {
   min-width: 333px;
   height: 100vh;
   z-index: 1000;
-  display: flex;
   background: #FFFFFF;
   box-shadow: 0px 3px 8px #00000029;
   display: flex;
@@ -366,7 +365,8 @@ input {
   .chat-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1 1 auto;
+    height: calc(100% - 55px);
     justify-content: space-between;
     padding-left: 20px;
     padding-right: 12px;
@@ -386,8 +386,30 @@ input {
         display: flex;
         flex-direction: row;
         gap: 8px;
+        .select {
+          position: relative;
+          .options {
+            display: none;
+          }
+        }
+        .select.open {
+          .options {
+            display: flex;
+            position: absolute;
+            width: 100%;
+            gap: 8px;
+            padding: 4px 10px;
+            border: 1px solid #9F9F9F;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            .small-text {
+              cursor: pointer;
+            }
+          }
+        }
       }
       .user {
+        cursor: pointer;
         height: 24px;
         border: 1px solid #9F9F9F;
         border-radius: 19px;
@@ -399,6 +421,7 @@ input {
         gap: 8px;
         .name {
           color: #3f3f3f;
+          text-transform: capitalize;
         }
         .icon {
           cursor: pointer;
@@ -420,6 +443,67 @@ input {
         background: #CCCC00;
         border-radius: 9px;
         cursor: pointer;
+      }
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: auto;
+      flex: 1 1 auto;
+      padding: 10px;
+      .message {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        .name {
+          font-size: 12px;
+          line-height: 18px;
+          font-weight:  500;
+          color: #003595;
+          display: flex;
+          flex-direction: row;
+          gap: 4px;
+          .text-muted {
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 400;
+          }
+        }
+        .detail {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          gap: 4px;
+          .avatar {
+            width: 30px;
+            height: 30px;
+          }
+        }
+        
+        .text {
+          padding: 4px 10px;
+          border: 1px solid #DDDDDD;
+          border-radius: 10px;
+          font-size: 12px;
+          line-height: 18px;
+          max-width: calc(100% - 120px);
+          color: #3f3f3f;
+        }
+      }
+      .mime {
+        .name {
+          padding-left: 38px;
+        }
+      }
+      .other {
+        align-items: flex-end;
+        .name {
+          padding-right: 38px;
+        }
+        .detail {
+          flex-direction: row-reverse;
+        }
       }
     }
   }

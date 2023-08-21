@@ -38,7 +38,7 @@ const getUserId = () => {
 
 const getFormatedChatUser = (chatUsers, onlineUserList) => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user.id;
+  const userId = user?.id;
   try {
     return chatUsers.reduce((acumulator, item) => {
       if (item.type === "DM" || item.type === "SELF") {
