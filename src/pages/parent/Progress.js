@@ -310,8 +310,13 @@ export const Progress = () => {
               </div>
             </div>
           </div>
-          <div className="btn complete" onClick={() => goal && setOpen(true)}>
-            Complete
+          <div
+            className="btn complete"
+            onClick={() =>
+              goal && goal.status === "incomplete" && setOpen(true)
+            }
+          >
+            {goal && goal.status === "completed" ? "Completed" : "Complete"}
           </div>
         </div>
         <div className="card">
@@ -436,15 +441,30 @@ export const Progress = () => {
               <div className="btn-group">
                 <div
                   className="btn fill"
-                  onClick={() => goal && setModalOpen(true)}
+                  onClick={() =>
+                    goal &&
+                    goal.status === "incomplete" &&
+                    select &&
+                    setModalOpen(true)
+                  }
                 >
                   Update
                 </div>
-                <div className="btn" onClick={goal && Undo}>
+                <div
+                  className="btn"
+                  onClick={() =>
+                    goal && goal.status === "incomplete" && select && Undo
+                  }
+                >
                   Undo
                 </div>
               </div>
-              <div className="btn" onClick={() => goal && NewRecord()}>
+              <div
+                className="btn"
+                onClick={() =>
+                  goal && goal.status === "incomplete" && NewRecord()
+                }
+              >
                 <div className="text">New Record</div>
                 <div className="icon">+</div>
               </div>
