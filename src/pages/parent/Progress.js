@@ -147,10 +147,12 @@ export const Progress = () => {
       axios
         .get(ServerURL.BASE_URL + "/goal/?student=" + params.id)
         .then((res) => {
-          setGoals(res.data.filter((item) => item.type === "Parent"));
-          setGoal(res.data.filter((item) => item.type === "Parent")[index]);
+          setGoals(res.data.filter((item) => item?.parent?.user === user?.id));
+          setGoal(
+            res.data.filter((item) => item?.parent?.user === user?.id)[index]
+          );
           fetchTableData(
-            res.data.filter((item) => item.type === "Parent")[index]
+            res.data.filter((item) => item?.parent?.user === user?.id)[index]
           );
         })
         .catch(() => console.error("error"));

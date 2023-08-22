@@ -121,16 +121,23 @@ export const Progress = () => {
   };
   /* eslint-disable */
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
     axios
       .get(ServerURL.BASE_URL + "/goal/?student=" + params.id)
       .then((res) => {
-        setGoals(res.data);
-        setGoal(res.data[index]);
+        setGoals(res.data.filter((item) => item?.teacher?.user === user?.id));
+        setGoal(
+          res.data.filter((item) => item?.teacher?.user === user?.id)[index]
+        );
         let data = [];
 
-        fetchTableData(res.data[index]);
+        fetchTableData(
+          res.data.filter((item) => item?.teacher?.user === user?.id)[index]
+        );
         setSelect({
-          date: res.data[index]?.start_date,
+          date: res.data.filter((item) => item?.teacher?.user === user?.id)[
+            index
+          ]?.start_date,
           note: `Administration and or teacher identifies students who need more
         intervention support than what the School wide Positive Behavior
         Intervention Support (PBIS) -a framework for supporting
