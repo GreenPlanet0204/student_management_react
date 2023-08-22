@@ -59,6 +59,7 @@ export const Progress = () => {
     if (start.length < 1) {
       record.push({
         date: data?.start_date,
+        value: 0,
         val1: 10,
         val2: 20,
         val3: 30,

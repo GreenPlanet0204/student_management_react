@@ -54,6 +54,7 @@ export const Progress = () => {
     const record = [];
     record.push({
       date: goal?.start_date,
+      value: 0,
       val1: 10,
       val2: 20,
       val3: 30,

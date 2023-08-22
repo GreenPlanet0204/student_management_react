@@ -58,6 +58,7 @@ export const Progress = () => {
     if (start.length < 1) {
       record.push({
         date: data?.start_date,
+        value: 0,
         val1: 10,
         val2: 20,
         val3: 30,
@@ -143,6 +144,21 @@ export const Progress = () => {
     let data = [];
     setGoal(goals[index]);
 
+    data.push({
+      date: goals[index]?.start_date,
+      value: 0,
+      val1: 10,
+      val2: 20,
+      val3: 30,
+      val4: 40,
+      val5: 50,
+      val6: 60,
+      val7: 70,
+      val8: 80,
+      val9: 90,
+      val10: 100,
+    });
+
     goals[index]?.records.map((item) =>
       data.push({
         date: item.date,
@@ -159,19 +175,7 @@ export const Progress = () => {
         val10: 100,
       })
     );
-    data.push({
-      date: goals[index]?.start_date,
-      val1: 10,
-      val2: 20,
-      val3: 30,
-      val4: 40,
-      val5: 50,
-      val6: 60,
-      val7: 70,
-      val8: 80,
-      val9: 90,
-      val10: 100,
-    });
+
     data.push({
       date: goals[index]?.end_date,
       val1: 10,
@@ -400,7 +404,21 @@ export const Progress = () => {
             </div>
             <div className="gray-container">
               <div className="graph">
-                <LineChart width={width} height={360} data={data}>
+                <LineChart
+                  width={width}
+                  height={360}
+                  data={data}
+                  options={{
+                    scales: {
+                      xAxes: {
+                        type: "realtime",
+                        realtime: {
+                          unit: "date",
+                        },
+                      },
+                    },
+                  }}
+                >
                   <XAxis
                     dataKey="date"
                     tickFormatter={dateFormatter}

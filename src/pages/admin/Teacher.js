@@ -92,6 +92,7 @@ export const Teacher = () => {
     navigate("/teachers");
   };
 
+  /* eslint-disable */
   useEffect(() => {
     axios
       .get(ServerURL.BASE_URL + "/school/")
@@ -122,7 +123,7 @@ export const Teacher = () => {
         .catch(() => console.error("error"));
     }
   }, []);
-  /* eslint-disable */
+
   useEffect(() => {
     if (teacher.level) {
       if (schools.length > 0) {
