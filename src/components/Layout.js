@@ -18,21 +18,15 @@ import ApiConnector from "../utils/ApiConnector";
 import SocketActions from "../utils/SocketActions";
 import { UserSelect, UserTypeSelect } from "./MessageSelect";
 
-let socket = new WebSocket(
-  ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
-);
-
-let typingTimer = 0;
-let isTypingSignalSent = false;
-
 const Layout = ({ children, role, show, setShow }) => {
+  let socket;
+  let typingTimer = 0;
+  let isTypingSignalSent = false;
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState(
-    user.role === "student" ? "teacher" : "student"
-  );
+  const [type, setType] = useState("student");
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
   const [chatUsers, setChatUsers] = useState([]);
@@ -76,6 +70,7 @@ const Layout = ({ children, role, show, setShow }) => {
   /* eslint-disable */
 
   useEffect(() => {
+    if (user?.role === "student") setType("teacher");
     fetchChatUser();
   }, [show]);
 
