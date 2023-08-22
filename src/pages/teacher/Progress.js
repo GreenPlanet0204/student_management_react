@@ -125,19 +125,16 @@ export const Progress = () => {
     axios
       .get(ServerURL.BASE_URL + "/goal/?student=" + params.id)
       .then((res) => {
-        setGoals(res.data.filter((item) => item?.teacher?.user === user?.id));
-        setGoal(
-          res.data.filter((item) => item?.teacher?.user === user?.id)[index]
-        );
+        setGoals(res.data.filter((item) => item?.reporter === user?.id));
+        setGoal(res.data.filter((item) => item?.reporter === user?.id)[index]);
         let data = [];
 
         fetchTableData(
-          res.data.filter((item) => item?.teacher?.user === user?.id)[index]
+          res.data.filter((item) => item?.reporter === user?.id)[index]
         );
         setSelect({
-          date: res.data.filter((item) => item?.teacher?.user === user?.id)[
-            index
-          ]?.start_date,
+          date: res.data.filter((item) => item?.reporter === user?.id)[index]
+            ?.start_date,
           note: `Administration and or teacher identifies students who need more
         intervention support than what the School wide Positive Behavior
         Intervention Support (PBIS) -a framework for supporting
@@ -219,7 +216,7 @@ export const Progress = () => {
       score: "",
       note: "",
     });
-    setModalOpen(false);
+    setModalOpen(true);
   };
 
   const Undo = () => {
@@ -349,11 +346,11 @@ export const Progress = () => {
           </div>
           <div
             className="btn complete"
-            onClick={() =>
-              goal && goal.status === "incomplete" && setOpen(true)
-            }
+            onClick={() => {
+              if (goal?.status !== "completed") setOpen(true);
+            }}
           >
-            {goal && goal.status === "completed" ? "Completed" : "Complete"}
+            {goal?.status === "completed" ? "Completed" : "Complete"}
           </div>
         </div>
         <div className="card">
@@ -494,29 +491,27 @@ export const Progress = () => {
               <div className="btn-group">
                 <div
                   className="btn fill"
-                  onClick={() =>
-                    goal &&
-                    goal.status === "incomplete" &&
-                    select &&
-                    setModalOpen(true)
-                  }
+                  onClick={() => {
+                    if (goal && goal.status !== "completed" && record)
+                      setModalOpen(true);
+                  }}
                 >
                   Update
                 </div>
                 <div
                   className="btn"
-                  onClick={() =>
-                    goal && goal.status === "incomplete" && select && Undo()
-                  }
+                  onClick={() => {
+                    if (goal && goal.status !== "completed" && record) Undo();
+                  }}
                 >
                   Undo
                 </div>
               </div>
               <div
                 className="btn"
-                onClick={() =>
-                  goal && goal.status === "incomplete" && NewRecord()
-                }
+                onClick={() => {
+                  if (goal && goal.status !== "completed") NewRecord();
+                }}
               >
                 <div className="text">New Record</div>
                 <div className="icon">+</div>
