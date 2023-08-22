@@ -18,10 +18,13 @@ import ApiConnector from "../utils/ApiConnector";
 import SocketActions from "../utils/SocketActions";
 import { UserSelect, UserTypeSelect } from "./MessageSelect";
 
+let socket = new WebSocket(
+  ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
+);
+let typingTimer = 0;
+let isTypingSignalSent = false;
+
 const Layout = ({ children, role, show, setShow }) => {
-  let socket;
-  let typingTimer = 0;
-  let isTypingSignalSent = false;
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
