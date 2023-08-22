@@ -168,7 +168,6 @@ export const Goal = () => {
             <div className="row header">
               <div className="select">Select</div>
               <div className="name">Customer Name</div>
-              <div className="email">Email</div>
             </div>
             {filterStudents.map((item, index) => (
               <div className="row" key={index}>
