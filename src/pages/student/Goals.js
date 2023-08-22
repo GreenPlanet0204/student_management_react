@@ -77,7 +77,7 @@ export const Goals = () => {
             </div>
           </div>
         </div>
-        {type !== "parent" && (
+        {type !== "Parent" && (
           <div className="teachers">
             <div className="label">Teacher</div>
             <div className="divider" />
