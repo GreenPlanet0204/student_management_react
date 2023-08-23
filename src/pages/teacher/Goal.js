@@ -212,7 +212,7 @@ export const Goal = () => {
             <textarea
               className="response"
               placeholder="Type Response"
-              value={response}
+              value={response[index]}
               onChange={(e) => onChange(e.target.value, index)}
             />
           ))}

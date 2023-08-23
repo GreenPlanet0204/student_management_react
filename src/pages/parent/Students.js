@@ -10,7 +10,7 @@ export const Students = () => {
   /* eslint-disable */
   useEffect(() => {
     axios
-      .get(ServerURL.BASE_URL + "/student/?teacher=" + user.profile.id)
+      .get(ServerURL.BASE_URL + "/student/?parent=" + user.profile.id)
       .then((res) => setStudents(res.data));
   }, []);
   /* eslint-enable */

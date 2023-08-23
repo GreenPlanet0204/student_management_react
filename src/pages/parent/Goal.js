@@ -138,7 +138,7 @@ export const Goal = () => {
               className="response"
               placeholder="Type Response"
               key={index}
-              value={response}
+              value={response[index]}
               onChange={(e) => onChange(e.target.value, index)}
             />
           ))}

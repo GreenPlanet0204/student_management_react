@@ -576,6 +576,7 @@ export const Progress = () => {
                 >
                   <td
                     style={{
+                      minWidth: "40px",
                       width: "40px",
                       display: "flex",
                       alignItems: "center",
@@ -587,6 +588,7 @@ export const Progress = () => {
                   </td>
                   <td
                     style={{
+                      minWidth: "100px",
                       width: "100px",
                       display: "flex",
                       alignItems: "center",
@@ -600,6 +602,7 @@ export const Progress = () => {
                   </td>
                   <td
                     style={{
+                      minWidth: "100px",
                       width: "100px",
                       display: "flex",
                       alignItems: "center",
