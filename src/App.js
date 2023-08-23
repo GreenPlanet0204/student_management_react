@@ -1,11 +1,9 @@
 import "./App.scss";
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Messages from "./pages/Messages";
-
 import { Schools as AdminSchools } from "./pages/admin/Schools";
 import { School as AdminSchool } from "./pages/admin/School";
 import { Students as AdminStudents } from "./pages/admin/Students";
