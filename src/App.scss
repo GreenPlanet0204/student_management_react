@@ -260,6 +260,23 @@
       display: flex;
       flex-direction: row;
       gap: 16px;
+      .select {
+        padding: 10px 16px;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        top: 40px;
+        background-color: #FFFFFF;
+        border-radius: 8px;
+        .user {
+          cursor: pointer;
+          font-size: 16px;
+          line-height: 25px;
+          color: #003595;
+        }
+      }
     }
     
 
@@ -1529,6 +1546,7 @@ input {
           display: flex;
           flex-direction: row;
           align-items: center;
+          gap: 4px;
 
           .line {
             height: 0px;
@@ -1548,7 +1566,6 @@ input {
             letter-spacing: 0px;
             font-weight: 700;
             text-align: right;
-            width: 30px;
           }
         }
 

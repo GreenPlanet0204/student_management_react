@@ -8,6 +8,7 @@ import ServerURL from "../../utils/ServerURL";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Select from "../../components/Select";
+import CommonUtil from "../../utils/CommonUtil";
 
 export const Progress = () => {
   const [width, setWidth] = useState();
@@ -28,7 +29,7 @@ export const Progress = () => {
   const [student, setStudent] = useState();
   const [complete, setComplete] = useState({ coin: 1, explain: "" });
   const dateFormatter = (date) => {
-    return moment(new Date(date + " 01:00:00")).format("MMM DD");
+    return moment(date).format("MMM DD");
   };
   const dotClick = (e) => {
     const { payload } = e;
@@ -58,7 +59,7 @@ export const Progress = () => {
     const end = data?.records?.filter((item) => item.date === data?.end_date);
     if (start.length < 1) {
       record.push({
-        date: data?.start_date,
+        date: new Date(data?.start_date).getTime(),
         value: 0,
         val1: 10,
         val2: 20,
@@ -74,7 +75,7 @@ export const Progress = () => {
     }
     data?.records?.forEach((item) => {
       record.push({
-        date: item.date,
+        date: new Date(item.date).getTime(),
         value: item.score,
         val1: 10,
         val2: 20,
@@ -90,7 +91,7 @@ export const Progress = () => {
     });
     if (end?.length < 1) {
       record.push({
-        date: data?.end_date,
+        date: new Date(data?.end_date).getTime(),
         val1: 10,
         val2: 20,
         val3: 30,
@@ -228,6 +229,14 @@ export const Progress = () => {
       score: val,
     });
   };
+
+  const print = () => {
+    let printContents = document.getElementById("print").innerHTML;
+    let originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  };
   return (
     <>
       <div className="container profile">
@@ -328,13 +337,23 @@ export const Progress = () => {
               <div className="title">Progress Chart</div>
             </div>
             <div className="right">
-              <div className="btn">
+              <div className="btn" onClick={print}>
                 <div className="text">Print</div>
                 <div className="icon">
                   <PrintIcon />
                 </div>
               </div>
-              <div className="btn">
+              <div
+                className="btn"
+                onClick={() =>
+                  CommonUtil.exportExcel(
+                    goal?.records,
+                    goal?.start_date,
+                    goal?.end_date,
+                    goal?.name
+                  )
+                }
+              >
                 <div className="text">Export</div>
                 <div className="icon">
                   <GoalIcon />
@@ -378,6 +397,10 @@ export const Progress = () => {
                 <LineChart width={width} height={360} data={data}>
                   <XAxis
                     dataKey="date"
+                    domain={[
+                      new Date(goal?.start_date).getTime(),
+                      new Date(goal?.end_date).getTime(),
+                    ]}
                     tickFormatter={dateFormatter}
                     fontSize={13}
                     fontFamily="Poppins"
@@ -386,6 +409,7 @@ export const Progress = () => {
                     stroke="#003595"
                     tickSize={0}
                     tickMargin={10}
+                    type="number"
                   />
                   <YAxis
                     fontSize={13}
@@ -529,6 +553,212 @@ export const Progress = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div id="print" style={{ display: "none" }}>
+          <LineChart width={720} height={360} data={data}>
+            <XAxis
+              dataKey="date"
+              domain={[
+                new Date(goal?.start_date).getTime(),
+                new Date(goal?.end_date).getTime(),
+              ]}
+              tickFormatter={dateFormatter}
+              fontSize={13}
+              fontFamily="Poppins"
+              fontWeight={500}
+              letterSpacing={0}
+              stroke="#003595"
+              tickSize={0}
+              tickMargin={10}
+              type="number"
+            />
+            <YAxis
+              fontSize={13}
+              fontFamily="Poppins"
+              fontWeight={500}
+              letterSpacing={0}
+              stroke="#003595"
+              tickSize={0}
+              tickMargin={10}
+              spacing={30}
+            ></YAxis>
+            <Line
+              dataKey="value"
+              stroke="#913A7E"
+              strokeWidth="3"
+              activeDot={{ r: 8 }}
+              dot={{
+                onClick: dotClick,
+                strokeWidth: 1,
+                r: 4,
+                stroke: "#003595",
+                cursor: "pointer",
+              }}
+            />
+            <Line
+              dataKey="val1"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val2"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val3"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val4"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val5"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val6"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val7"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val8"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val9"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+            <Line
+              dataKey="val10"
+              stroke="#707070"
+              className="straight"
+              dot={{ r: 0 }}
+            />
+          </LineChart>
+          <table
+            style={{
+              border: "1px solid",
+              width: "720px",
+              marginLeft: "10px",
+            }}
+          >
+            <tr
+              style={{
+                display: "flex",
+                alignItems: "center",
+                height: "40px",
+              }}
+            >
+              <td
+                style={{
+                  width: "40px",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRight: "1px solid",
+                }}
+              >
+                No
+              </td>
+              <td
+                style={{
+                  width: "100px",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRight: "1px solid",
+                }}
+              >
+                Date
+              </td>
+              <td
+                style={{
+                  width: "100px",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRight: "1px solid",
+                }}
+              >
+                Score
+              </td>
+              <td style={{ height: "100%", padding: "4px 10px" }}>Notes</td>
+            </tr>
+            {goal?.records?.map((item, index) => (
+              <tr
+                key={index}
+                style={{
+                  borderTop: "1px solid",
+                  minHeight: "40px",
+                  display: "flex",
+                  height: "max-content",
+                }}
+              >
+                <td
+                  style={{
+                    width: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRight: "1px solid",
+                  }}
+                >
+                  {index + 1}
+                </td>
+                <td
+                  style={{
+                    width: "100px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRight: "1px solid",
+                  }}
+                >
+                  {moment(new Date(item.date + " 08:00:00")).format(
+                    "MM/DD/YYYY"
+                  )}
+                </td>
+                <td
+                  style={{
+                    width: "100px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRight: "1px solid",
+                  }}
+                >
+                  {item.score.toFixed(4)}
+                </td>
+                <td style={{ alignSelf: "center", padding: "4px 10px" }}>
+                  {item.note}
+                </td>
+              </tr>
+            ))}
+          </table>
         </div>
       </div>
       {open && (

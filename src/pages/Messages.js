@@ -93,7 +93,7 @@ const Messages = () => {
   /* eslint-disable */
   useEffect(() => {
     fetchChatUser();
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     fetchChatMessage();

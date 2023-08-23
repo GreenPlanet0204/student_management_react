@@ -17,6 +17,7 @@ import CommonUtil from "../utils/CommonUtil";
 import ApiConnector from "../utils/ApiConnector";
 import SocketActions from "../utils/SocketActions";
 import { UserSelect, UserTypeSelect } from "./MessageSelect";
+import axios from "axios";
 
 let socket = new WebSocket(
   ServerURL.WS_BASE_URL + `/ws/users/${CommonUtil.getUserId()}/chat/`
@@ -28,12 +29,15 @@ const Layout = ({ children, role, show, setShow }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("student");
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
   const [chatUsers, setChatUsers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [filterUser, setFilterUser] = useState([]);
   const [chatUser, setChatUser] = useState();
   const [onlineUserList, setOnlineUserList] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -71,21 +75,48 @@ const Layout = ({ children, role, show, setShow }) => {
   };
 
   /* eslint-disable */
-
   useEffect(() => {
+    if (CookieUtil.getCookie(Constants.ACCESS_PROPERTY)) {
+      axios
+        .get(ServerURL.BASE_URL + "/users/?id=" + user.id)
+        .then((res) => {
+          setAllUsers(res.data);
+        })
+        .catch(() => console.error("error"));
+    }
+  }, [location.pathname]);
+
+  const handleChangeShow = () => {
     if (user?.role === "student") setType("teacher");
     fetchChatUser();
-  }, [show]);
+    setShow(true);
+  };
+
+  useEffect(() => {
+    fetchChatUser();
+  }, [location.pathname]);
 
   useEffect(() => {
     fetchChatMessage();
     connectSocket();
   }, [chatUser?.roomId]);
 
-  useEffect(() => {
-    setUsers(chatUsers?.filter((item) => item.role === type));
-    setChatUser(chatUsers?.filter((item) => item.role === type)[0]);
-  }, [type]);
+  const handleChangeType = (val) => {
+    setUsers(chatUsers?.filter((item) => item.role === val));
+    setChatUser(chatUsers?.filter((item) => item.role === val)[0]);
+  };
+
+  const handleKeyUp = () => {
+    if (text !== "") {
+      setFilterUser(
+        allUsers.filter((item) =>
+          item.name.toLowerCase().startsWith(text.toLowerCase())
+        )
+      );
+    } else {
+      setFilterUser([]);
+    }
+  };
 
   /* eslint-enable */
   const connectSocket = () => {
@@ -172,6 +203,60 @@ const Layout = ({ children, role, show, setShow }) => {
       clearTimeout(typingTimer);
       isTypingSignalSent = false;
     }
+  };
+
+  const fetchChatUsers = async (user) => {
+    const url = `/chats/?user=${CommonUtil.getUserId()}`;
+    const chatUsers = await ApiConnector.sendGetRequest(url);
+    const formatedChatUser = await CommonUtil.getFormatedChatUser(
+      chatUsers,
+      onlineUserList
+    );
+    setChatUsers(formatedChatUser);
+    setType(user.role);
+    setUsers(formatedChatUser?.filter((item) => item.role === user?.role));
+    const cUser = formatedChatUser?.filter(
+      (item) => item.name === user.name
+    )[0];
+    setChatUser(cUser);
+    if (location.pathname.startsWith("/message")) {
+      setShow(false);
+      return navigate(`/message/${cUser.roomId}`);
+    }
+    return setShow(true);
+  };
+
+  const addMember = async (item) => {
+    const user = chatUsers?.find((user) => user.name === item.name);
+    if (user) {
+      setChatUser(user);
+      setType(user.role);
+      if (location.pathname.startsWith("/message")) {
+        setShow(false);
+        return navigate(`/message/${user.roomId}`);
+      }
+      return setShow(true);
+    }
+
+    const userId = CommonUtil.getUserId();
+    const memberId = item.id;
+    let requestBody = {
+      members: [memberId, userId],
+      type: "DM",
+    };
+    await ApiConnector.sendPostRequest(
+      "/chats/",
+      JSON.stringify(requestBody),
+      true,
+      false
+    );
+    await fetchChatUsers(item);
+  };
+
+  const selectUser = async (item) => {
+    await addMember(item);
+    fetchChatMessage();
+    setText("");
   };
 
   return (
@@ -491,15 +576,34 @@ const Layout = ({ children, role, show, setShow }) => {
                   <div className="icon" onClick={() => setOpen(true)}>
                     <BarsCode />
                   </div>
-                  <input
-                    className="small-text"
-                    type="text"
-                    placeholder="Type a new message"
-                  />
-                  <div className="search-icon">
-                    <div className="icon" />
+                  <div className="search">
+                    <input
+                      className="small-text"
+                      type="text"
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      onKeyUp={handleKeyUp}
+                      placeholder="Type a new message"
+                    />
+                    <div className="search-icon">
+                      <div className="icon" />
+                    </div>
+                    {text !== "" && (
+                      <div className="select">
+                        {filterUser.map((item, index) => (
+                          <div
+                            className="user"
+                            key={index}
+                            onClick={() => selectUser(item)}
+                          >
+                            {item.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
+
                 <div className="circles">
                   <div className="circle first" />
                   <div className="circle second" />
@@ -509,7 +613,10 @@ const Layout = ({ children, role, show, setShow }) => {
                 role !== "admin" &&
                 role !== "school" &&
                 !show && (
-                  <div className="messagebar" onClick={() => setShow(true)}>
+                  <div
+                    className="messagebar"
+                    onClick={() => handleChangeShow()}
+                  >
                     <div className="text bold">Message</div>
                     <Link to="/messages">
                       <div className="btn">
@@ -535,7 +642,7 @@ const Layout = ({ children, role, show, setShow }) => {
                     <div className="user-group">
                       <UserTypeSelect
                         type={type}
-                        onChange={(val) => setType(val)}
+                        onChange={(val) => handleChangeType(val)}
                       />
                       <UserSelect
                         user={chatUser}

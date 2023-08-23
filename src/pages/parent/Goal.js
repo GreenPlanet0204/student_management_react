@@ -62,13 +62,13 @@ export const Goal = () => {
 
   const Submit = async () => {
     let messages = init;
-    if (goal.start_date) messages["start_date"] = "This field is required!";
+    if (goal?.start_date) messages["start_date"] = "This field is required!";
     if (goal.end_date) messages["end_date"] = "This field is required!";
     if (goal.student) messages["student"] = "This field is required!";
     setMessage(messages);
     if (messages !== init) return;
     var data = { ...goal, responses: responses };
-    data["start_date"] = moment(goal.start_date).format("YYYY-MM-DD");
+    data["start_date"] = moment(goal?.start_date).format("YYYY-MM-DD");
     data["end_date"] = moment(goal.end_date).format("YYYY-MM-DD");
     await axios
       .post(ServerURL.BASE_URL + "/goal/", data, {
@@ -97,7 +97,7 @@ export const Goal = () => {
             <div className="label">Goal Date From</div>
             <div>
               <DatePicker
-                value={goal.start_date}
+                value={goal?.start_date}
                 max={goal.end_date}
                 onChange={(e) =>
                   setGoal({ ...goal, start_date: e.target.value })
@@ -110,7 +110,7 @@ export const Goal = () => {
             <div className="label">Goal Date To</div>
             <DatePicker
               value={goal.end_date}
-              min={goal.start_date}
+              min={goal?.start_date}
               onChange={(e) => setGoal({ ...goal, end_date: e.target.value })}
             />
           </div>
