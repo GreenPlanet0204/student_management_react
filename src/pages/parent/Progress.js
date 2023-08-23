@@ -804,7 +804,7 @@ export const Progress = () => {
                 <textarea
                   placeholder="Explanation for Coins Earned"
                   value={complete.explain}
-                  onClick={(e) =>
+                  onChange={(e) =>
                     setComplete({ ...complete, explain: e.target.value })
                   }
                 />
