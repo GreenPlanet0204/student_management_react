@@ -97,8 +97,10 @@ const Layout = ({ children, role, show, setShow }) => {
   }, [location.pathname]);
 
   useEffect(() => {
-    fetchChatMessage();
-    connectSocket();
+    if (!location.pathname.startsWith("/message")) {
+      fetchChatMessage();
+      connectSocket();
+    }
   }, [chatUser?.roomId]);
 
   const handleChangeType = (val) => {
@@ -155,13 +157,33 @@ const Layout = ({ children, role, show, setShow }) => {
   };
 
   const messageSubmitHandler = async (event) => {
-    event.preventDefault();
-    if (inputMessage) {
+    if (!location.pathname.startsWith("/message")) {
+      event.preventDefault();
+      if (inputMessage) {
+        try {
+          socket.send(
+            JSON.stringify({
+              action: SocketActions.MESSAGE,
+              message: inputMessage,
+              user: CommonUtil.getUserId(),
+              roomId: chatUser?.roomId,
+            })
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      setInputMessage("");
+    }
+  };
+
+  const sendTypingSignal = async (typing) => {
+    if (!location.pathname.startsWith("/message")) {
       try {
         socket.send(
           JSON.stringify({
-            action: SocketActions.MESSAGE,
-            message: inputMessage,
+            action: SocketActions.TYPING,
+            typing: typing,
             user: CommonUtil.getUserId(),
             roomId: chatUser?.roomId,
           })
@@ -170,38 +192,24 @@ const Layout = ({ children, role, show, setShow }) => {
         console.error(err);
       }
     }
-    setInputMessage("");
-  };
-
-  const sendTypingSignal = async (typing) => {
-    try {
-      socket.send(
-        JSON.stringify({
-          action: SocketActions.TYPING,
-          typing: typing,
-          user: CommonUtil.getUserId(),
-          roomId: chatUser?.roomId,
-        })
-      );
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   const chatMessageTypingHandler = (event) => {
-    if (event.keyCode !== Constants.ENTER_KEY_CODE) {
-      if (!isTypingSignalSent) {
-        sendTypingSignal(true);
-        isTypingSignalSent = true;
-      }
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => {
-        sendTypingSignal(false);
+    if (!location.pathname.startsWith("/message")) {
+      if (event.keyCode !== Constants.ENTER_KEY_CODE) {
+        if (!isTypingSignalSent) {
+          sendTypingSignal(true);
+          isTypingSignalSent = true;
+        }
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+          sendTypingSignal(false);
+          isTypingSignalSent = false;
+        }, 3000);
+      } else {
+        clearTimeout(typingTimer);
         isTypingSignalSent = false;
-      }, 3000);
-    } else {
-      clearTimeout(typingTimer);
-      isTypingSignalSent = false;
+      }
     }
   };
 
