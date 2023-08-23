@@ -81,9 +81,15 @@ export const Goal = () => {
   };
 
   const onChange = (value, index) => {
-    let res = responses;
-    res[index] = value;
-    setResponses(res);
+    setResponses(
+      responses.map((item, num) => {
+        if (num !== index) {
+          return item;
+        } else {
+          return value;
+        }
+      })
+    );
   };
 
   return (
@@ -138,7 +144,7 @@ export const Goal = () => {
               className="response"
               placeholder="Type Response"
               key={index}
-              value={response[index]}
+              value={response}
               onChange={(e) => onChange(e.target.value, index)}
             />
           ))}

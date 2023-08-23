@@ -121,9 +121,15 @@ export const Goal = () => {
   };
 
   const onChange = (value, index) => {
-    let res = responses;
-    res[index] = value;
-    setResponses(res);
+    setResponses(
+      responses.map((item, num) => {
+        if (num !== index) {
+          return item;
+        } else {
+          return value;
+        }
+      })
+    );
   };
 
   return (
@@ -212,7 +218,8 @@ export const Goal = () => {
             <textarea
               className="response"
               placeholder="Type Response"
-              value={response[index]}
+              value={response}
+              key={index}
               onChange={(e) => onChange(e.target.value, index)}
             />
           ))}
