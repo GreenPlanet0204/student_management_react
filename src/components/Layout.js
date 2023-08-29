@@ -646,7 +646,7 @@ const Layout = ({ children, role, show, setShow }) => {
                   <div className="circle second" />
                 </div>
               </div>
-              {location.pathname !== "/messages" &&
+              {!location.pathname.startsWith("/message") &&
                 role !== "admin" &&
                 role !== "school" &&
                 !show && (
@@ -665,7 +665,7 @@ const Layout = ({ children, role, show, setShow }) => {
             </div>
             {children}
           </div>
-          {location.pathname !== "/messages" &&
+          {!location.pathname.startsWith("/message") &&
             role !== "admin" &&
             role !== "school" &&
             show && (
