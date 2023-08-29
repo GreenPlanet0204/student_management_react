@@ -93,7 +93,10 @@ function App() {
           <Route path="/reward/:id" element={<TeacherReward />} />
           <Route path="/tracking" element={<TeacherTracking />} />
           <Route path="/student/:id" element={<TeacherProfile />} />
-          <Route path="/progress/:id" element={<TeacherProgress />} />
+          <Route
+            path="/progress/:id"
+            element={<TeacherProgress show={show} />}
+          />
           <Route path="/parents" element={<TeacherParents />} />
           <Route path="/parent" element={<TeacherParent />} />
           <Route path="/parent/:id" element={<TeacherParent />} />
@@ -108,7 +111,10 @@ function App() {
           <Route path="/tracking" element={<ParentProgress />} />
           <Route path="/students" element={<ParentStudents />} />
           <Route path="/student/:id" element={<ParentProfile />} />
-          <Route path="/student/progress/:id" element={<ParentProgress />} />
+          <Route
+            path="/student/progress/:id"
+            element={<ParentProgress show={show} />}
+          />
           <Route path="/goal/progress/:goalId" element={<ParentProgress />} />
         </Routes>
       )}
@@ -116,7 +122,10 @@ function App() {
         <Routes>
           <Route exact path="/" element={<StudentDashboard />} />
           <Route path="/progress" element={<StudentProfile />} />
-          <Route path="/progress/:id" element={<StudentProgress />} />
+          <Route
+            path="/progress/:id"
+            element={<StudentProgress show={show} />}
+          />
           <Route path="/goals" element={<StudentGoals />} />
           <Route path="/rewards" element={<StudentRewards />} />
         </Routes>

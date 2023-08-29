@@ -84,6 +84,13 @@ const Layout = ({ children, role, show, setShow }) => {
         })
         .catch(() => console.error("error"));
     }
+    if (location.pathname.startsWith("/student")) {
+      axios
+        .get(
+          ServerURL.BASE_URL + "/student/?" + user.role + "=" + user.profile.id
+        )
+        .then((res) => setAllUsers(res.data));
+    }
   }, [location.pathname]);
 
   const handleChangeShow = () => {
@@ -104,6 +111,7 @@ const Layout = ({ children, role, show, setShow }) => {
   }, [chatUser?.roomId]);
 
   const handleChangeType = (val) => {
+    setType(val);
     setUsers(chatUsers?.filter((item) => item.role === val));
     setChatUser(chatUsers?.filter((item) => item.role === val)[0]);
   };
@@ -235,7 +243,13 @@ const Layout = ({ children, role, show, setShow }) => {
   };
 
   const addMember = async (item) => {
-    const user = chatUsers?.find((user) => user.name === item.name);
+    const url = `/chats/?user=${CommonUtil.getUserId()}`;
+    const chatUsers = await ApiConnector.sendGetRequest(url);
+    const formatedChatUser = await CommonUtil.getFormatedChatUser(
+      chatUsers,
+      onlineUserList
+    );
+    const user = formatedChatUser?.find((user) => user.name === item.name);
     if (user) {
       setChatUser(user);
       setType(user.role);
@@ -262,9 +276,24 @@ const Layout = ({ children, role, show, setShow }) => {
   };
 
   const selectUser = async (item) => {
-    await addMember(item);
-    fetchChatMessage();
-    setText("");
+    if (location.pathname.startsWith("/student")) {
+      axios
+        .get(ServerURL.BASE_URL + "/profile/?id=" + item.id, {
+          headers: {
+            Authorization:
+              "Bearer " + CookieUtil.getCookie(Constants.ACCESS_PROPERTY),
+          },
+        })
+        .then((res) => {
+          navigate("/progress/" + res.data.profile.id);
+          setText("");
+        })
+        .catch(() => console.error("error"));
+    } else {
+      await addMember(item);
+      fetchChatMessage();
+      setText("");
+    }
   };
 
   return (

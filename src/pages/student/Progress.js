@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import CommonUtil from "../../utils/CommonUtil";
 
-export const Progress = () => {
+export const Progress = ({ show }) => {
   const params = useParams();
   const [width, setWidth] = useState(600);
   const [open, setOpen] = useState(false);
@@ -102,25 +102,30 @@ export const Progress = () => {
     setData(record);
   };
   const updateSize = () => {
+    let w = 0;
     if (window.innerWidth > 1250) {
-      const w = window.innerWidth - 800;
-      setWidth(w);
+      w = window.innerWidth - 800;
     } else if (window.innerWidth > 892) {
-      const w = window.innerWidth - 530;
-      setWidth(w);
+      w = window.innerWidth - 530;
     } else if (window.innerWidth > 640) {
-      const w = window.innerWidth - 330;
-      setWidth(w);
+      w = window.innerWidth - 330;
     } else {
-      const w = window.innerWidth - 105;
+      w = window.innerWidth - 105;
+    }
+    if (show) {
+      setWidth(w - 300);
+    } else {
       setWidth(w);
     }
   };
   /* eslint-disable */
   useEffect(() => {
     fetch();
-    updateSize();
   }, []);
+
+  useEffect(() => {
+    updateSize();
+  }, [show]);
 
   useEffect(() => {
     window.addEventListener("resize", updateSize);

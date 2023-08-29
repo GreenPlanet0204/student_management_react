@@ -413,7 +413,8 @@ input {
           .options {
             display: flex;
             position: absolute;
-            width: 100%;
+            min-width: 100%;
+            width: max-content;
             gap: 8px;
             padding: 4px 10px;
             border: 1px solid #9F9F9F;
