@@ -277,18 +277,8 @@ const Layout = ({ children, role, show, setShow }) => {
 
   const selectUser = async (item) => {
     if (location.pathname.startsWith("/student")) {
-      axios
-        .get(ServerURL.BASE_URL + "/profile/?id=" + item.id, {
-          headers: {
-            Authorization:
-              "Bearer " + CookieUtil.getCookie(Constants.ACCESS_PROPERTY),
-          },
-        })
-        .then((res) => {
-          navigate("/progress/" + res.data.profile.id);
-          setText("");
-        })
-        .catch(() => console.error("error"));
+      navigate("/progress/" + item.id);
+      setText("");
     } else {
       await addMember(item);
       fetchChatMessage();
