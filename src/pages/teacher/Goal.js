@@ -50,7 +50,9 @@ export const Goal = () => {
 
   const Search = (e) => {
     const term = e.target.value;
-    const filter = students.filter((item) => item.name.includes(term));
+    const filter = students.filter((item) =>
+      item.name.toLowerCase().startsWith(term.toLowerCase())
+    );
     setFilterStudents(filter);
   };
 

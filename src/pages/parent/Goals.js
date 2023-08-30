@@ -23,7 +23,11 @@ export const Goals = () => {
 
   const search = (e) => {
     const term = e.target.value;
-    setFilterGoals(goals.filter((item) => item.name.startsWith(term)));
+    setFilterGoals(
+      goals.filter((item) =>
+        item.name.toLowerCase().startsWith(term.toLowerCase())
+      )
+    );
   };
   return (
     <div className="container">
